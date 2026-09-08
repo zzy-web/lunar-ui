@@ -1,14 +1,14 @@
 # Lunar UI
 
-Lunar UI 是一个受 Element Plus 启发的轻量 Vue 3 组件库。它提供小巧、类型友好的组件，既可以作为 Vue 插件整体安装，也可以按需逐个导入。
+Lunar UI is a compact Vue 3 component library inspired by Element Plus. It provides small, typed components that can be installed as a Vue plugin or imported one by one.
 
-## 安装
+## Install
 
 ```bash
 npm install @your-scope/lunar-ui
 ```
 
-## 快速开始
+## Quick Start
 
 ```ts
 import { createApp } from 'vue'
@@ -18,14 +18,14 @@ import '@your-scope/lunar-ui/dist/style.css'
 createApp(App).use(LunarUI).mount('#app')
 ```
 
-## 组件
+## Components
 
 - `EpxButton`
 - `EpxInput`
 - `EpxCard`
 - `EpxDialog`
 
-## 本地开发
+## Local Development
 
 ```bash
 npm run dev
