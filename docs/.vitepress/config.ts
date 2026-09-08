@@ -18,7 +18,7 @@ export default defineConfig({
       themeConfig: {
         nav: [
           { text: '指南', link: '/' },
-          { text: '组件', link: '/components/dialog' }
+          { text: '组件', link: '/components/button' }
         ],
         sidebar: [
           {
@@ -30,6 +30,9 @@ export default defineConfig({
           {
             text: '组件',
             items: [
+              { text: 'Button 按钮', link: '/components/button' },
+              { text: 'Input 输入框', link: '/components/input' },
+              { text: 'Card 卡片', link: '/components/card' },
               { text: 'Dialog 对话框', link: '/components/dialog' }
             ]
           }
@@ -45,7 +48,7 @@ export default defineConfig({
       themeConfig: {
         nav: [
           { text: 'Guide', link: '/en/' },
-          { text: 'Components', link: '/en/components/dialog' }
+          { text: 'Components', link: '/en/components/button' }
         ],
         sidebar: [
           {
@@ -57,6 +60,9 @@ export default defineConfig({
           {
             text: 'Components',
             items: [
+              { text: 'Button', link: '/en/components/button' },
+              { text: 'Input', link: '/en/components/input' },
+              { text: 'Card', link: '/en/components/card' },
               { text: 'Dialog', link: '/en/components/dialog' }
             ]
           }
