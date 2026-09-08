@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'Lunar UI',
   description: 'A compact Vue 3 component library inspired by Element Plus.',
+  base: '/lunar-ui/',
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/' },
