@@ -8,6 +8,7 @@ export default defineConfig({
   title: 'Lunar UI',
   description: '一个受 Element Plus 启发的轻量 Vue 3 组件库。',
   base: '/lunar-ui/',
+  outDir: '../dist',
   locales: {
     root: {
       label: '简体中文',
