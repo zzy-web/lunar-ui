@@ -10,7 +10,7 @@
 import { computed } from 'vue'
 import type { CSSProperties } from 'vue'
 
-defineOptions({ name: 'EpxCard' })
+defineOptions({ name: 'LuCard' })
 const props = withDefaults(defineProps<{ header?: string; shadow?: 'always' | 'hover' | 'never'; bodyStyle?: CSSProperties }>(), { shadow: 'always' })
 const cardClass = computed(() => [`is-shadow-${props.shadow}`])
 </script>

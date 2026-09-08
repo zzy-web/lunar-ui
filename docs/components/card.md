@@ -1,22 +1,49 @@
 # Card 卡片
 
-`EpxCard` 用于承载一组相关内容。它支持标题、头部插槽、底部插槽、阴影策略和自定义主体样式。
+`LuCard` 用于承载一组相关内容，组件标签为 `<lu-card>`。它支持标题、头部插槽、底部插槽、阴影策略和自定义主体样式。
 
 ## 基础用法
 
+使用 `header` 设置简单标题。
+
+<DemoBlock>
+  <lu-card header="卡片标题">
+    <p>这里是卡片主体内容。</p>
+  </lu-card>
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-card header="卡片标题">
+  <lu-card header="卡片标题">
     <p>这里是卡片主体内容。</p>
-  </epx-card>
+  </lu-card>
 </template>
 ```
 
+  </template>
+</DemoBlock>
+
 ## 自定义头部和底部
+
+使用 `header` 和 `footer` 插槽组织更复杂的内容。
+
+<DemoBlock>
+  <lu-card>
+    <template #header>
+      <strong>账户信息</strong>
+    </template>
+    <p>用户名：Lunar</p>
+    <template #footer>
+      <lu-button type="primary">保存</lu-button>
+    </template>
+  </lu-card>
+
+  <template #source>
 
 ```vue
 <template>
-  <epx-card>
+  <lu-card>
     <template #header>
       <strong>账户信息</strong>
     </template>
@@ -24,31 +51,58 @@
     <p>用户名：Lunar</p>
 
     <template #footer>
-      <epx-button type="primary">保存</epx-button>
+      <lu-button type="primary">保存</lu-button>
     </template>
-  </epx-card>
+  </lu-card>
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## 阴影
 
+通过 `shadow` 控制卡片阴影显示策略。
+
+<DemoBlock>
+  <lu-card shadow="always">始终显示阴影</lu-card>
+  <lu-card shadow="hover">悬停时显示阴影</lu-card>
+  <lu-card shadow="never">不显示阴影</lu-card>
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-card shadow="always">始终显示阴影</epx-card>
-  <epx-card shadow="hover">悬停时显示阴影</epx-card>
-  <epx-card shadow="never">不显示阴影</epx-card>
+  <lu-card shadow="always">始终显示阴影</lu-card>
+  <lu-card shadow="hover">悬停时显示阴影</lu-card>
+  <lu-card shadow="never">不显示阴影</lu-card>
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## 自定义主体样式
 
+通过 `body-style` 调整卡片主体区域。
+
+<DemoBlock>
+  <lu-card :body-style="{ padding: '24px' }">
+    <p>主体区域使用了自定义内边距。</p>
+  </lu-card>
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-card :body-style="{ padding: '24px' }">
+  <lu-card :body-style="{ padding: '24px' }">
     <p>主体区域使用了自定义内边距。</p>
-  </epx-card>
+  </lu-card>
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## Props
 

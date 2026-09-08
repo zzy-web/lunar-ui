@@ -1,8 +1,22 @@
 # Input 输入框
 
-`EpxInput` 用于输入单行文本。它支持 `v-model`、原生输入类型、占位提示、尺寸、禁用、只读，以及前后缀插槽。
+`LuInput` 用于输入单行文本，组件标签为 `<lu-input>`。它支持 `v-model`、原生输入类型、占位提示、尺寸、禁用、只读，以及前后缀插槽。
+
+<script setup>
+import { ref } from 'vue'
+
+const inputValue = ref('')
+const keyword = ref('')
+</script>
 
 ## 基础用法
+
+使用 `v-model` 绑定输入框内容。
+
+<DemoBlock>
+  <lu-input v-model="inputValue" placeholder="请输入内容" />
+
+  <template #source>
 
 ```vue
 <script setup lang="ts">
@@ -12,39 +26,78 @@ const value = ref('')
 </script>
 
 <template>
-  <epx-input v-model="value" placeholder="请输入内容" />
+  <lu-input v-model="value" placeholder="请输入内容" />
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## 不同尺寸
 
+使用 `size` 设置输入框尺寸。
+
+<DemoBlock>
+  <lu-input size="large" placeholder="大型输入框" />
+  <lu-input placeholder="默认输入框" />
+  <lu-input size="small" placeholder="小型输入框" />
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-input size="large" placeholder="大型输入框" />
-  <epx-input placeholder="默认输入框" />
-  <epx-input size="small" placeholder="小型输入框" />
+  <lu-input size="large" placeholder="大型输入框" />
+  <lu-input placeholder="默认输入框" />
+  <lu-input size="small" placeholder="小型输入框" />
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## 禁用和只读
 
+`disabled` 会禁用输入框，`readonly` 只禁止编辑。
+
+<DemoBlock>
+  <lu-input model-value="不可编辑" disabled />
+  <lu-input model-value="只读内容" readonly />
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-input model-value="不可编辑" disabled />
-  <epx-input model-value="只读内容" readonly />
+  <lu-input model-value="不可编辑" disabled />
+  <lu-input model-value="只读内容" readonly />
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## 前后缀
 
+通过 `prefix` 和 `suffix` 插槽扩展输入框内容。
+
+<DemoBlock>
+  <lu-input v-model="keyword" placeholder="搜索">
+    <template #prefix>Search</template>
+    <template #suffix>.com</template>
+  </lu-input>
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-input v-model="keyword" placeholder="搜索">
-    <template #prefix>🔍</template>
+  <lu-input v-model="keyword" placeholder="搜索">
+    <template #prefix>Search</template>
     <template #suffix>.com</template>
-  </epx-input>
+  </lu-input>
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## Props
 

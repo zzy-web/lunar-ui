@@ -1,8 +1,31 @@
 # Dialog 对话框
 
-`EpxDialog` 用于在页面上方以模态层展示内容。它支持 `v-model`、标题和底部插槽、按 Escape 关闭、点击遮罩关闭、锁定页面滚动、内容居中，以及关闭后销毁内容。
+`LuDialog` 用于在页面上方以模态层展示内容，组件标签为 `<lu-dialog>`。它支持 `v-model`、标题和底部插槽、按 Escape 关闭、点击遮罩关闭、锁定页面滚动、内容居中，以及关闭后销毁内容。
+
+<script setup>
+import { ref } from 'vue'
+
+const basicVisible = ref(false)
+const centeredVisible = ref(false)
+</script>
 
 ## 基础用法
+
+使用 `v-model` 控制对话框显示状态。
+
+<DemoBlock>
+  <lu-button type="primary" @click="basicVisible = true">打开对话框</lu-button>
+
+  <lu-dialog v-model="basicVisible" title="确认更新" width="420px">
+    <p>这里是对话框内容。</p>
+
+    <template #footer>
+      <lu-button @click="basicVisible = false">取消</lu-button>
+      <lu-button type="primary" @click="basicVisible = false">确认</lu-button>
+    </template>
+  </lu-dialog>
+
+  <template #source>
 
 ```vue
 <script setup lang="ts">
@@ -12,32 +35,53 @@ const visible = ref(false)
 </script>
 
 <template>
-  <epx-button type="primary" @click="visible = true">打开对话框</epx-button>
+  <lu-button type="primary" @click="visible = true">打开对话框</lu-button>
 
-  <epx-dialog v-model="visible" title="确认更新" width="420px">
+  <lu-dialog v-model="visible" title="确认更新" width="420px">
     <p>这里是对话框内容。</p>
 
     <template #footer>
-      <epx-button @click="visible = false">取消</epx-button>
-      <epx-button type="primary" @click="visible = false">确认</epx-button>
+      <lu-button @click="visible = false">取消</lu-button>
+      <lu-button type="primary" @click="visible = false">确认</lu-button>
     </template>
-  </epx-dialog>
+  </lu-dialog>
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## 居中对话框
 
-```vue
-<template>
-  <epx-dialog v-model="visible" title="提示" width="360px" center>
+添加 `center` 可以让正文和底部操作居中。
+
+<DemoBlock>
+  <lu-button @click="centeredVisible = true">打开居中对话框</lu-button>
+
+  <lu-dialog v-model="centeredVisible" title="提示" width="360px" center>
     <p>这个对话框会让正文和底部操作居中显示。</p>
 
     <template #footer>
-      <epx-button type="primary" @click="visible = false">知道了</epx-button>
+      <lu-button type="primary" @click="centeredVisible = false">知道了</lu-button>
     </template>
-  </epx-dialog>
+  </lu-dialog>
+
+  <template #source>
+
+```vue
+<template>
+  <lu-dialog v-model="visible" title="提示" width="360px" center>
+    <p>这个对话框会让正文和底部操作居中显示。</p>
+
+    <template #footer>
+      <lu-button type="primary" @click="visible = false">知道了</lu-button>
+    </template>
+  </lu-dialog>
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## Props
 

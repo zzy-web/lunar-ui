@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-defineOptions({ name: 'EpxButton' })
+defineOptions({ name: 'LuButton' })
 
 const props = withDefaults(defineProps<{
   type?: 'default' | 'primary' | 'success' | 'warning' | 'danger'

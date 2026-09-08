@@ -20,10 +20,10 @@ createApp(App).use(LunarUI).mount('#app')
 
 ## Components
 
-- `EpxButton`
-- `EpxInput`
-- `EpxCard`
-- `EpxDialog`
+- `LuButton`
+- `LuInput`
+- `LuCard`
+- `LuDialog`
 
 ## Local Development
 

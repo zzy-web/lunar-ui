@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
-defineOptions({ name: 'EpxInput' })
+defineOptions({ name: 'LuInput' })
 
 const props = withDefaults(defineProps<{ modelValue?: string | number; type?: string; size?: 'large' | 'default' | 'small'; placeholder?: string; disabled?: boolean; readonly?: boolean }>(), { modelValue: '', type: 'text', size: 'default' })
 const emit = defineEmits<{ 'update:modelValue': [value: string]; input: [value: string] }>()

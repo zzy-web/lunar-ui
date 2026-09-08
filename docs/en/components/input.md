@@ -1,8 +1,22 @@
 # Input
 
-`EpxInput` captures single-line text. It supports `v-model`, native input types, placeholder text, sizes, disabled state, readonly state, and prefix or suffix slots.
+`LuInput` captures single-line text. Use it as `<lu-input>`. It supports `v-model`, native input types, placeholder text, sizes, disabled state, readonly state, and prefix or suffix slots.
+
+<script setup>
+import { ref } from 'vue'
+
+const inputValue = ref('')
+const keyword = ref('')
+</script>
 
 ## Basic Usage
+
+Use `v-model` to bind the input value.
+
+<DemoBlock source-label="View source">
+  <lu-input v-model="inputValue" placeholder="Please enter text" />
+
+  <template #source>
 
 ```vue
 <script setup lang="ts">
@@ -12,39 +26,78 @@ const value = ref('')
 </script>
 
 <template>
-  <epx-input v-model="value" placeholder="Please enter text" />
+  <lu-input v-model="value" placeholder="Please enter text" />
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## Sizes
 
+Use `size` to set the input size.
+
+<DemoBlock source-label="View source">
+  <lu-input size="large" placeholder="Large input" />
+  <lu-input placeholder="Default input" />
+  <lu-input size="small" placeholder="Small input" />
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-input size="large" placeholder="Large input" />
-  <epx-input placeholder="Default input" />
-  <epx-input size="small" placeholder="Small input" />
+  <lu-input size="large" placeholder="Large input" />
+  <lu-input placeholder="Default input" />
+  <lu-input size="small" placeholder="Small input" />
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## Disabled And Readonly
 
+`disabled` prevents interaction, while `readonly` only prevents editing.
+
+<DemoBlock source-label="View source">
+  <lu-input model-value="Cannot edit" disabled />
+  <lu-input model-value="Readonly text" readonly />
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-input model-value="Cannot edit" disabled />
-  <epx-input model-value="Readonly text" readonly />
+  <lu-input model-value="Cannot edit" disabled />
+  <lu-input model-value="Readonly text" readonly />
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## Prefix And Suffix
 
+Use the `prefix` and `suffix` slots to extend the input.
+
+<DemoBlock source-label="View source">
+  <lu-input v-model="keyword" placeholder="Search">
+    <template #prefix>Search</template>
+    <template #suffix>.com</template>
+  </lu-input>
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-input v-model="keyword" placeholder="Search">
-    <template #prefix>🔍</template>
+  <lu-input v-model="keyword" placeholder="Search">
+    <template #prefix>Search</template>
     <template #suffix>.com</template>
-  </epx-input>
+  </lu-input>
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## Props
 

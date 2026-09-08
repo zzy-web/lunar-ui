@@ -39,11 +39,12 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 
-defineOptions({ name: 'EpxDialog' })
+defineOptions({ name: 'LuDialog' })
 
 const titleId = `epx-dialog-title-${Math.random().toString(36).slice(2, 9)}`
 const closeButtonRef = ref<HTMLButtonElement>()
 const shouldRender = ref(false)
+const isClient = typeof document !== 'undefined'
 let previousBodyOverflow = ''
 
 const props = withDefaults(defineProps<{
@@ -97,23 +98,23 @@ watch(() => props.modelValue, (visible) => {
   if (visible) {
     shouldRender.value = true
     emit('open')
-    document.addEventListener('keydown', handleKeydown)
+    if (isClient) document.addEventListener('keydown', handleKeydown)
     lockBodyScroll()
     nextTick(() => closeButtonRef.value?.focus())
     return
   }
-  document.removeEventListener('keydown', handleKeydown)
+  if (isClient) document.removeEventListener('keydown', handleKeydown)
   unlockBodyScroll()
 }, { immediate: true })
 
 function lockBodyScroll() {
-  if (!props.lockScroll) return
+  if (!props.lockScroll || !isClient) return
   previousBodyOverflow = document.body.style.overflow
   document.body.style.overflow = 'hidden'
 }
 
 function unlockBodyScroll() {
-  if (!props.lockScroll) return
+  if (!props.lockScroll || !isClient) return
   document.body.style.overflow = previousBodyOverflow
 }
 
@@ -123,7 +124,7 @@ function handleAfterLeave() {
 }
 
 onBeforeUnmount(() => {
-  document.removeEventListener('keydown', handleKeydown)
+  if (isClient) document.removeEventListener('keydown', handleKeydown)
   unlockBodyScroll()
 })
 </script>

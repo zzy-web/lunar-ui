@@ -20,10 +20,10 @@ createApp(App).use(LunarUI).mount('#app')
 
 ## Components
 
-- `EpxButton`
-- `EpxInput`
-- `EpxCard`
-- `EpxDialog`
+- `LuButton`
+- `LuInput`
+- `LuCard`
+- `LuDialog`
 
 ## Dialog
 
@@ -35,16 +35,16 @@ const visible = ref(false)
 </script>
 
 <template>
-  <epx-button type="primary" @click="visible = true">Open dialog</epx-button>
+  <lu-button type="primary" @click="visible = true">Open dialog</lu-button>
 
-  <epx-dialog v-model="visible" title="Confirm update" width="420px">
+  <lu-dialog v-model="visible" title="Confirm update" width="420px">
     <p>Dialog content goes here.</p>
 
     <template #footer>
-      <epx-button @click="visible = false">Cancel</epx-button>
-      <epx-button type="primary" @click="visible = false">Confirm</epx-button>
+      <lu-button @click="visible = false">Cancel</lu-button>
+      <lu-button type="primary" @click="visible = false">Confirm</lu-button>
     </template>
-  </epx-dialog>
+  </lu-dialog>
 </template>
 ```
 

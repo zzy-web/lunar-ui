@@ -1,4 +1,6 @@
 import EpxCard from './src/card.vue'
 
-export { EpxCard }
+const LuCard = EpxCard
+
+export { EpxCard, LuCard }
 export default EpxCard

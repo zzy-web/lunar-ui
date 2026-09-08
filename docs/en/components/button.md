@@ -1,48 +1,98 @@
 # Button
 
-`EpxButton` triggers actions. It supports semantic types, sizes, plain style, rounded corners, loading state, and disabled state.
+`LuButton` triggers actions. Use it as `<lu-button>`. It supports semantic types, sizes, plain style, rounded corners, loading state, and disabled state.
 
 ## Basic Usage
 
+Use `type` to set the button style.
+
+<DemoBlock source-label="View source">
+  <lu-button>Default</lu-button>
+  <lu-button type="primary">Primary</lu-button>
+  <lu-button type="success">Success</lu-button>
+  <lu-button type="warning">Warning</lu-button>
+  <lu-button type="danger">Danger</lu-button>
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-button>Default</epx-button>
-  <epx-button type="primary">Primary</epx-button>
-  <epx-button type="success">Success</epx-button>
-  <epx-button type="warning">Warning</epx-button>
-  <epx-button type="danger">Danger</epx-button>
+  <lu-button>Default</lu-button>
+  <lu-button type="primary">Primary</lu-button>
+  <lu-button type="success">Success</lu-button>
+  <lu-button type="warning">Warning</lu-button>
+  <lu-button type="danger">Danger</lu-button>
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## Plain Buttons
 
+Add `plain` for a lighter visual style.
+
+<DemoBlock source-label="View source">
+  <lu-button plain>Plain</lu-button>
+  <lu-button type="primary" plain>Primary</lu-button>
+  <lu-button type="success" plain>Success</lu-button>
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-button plain>Plain</epx-button>
-  <epx-button type="primary" plain>Primary</epx-button>
-  <epx-button type="success" plain>Success</epx-button>
+  <lu-button plain>Plain</lu-button>
+  <lu-button type="primary" plain>Primary</lu-button>
+  <lu-button type="success" plain>Success</lu-button>
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## Sizes
 
+Use `size` to control button size.
+
+<DemoBlock source-label="View source">
+  <lu-button size="large">Large</lu-button>
+  <lu-button>Default</lu-button>
+  <lu-button size="small">Small</lu-button>
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-button size="large">Large</epx-button>
-  <epx-button>Default</epx-button>
-  <epx-button size="small">Small</epx-button>
+  <lu-button size="large">Large</lu-button>
+  <lu-button>Default</lu-button>
+  <lu-button size="small">Small</lu-button>
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## States
 
+Loading and disabled buttons do not emit click events.
+
+<DemoBlock source-label="View source">
+  <lu-button round>Round</lu-button>
+  <lu-button type="primary" loading>Loading</lu-button>
+  <lu-button disabled>Disabled</lu-button>
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-button round>Round</epx-button>
-  <epx-button loading>Loading</epx-button>
-  <epx-button disabled>Disabled</epx-button>
+  <lu-button round>Round</lu-button>
+  <lu-button type="primary" loading>Loading</lu-button>
+  <lu-button disabled>Disabled</lu-button>
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## Props
 

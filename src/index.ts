@@ -1,13 +1,13 @@
 import type { App } from 'vue'
-import { EpxButton } from './components/button'
-import { EpxCard } from './components/card'
-import { EpxDialog } from './components/dialog'
-import { EpxInput } from './components/input'
+import { EpxButton, LuButton } from './components/button'
+import { EpxCard, LuCard } from './components/card'
+import { EpxDialog, LuDialog } from './components/dialog'
+import { EpxInput, LuInput } from './components/input'
 import './styles/index.css'
 
-const components = [EpxButton, EpxInput, EpxCard, EpxDialog]
+const components = [LuButton, LuInput, LuCard, LuDialog]
 
-export { EpxButton, EpxInput, EpxCard, EpxDialog }
+export { EpxButton, EpxInput, EpxCard, EpxDialog, LuButton, LuInput, LuCard, LuDialog }
 export * from './components/button'
 export * from './components/input'
 export * from './components/card'

@@ -1,48 +1,102 @@
 # Button 按钮
 
-`EpxButton` 用于触发操作。它支持不同语义类型、尺寸、朴素样式、圆角、加载中和禁用状态。
+`LuButton` 用于触发操作，组件标签为 `<lu-button>`。它提供常用语义类型、尺寸、朴素样式、圆角、加载中和禁用状态。
 
 ## 基础用法
 
+通过 `type` 设置按钮的语义样式。
+
+<DemoBlock>
+  <lu-button>默认按钮</lu-button>
+  <lu-button type="primary">主要按钮</lu-button>
+  <lu-button type="success">成功按钮</lu-button>
+  <lu-button type="warning">警告按钮</lu-button>
+  <lu-button type="danger">危险按钮</lu-button>
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-button>默认按钮</epx-button>
-  <epx-button type="primary">主要按钮</epx-button>
-  <epx-button type="success">成功按钮</epx-button>
-  <epx-button type="warning">警告按钮</epx-button>
-  <epx-button type="danger">危险按钮</epx-button>
+  <lu-button>默认按钮</lu-button>
+  <lu-button type="primary">主要按钮</lu-button>
+  <lu-button type="success">成功按钮</lu-button>
+  <lu-button type="warning">警告按钮</lu-button>
+  <lu-button type="danger">危险按钮</lu-button>
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## 朴素按钮
 
+添加 `plain` 可以得到更轻的按钮视觉。
+
+<DemoBlock>
+  <lu-button plain>朴素按钮</lu-button>
+  <lu-button type="primary" plain>主要按钮</lu-button>
+  <lu-button type="success" plain>成功按钮</lu-button>
+  <lu-button type="warning" plain>警告按钮</lu-button>
+  <lu-button type="danger" plain>危险按钮</lu-button>
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-button plain>朴素按钮</epx-button>
-  <epx-button type="primary" plain>主要按钮</epx-button>
-  <epx-button type="success" plain>成功按钮</epx-button>
+  <lu-button plain>朴素按钮</lu-button>
+  <lu-button type="primary" plain>主要按钮</lu-button>
+  <lu-button type="success" plain>成功按钮</lu-button>
+  <lu-button type="warning" plain>警告按钮</lu-button>
+  <lu-button type="danger" plain>危险按钮</lu-button>
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## 尺寸
 
+使用 `size` 控制按钮大小。
+
+<DemoBlock>
+  <lu-button size="large">大型按钮</lu-button>
+  <lu-button>默认按钮</lu-button>
+  <lu-button size="small">小型按钮</lu-button>
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-button size="large">大型按钮</epx-button>
-  <epx-button>默认按钮</epx-button>
-  <epx-button size="small">小型按钮</epx-button>
+  <lu-button size="large">大型按钮</lu-button>
+  <lu-button>默认按钮</lu-button>
+  <lu-button size="small">小型按钮</lu-button>
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## 状态
 
+`loading` 和 `disabled` 状态下不会触发点击事件。
+
+<DemoBlock>
+  <lu-button round>圆角按钮</lu-button>
+  <lu-button type="primary" loading>加载中</lu-button>
+  <lu-button disabled>禁用按钮</lu-button>
+
+  <template #source>
+
 ```vue
 <template>
-  <epx-button round>圆角按钮</epx-button>
-  <epx-button loading>加载中</epx-button>
-  <epx-button disabled>禁用按钮</epx-button>
+  <lu-button round>圆角按钮</lu-button>
+  <lu-button type="primary" loading>加载中</lu-button>
+  <lu-button disabled>禁用按钮</lu-button>
 </template>
 ```
+
+  </template>
+</DemoBlock>
 
 ## Props
 
