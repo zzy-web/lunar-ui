@@ -1,31 +1,8 @@
-# Lunar UI
+# Dialog
 
-A compact Vue 3 component library inspired by Element Plus.
+`EpxDialog` displays content in a modal layer above the page. It supports `v-model`, title and footer slots, Escape key close, overlay click close, body scroll locking, centered content, and optional destroy-on-close rendering.
 
-## Install
-
-```bash
-npm install @your-scope/lunar-ui
-```
-
-## Use
-
-```ts
-import { createApp } from 'vue'
-import LunarUI from '@your-scope/lunar-ui'
-import '@your-scope/lunar-ui/dist/style.css'
-
-createApp(App).use(LunarUI).mount('#app')
-```
-
-## Components
-
-- `EpxButton`
-- `EpxInput`
-- `EpxCard`
-- `EpxDialog`
-
-## Dialog
+## Basic Usage
 
 ```vue
 <script setup lang="ts">
@@ -48,7 +25,21 @@ const visible = ref(false)
 </template>
 ```
 
-### Dialog Props
+## Centered Dialog
+
+```vue
+<template>
+  <epx-dialog v-model="visible" title="Notice" width="360px" center>
+    <p>This dialog centers its body text and footer actions.</p>
+
+    <template #footer>
+      <epx-button type="primary" @click="visible = false">Got it</epx-button>
+    </template>
+  </epx-dialog>
+</template>
+```
+
+## Props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -65,7 +56,7 @@ const visible = ref(false)
 | `center` | `boolean` | `false` | Centers dialog text and footer actions. |
 | `destroyOnClose` | `boolean` | `false` | Removes dialog content from the DOM after close. |
 
-### Dialog Events
+## Events
 
 | Event | Description |
 | --- | --- |
@@ -74,19 +65,10 @@ const visible = ref(false)
 | `close` | Emitted when the dialog requests to close. |
 | `closed` | Emitted after the closing transition finishes. |
 
-### Dialog Slots
+## Slots
 
 | Slot | Description |
 | --- | --- |
 | `default` | Main dialog content. |
 | `header` | Custom header content. |
 | `footer` | Footer actions. |
-
-## Publish
-
-Update `name` in `package.json`, then run:
-
-```bash
-npm login
-npm run release
-```

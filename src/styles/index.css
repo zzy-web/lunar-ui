@@ -45,8 +45,10 @@
 .epx-card__body { padding: 20px; }
 .epx-card__footer { padding: 12px 20px; border-top: 1px solid var(--epx-border-color-light); color: var(--epx-text-color-regular); }
 
-.epx-overlay { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: flex-start; justify-content: center; padding: 15vh 16px 32px; background: rgba(0, 0, 0, 0.5); }
+.epx-overlay { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: flex-start; justify-content: center; padding: 0 16px 32px; background: rgba(0, 0, 0, 0.5); }
+.epx-overlay.is-transparent { pointer-events: none; background: transparent; }
 .epx-dialog { box-sizing: border-box; max-width: calc(100vw - 32px); overflow: hidden; border-radius: var(--epx-border-radius-base); background: var(--epx-bg-color); color: var(--epx-text-color-primary); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18); }
+.epx-overlay.is-transparent .epx-dialog { pointer-events: auto; }
 .epx-dialog.is-center { text-align: center; }
 .epx-dialog__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 20px 10px; }
 .epx-dialog__title { color: var(--epx-text-color-primary); font-size: 18px; line-height: 24px; }

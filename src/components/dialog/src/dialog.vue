@@ -1,21 +1,28 @@
 <template>
   <Teleport to="body">
-    <Transition name="epx-dialog-fade" @after-leave="emit('closed')">
-      <div v-if="modelValue" class="epx-overlay" @click="handleOverlayClick">
+    <Transition name="epx-dialog-fade" @after-enter="emit('opened')" @after-leave="handleAfterLeave">
+      <div
+        v-if="shouldRender"
+        v-show="modelValue"
+        class="epx-overlay"
+        :class="{ 'is-transparent': !modal }"
+        @click="handleOverlayClick"
+      >
         <div
           class="epx-dialog"
           :class="dialogClass"
-          :style="{ width }"
+          :style="{ width, marginTop: top }"
           role="dialog"
           aria-modal="true"
-          :aria-label="title || undefined"
+          :aria-label="!title ? ariaLabel : undefined"
+          :aria-labelledby="title ? titleId : undefined"
           @click.stop
         >
           <header v-if="$slots.header || title || showClose" class="epx-dialog__header">
             <slot name="header">
-              <span class="epx-dialog__title">{{ title }}</span>
+              <span :id="titleId" class="epx-dialog__title">{{ title }}</span>
             </slot>
-            <button v-if="showClose" class="epx-dialog__close" type="button" aria-label="Close" @click="close">x</button>
+            <button v-if="showClose" ref="closeButtonRef" class="epx-dialog__close" type="button" aria-label="Close" @click="close">&times;</button>
           </header>
           <div class="epx-dialog__body">
             <slot />
@@ -30,28 +37,43 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 
 defineOptions({ name: 'EpxDialog' })
+
+const titleId = `epx-dialog-title-${Math.random().toString(36).slice(2, 9)}`
+const closeButtonRef = ref<HTMLButtonElement>()
+const shouldRender = ref(false)
+let previousBodyOverflow = ''
 
 const props = withDefaults(defineProps<{
   modelValue: boolean
   title?: string
+  ariaLabel?: string
   width?: string
+  top?: string
+  modal?: boolean
+  lockScroll?: boolean
   closeOnClickModal?: boolean
   closeOnPressEscape?: boolean
   showClose?: boolean
   center?: boolean
+  destroyOnClose?: boolean
 }>(), {
   width: '50%',
+  top: '15vh',
+  modal: true,
+  lockScroll: true,
   closeOnClickModal: true,
   closeOnPressEscape: true,
-  showClose: true
+  showClose: true,
+  destroyOnClose: false
 })
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
   open: []
+  opened: []
   close: []
   closed: []
 }>()
@@ -73,12 +95,35 @@ function handleKeydown(event: KeyboardEvent) {
 
 watch(() => props.modelValue, (visible) => {
   if (visible) {
+    shouldRender.value = true
     emit('open')
     document.addEventListener('keydown', handleKeydown)
+    lockBodyScroll()
+    nextTick(() => closeButtonRef.value?.focus())
     return
   }
   document.removeEventListener('keydown', handleKeydown)
-})
+  unlockBodyScroll()
+}, { immediate: true })
 
-onBeforeUnmount(() => document.removeEventListener('keydown', handleKeydown))
+function lockBodyScroll() {
+  if (!props.lockScroll) return
+  previousBodyOverflow = document.body.style.overflow
+  document.body.style.overflow = 'hidden'
+}
+
+function unlockBodyScroll() {
+  if (!props.lockScroll) return
+  document.body.style.overflow = previousBodyOverflow
+}
+
+function handleAfterLeave() {
+  if (props.destroyOnClose) shouldRender.value = false
+  emit('closed')
+}
+
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', handleKeydown)
+  unlockBodyScroll()
+})
 </script>

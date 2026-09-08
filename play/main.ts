@@ -5,7 +5,8 @@ const App = {
   setup() {
     const name = ref('')
     const dialogVisible = ref(false)
-    return { name, dialogVisible }
+    const centeredDialogVisible = ref(false)
+    return { name, dialogVisible, centeredDialogVisible }
   },
   template: `
     <main style="max-width: 760px; margin: 48px auto; font-family: Arial, sans-serif;">
@@ -17,8 +18,9 @@ const App = {
           </div>
           <epx-input v-model="name" placeholder="Please input" />
           <p>Name: {{ name || 'empty' }}</p>
-          <div>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
             <epx-button type="primary" @click="dialogVisible = true">Open dialog</epx-button>
+            <epx-button @click="centeredDialogVisible = true">Centered dialog</epx-button>
           </div>
         </div>
       </epx-card>
@@ -27,6 +29,12 @@ const App = {
         <template #footer>
           <epx-button @click="dialogVisible = false">Cancel</epx-button>
           <epx-button type="primary" @click="dialogVisible = false">Confirm</epx-button>
+        </template>
+      </epx-dialog>
+      <epx-dialog v-model="centeredDialogVisible" title="Centered dialog" width="360px" center destroy-on-close>
+        <p>This one centers its text and footer actions, then removes its body from the DOM after closing.</p>
+        <template #footer>
+          <epx-button type="primary" @click="centeredDialogVisible = false">Got it</epx-button>
         </template>
       </epx-dialog>
     </main>`
