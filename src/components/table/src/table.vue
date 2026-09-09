@@ -3,7 +3,7 @@
     <table class="epx-table__inner">
       <thead>
         <tr>
-          <th v-for="column in columns" :key="column.key" :style="getCellStyle(column)">
+          <th v-for="column in columns" :key="column.key" scope="col" :style="getCellStyle(column)">
             {{ column.label }}
           </th>
         </tr>

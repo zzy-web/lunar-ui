@@ -171,16 +171,83 @@ html.dark,
 .epx-form-item__error { margin-top: 6px; color: var(--epx-color-danger); font-size: 12px; line-height: 1.2; }
 .epx-form-item.is-error .epx-input__wrapper { border-color: var(--epx-color-danger); box-shadow: 0 0 0 1px var(--epx-color-danger) inset; }
 
-.epx-table { width: 100%; overflow: auto; border-radius: var(--epx-border-radius-base); color: var(--epx-text-color-primary); font-size: 14px; }
-.epx-table__inner { width: 100%; border-collapse: collapse; table-layout: fixed; background: var(--epx-bg-color); }
-.epx-table th, .epx-table td { padding: 12px; border-bottom: 1px solid var(--epx-border-color-light); line-height: 1.4; text-align: left; word-break: break-word; }
-.epx-table th { background: var(--epx-fill-color-light); color: var(--epx-text-color-regular); font-weight: 600; }
+.epx-table {
+  --epx-table-cell-padding: 14px 16px;
+  --epx-table-header-bg: var(--epx-fill-color-light);
+  --epx-table-row-hover-bg: var(--epx-color-primary-light-9);
+  --epx-table-stripe-bg: var(--epx-fill-color-lighter);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: auto;
+  border-radius: var(--epx-border-radius-base);
+  background: var(--epx-bg-color);
+  color: var(--epx-text-color-primary);
+  font-size: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--epx-border-color) transparent;
+}
+/* Keep component tables independent from document/global table resets. */
+.epx-table > .epx-table__inner {
+  display: table;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  overflow: visible;
+  background: var(--epx-bg-color);
+  font-size: inherit;
+}
+.epx-table__inner > thead > tr,
+.epx-table__inner > tbody > tr { border: 0; background: transparent; }
+.epx-table__inner > thead > tr > th,
+.epx-table__inner > tbody > tr > td {
+  box-sizing: border-box;
+  height: auto;
+  padding: var(--epx-table-cell-padding);
+  border: 0;
+  border-bottom: 1px solid var(--epx-border-color-light);
+  color: inherit;
+  background: var(--epx-bg-color);
+  font-size: inherit;
+  line-height: 22px;
+  text-align: left;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+.epx-table__inner > thead > tr > th {
+  background: var(--epx-table-header-bg);
+  color: var(--epx-text-color-regular);
+  font-weight: 600;
+}
+.epx-table__inner > tbody > tr > td { transition: background-color var(--epx-transition-duration); }
 .epx-table--border { border: 1px solid var(--epx-border-color-light); }
-.epx-table--border th, .epx-table--border td { border-right: 1px solid var(--epx-border-color-light); }
-.epx-table--border th:last-child, .epx-table--border td:last-child { border-right: 0; }
-.epx-table--stripe tbody tr:nth-child(even) td { background: var(--epx-fill-color-lighter); }
-.epx-table tbody tr:hover td { background: var(--epx-fill-color-light); }
-.epx-table__empty { padding: 32px 16px; border-bottom: 1px solid var(--epx-border-color-light); color: var(--epx-color-info); text-align: center; }
+.epx-table--border > .epx-table__inner > thead > tr > th:not(:last-child),
+.epx-table--border > .epx-table__inner > tbody > tr > td:not(:last-child) { border-right: 1px solid var(--epx-border-color-light); }
+.epx-table--border > .epx-table__inner > tbody > tr:last-child > td { border-bottom: 0; }
+.epx-table--stripe > .epx-table__inner > tbody > tr:nth-child(even) > td { background: var(--epx-table-stripe-bg); }
+.epx-table > .epx-table__inner > tbody > tr:hover > td,
+.epx-table > .epx-table__inner > tbody > tr:focus-within > td { background: var(--epx-table-row-hover-bg); }
+.epx-table__empty {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 144px;
+  padding: 32px 20px;
+  border-bottom: 1px solid var(--epx-border-color-light);
+  color: var(--epx-text-color-regular);
+  line-height: 24px;
+  text-align: center;
+}
+.epx-table--border > .epx-table__empty { border-bottom: 0; }
+@media (max-width: 600px) { .epx-table { --epx-table-cell-padding: 12px 10px; } }
+@media (prefers-reduced-motion: reduce) { .epx-table__inner > tbody > tr > td { transition: none; } }
 
 .epx-tour { position: fixed; inset: 0; z-index: 3000; pointer-events: none; }
 .epx-tour__mask { position: absolute; inset: 0; background: var(--epx-mask-color); pointer-events: auto; }

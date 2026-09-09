@@ -78,7 +78,7 @@ Use a slot with the same name as `prop` to customize cell content.
     <lu-table-column prop="name" label="Name" />
     <lu-table-column prop="status" label="Status" align="center" />
     <template #status="{ row }">
-      <span :style="{ color: row.status === 'Online' ? 'var(--epx-color-success)' : 'var(--epx-color-info)' }">{{ row.status }}</span>
+      <lu-tag :type="row.status === 'Online' ? 'success' : 'info'" size="small">{{ row.status }}</lu-tag>
     </template>
   </lu-table>
 
@@ -91,9 +91,9 @@ Use a slot with the same name as `prop` to customize cell content.
     <lu-table-column prop="status" label="Status" align="center" />
 
     <template #status="{ row }">
-      <span :style="{ color: row.status === 'Online' ? 'var(--epx-color-success)' : 'var(--epx-color-info)' }">
+      <lu-tag :type="row.status === 'Online' ? 'success' : 'info'" size="small">
         {{ row.status }}
-      </span>
+      </lu-tag>
     </template>
   </lu-table>
 </template>
@@ -126,6 +126,29 @@ When `data` is empty, the table shows `empty-text`.
   </template>
 </DemoBlock>
 
+## Compact layout
+
+Override the cell padding to adjust density without changing the column API. Colors follow the active light or dark theme.
+
+<DemoBlock source-label="View source">
+  <lu-table :data="users" stripe style="--epx-table-cell-padding: 8px 12px" row-key="id">
+    <lu-table-column prop="name" label="Name" />
+    <lu-table-column prop="role" label="Role" />
+    <lu-table-column prop="status" label="Status" align="center" />
+  </lu-table>
+  <template #source>
+
+```vue
+<lu-table :data="users" stripe style="--epx-table-cell-padding: 8px 12px" row-key="id">
+  <lu-table-column prop="name" label="Name" />
+  <lu-table-column prop="role" label="Role" />
+  <lu-table-column prop="status" label="Status" align="center" />
+</lu-table>
+```
+
+  </template>
+</DemoBlock>
+
 ## Table Props
 
 | Prop | Type | Default | Description |
@@ -151,3 +174,12 @@ When `data` is empty, the table shows `empty-text`.
 | --- | --- |
 | `default` | Table column declarations. |
 | `[prop]` | Custom cell slot named after the column `prop`, with `{ row, index }`. |
+
+## Style variables
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `--epx-table-cell-padding` | `14px 16px` | Cell padding; defaults to 12px 10px on narrow screens. |
+| `--epx-table-header-bg` | `var(--epx-fill-color-light)` | Header background. |
+| `--epx-table-row-hover-bg` | `var(--epx-color-primary-light-9)` | Hovered or keyboard-focused row background. |
+| `--epx-table-stripe-bg` | `var(--epx-fill-color-lighter)` | Striped row background. |

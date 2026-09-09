@@ -78,7 +78,7 @@ const users = [
     <lu-table-column prop="name" label="姓名" />
     <lu-table-column prop="status" label="状态" align="center" />
     <template #status="{ row }">
-      <span :style="{ color: row.status === '在线' ? 'var(--epx-color-success)' : 'var(--epx-color-info)' }">{{ row.status }}</span>
+      <lu-tag :type="row.status === '在线' ? 'success' : 'info'" size="small">{{ row.status }}</lu-tag>
     </template>
   </lu-table>
 
@@ -91,9 +91,9 @@ const users = [
     <lu-table-column prop="status" label="状态" align="center" />
 
     <template #status="{ row }">
-      <span :style="{ color: row.status === '在线' ? 'var(--epx-color-success)' : 'var(--epx-color-info)' }">
+      <lu-tag :type="row.status === '在线' ? 'success' : 'info'" size="small">
         {{ row.status }}
-      </span>
+      </lu-tag>
     </template>
   </lu-table>
 </template>
@@ -126,6 +126,29 @@ const users = [
   </template>
 </DemoBlock>
 
+## 紧凑布局
+
+通过单元格内边距变量调整信息密度，列配置保持不变。配色随明暗主题切换。
+
+<DemoBlock>
+  <lu-table :data="users" stripe style="--epx-table-cell-padding: 8px 12px" row-key="id">
+    <lu-table-column prop="name" label="姓名" />
+    <lu-table-column prop="role" label="角色" />
+    <lu-table-column prop="status" label="状态" align="center" />
+  </lu-table>
+  <template #source>
+
+```vue
+<lu-table :data="users" stripe style="--epx-table-cell-padding: 8px 12px" row-key="id">
+  <lu-table-column prop="name" label="姓名" />
+  <lu-table-column prop="role" label="角色" />
+  <lu-table-column prop="status" label="状态" align="center" />
+</lu-table>
+```
+
+  </template>
+</DemoBlock>
+
 ## Table Props
 
 | 属性 | 类型 | 默认值 | 说明 |
@@ -151,3 +174,12 @@ const users = [
 | --- | --- |
 | `default` | 表格列声明。 |
 | `[prop]` | 与列 `prop` 同名的自定义单元格插槽，参数为 `{ row, index }`。 |
+
+## 样式变量
+
+| 变量 | 默认值 | 说明 |
+| --- | --- | --- |
+| `--epx-table-cell-padding` | `14px 16px` | 单元格内边距，窄屏默认 12px 10px。 |
+| `--epx-table-header-bg` | `var(--epx-fill-color-light)` | 表头背景。 |
+| `--epx-table-row-hover-bg` | `var(--epx-color-primary-light-9)` | 悬停或包含键盘焦点的行背景。 |
+| `--epx-table-stripe-bg` | `var(--epx-fill-color-lighter)` | 斑马纹行背景。 |
