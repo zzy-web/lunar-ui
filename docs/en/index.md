@@ -32,6 +32,7 @@ createApp(App).use(LunarUI).mount('#app')
 - `LuCheckbox`
 - `LuSwitch`
 - `LuTag`
+- `LuCalendar`
 
 ## Local Development
 
