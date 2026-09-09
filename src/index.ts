@@ -10,9 +10,14 @@ import { LuCheckbox } from './components/checkbox'
 import { LuSwitch } from './components/switch'
 import { LuTag } from './components/tag'
 import { LuCalendar } from './components/calendar'
+import { LuSelect } from './components/select'
+import { LuRadio, LuRadioGroup } from './components/radio'
+import { LuAlert } from './components/alert'
+import { LuEmpty } from './components/empty'
 import './styles/index.css'
+import './styles/extended.css'
 
-const components = [LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar]
+const components = [LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty]
 
 export { EpxButton, EpxInput, EpxCard, EpxDialog, EpxForm, EpxFormItem, EpxTable, EpxTableColumn, EpxTour, LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour }
 export * from './components/button'
@@ -26,6 +31,10 @@ export * from './components/checkbox'
 export * from './components/switch'
 export * from './components/tag'
 export * from './components/calendar'
+export * from './components/select'
+export * from './components/radio'
+export * from './components/alert'
+export * from './components/empty'
 
 export default {
   install(app: App) {

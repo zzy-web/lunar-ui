@@ -121,3 +121,24 @@
 | 插槽名 | 说明 |
 | --- | --- |
 | `default` | 按钮内容。 |
+
+## 文字、链接与图标按钮
+
+<DemoBlock>
+<lu-button type="primary" text>编辑</lu-button>
+<lu-button type="primary" link>查看详情</lu-button>
+<lu-button type="primary" circle aria-label="添加项目"><template #icon>+</template></lu-button>
+<lu-button loading>保存中</lu-button>
+<template #source>
+
+```vue
+<lu-button type="primary" text>编辑</lu-button>
+<lu-button type="primary" link>查看详情</lu-button>
+<lu-button type="primary" circle aria-label="添加项目"><template #icon>+</template></lu-button>
+<lu-button loading>保存中</lu-button>
+```
+
+</template>
+</DemoBlock>
+
+`text`、`link`、`circle` 是可选布尔属性，默认 `false`。`icon` 插槽在文字前展示图标；加载时替换为旋转指示并设置 `aria-busy`。纯图标按钮需设置 `aria-label`。link 模式仍为按钮，页面跳转请使用链接元素。

@@ -1,13 +1,25 @@
 import assert from 'node:assert/strict'
 import { createRenderer, h, nextTick, ref } from 'vue'
-import LunarUI, { LuCheckbox, LuSwitch, LuTag, LuCalendar, EpxCheckbox, EpxSwitch, EpxTag, EpxCalendar } from '../dist/index.js'
+import LunarUI, { LuCheckbox, LuSwitch, LuTag, LuCalendar, LuInput, LuButton, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, EpxCheckbox, EpxSwitch, EpxTag, EpxCalendar, EpxSelect, EpxRadio, EpxRadioGroup, EpxAlert, EpxEmpty } from '../dist/index.js'
 
 const renderer = createRenderer({
-  createElement: type => ({ type, props: {}, children: [] }),
+  createElement: type => ({
+    type, tagName: type.toUpperCase(), props: {}, children: [], listeners: {},
+    addEventListener(name, handler) { this.listeners[name] = handler },
+    removeEventListener(name) { delete this.listeners[name] },
+    focus() { this.focused = true }, blur() { this.focused = false }, select() { this.textSelected = true },
+    get options() { return this.children.filter(node => node.type === 'option') },
+    get selectedIndex() { return this.options.findIndex(option => option.selected) },
+    set selectedIndex(index) { this.options.forEach((option, i) => { option.selected = i === index }) }
+  }),
   createText: text => ({ text }), createComment: text => ({ text }),
   setText: (node, text) => { node.text = text },
   setElementText: (node, text) => { node.text = text },
-  patchProp: (node, key, prev, value) => { node.props[key] = value },
+  patchProp: (node, key, prev, value) => {
+    node.props[key] = value
+    if (['multiple', 'selected', 'disabled', 'value'].includes(key)) node[key] = value
+    if (key === 'value') node._value = value
+  },
   insert: (node, parent) => { parent.children.push(node); node.parent = parent },
   remove: node => { const list = node.parent.children; list.splice(list.indexOf(node), 1) },
   parentNode: node => node.parent, nextSibling: () => null
@@ -22,9 +34,10 @@ assert.equal(LuCheckbox, EpxCheckbox)
 assert.equal(LuSwitch, EpxSwitch)
 assert.equal(LuTag, EpxTag)
 assert.equal(LuCalendar, EpxCalendar)
+for (const [component, alias] of [[LuSelect, EpxSelect], [LuRadio, EpxRadio], [LuRadioGroup, EpxRadioGroup], [LuAlert, EpxAlert], [LuEmpty, EpxEmpty]]) assert.equal(component, alias)
 const registered = []
 LunarUI.install({ component: name => registered.push(name) })
-for (const name of ['LuCheckbox', 'LuSwitch', 'LuTag', 'LuCalendar']) assert.ok(registered.includes(name))
+for (const name of ['LuCheckbox', 'LuSwitch', 'LuTag', 'LuCalendar', 'LuSelect', 'LuRadio', 'LuRadioGroup', 'LuAlert', 'LuEmpty']) assert.ok(registered.includes(name))
 for (const component of [LuCheckbox, LuSwitch]) {
   const updates = [], changes = []
   const { root, app } = mount(component, { modelValue: false, 'aria-label': 'Example', 'onUpdate:modelValue': v => updates.push(v), onChange: v => changes.push(v) })
@@ -137,3 +150,119 @@ assert.equal(findAll(slotRoot, node => node.type === 'strong').length, 1)
 assert.ok(findAll(slotRoot, node => node.text === 'Event 2024-02-29').length)
 slotApp.unmount()
 console.log('Passed: calendar leap years, week start, disabled dates, selection, external updates, month/year navigation, uncontrolled state and slots.')
+
+// Exercise Vue's select directive with the renderer host's native-event adapter.
+const selectOptions = [{ label: 'One', value: 1 }, { label: 'Two', value: 2 }, { label: 'Disabled', value: 3, disabled: true }]
+const selectedTeam = ref(1), teamRoot = { children: [] }, teamUpdates = []
+const teamApp = renderer.createApp({
+  render: () => h(LuSelect, { modelValue: selectedTeam.value, options: selectOptions, clearable: true, 'aria-label': 'Team',
+    'onUpdate:modelValue': value => { selectedTeam.value = value; teamUpdates.push(value) }
+  })
+})
+teamApp.mount(teamRoot)
+const teamSelect = findAll(teamRoot, node => node.type === 'select')[0]
+assert.equal(teamSelect.props['aria-label'], 'Team')
+assert.equal(teamSelect.options.find(option => option._value === 1).selected, true)
+for (const option of teamSelect.options) option.selected = option._value === 2
+teamSelect.listeners.change()
+await nextTick()
+assert.equal(selectedTeam.value, 2)
+assert.equal(typeof selectedTeam.value, 'number')
+findAll(teamRoot, node => node.type === 'button')[0].props.onClick()
+await nextTick()
+assert.equal(selectedTeam.value, undefined)
+assert.equal(teamSelect.focused, true)
+assert.equal(teamSelect.options[0].selected, true)
+teamApp.unmount()
+const multi = mount(LuSelect, { modelValue: [1, 2], options: selectOptions, multiple: true, clearable: true,
+  'onUpdate:modelValue': value => teamUpdates.push(value) })
+const multiSelect = findAll(multi.root, node => node.type === 'select')[0]
+assert.deepEqual(multiSelect.options.filter(option => option.selected).map(option => option._value), [1, 2])
+for (const option of multiSelect.options) option.selected = option._value === 2
+multiSelect.listeners.change()
+assert.deepEqual(teamUpdates.at(-1), [2])
+findAll(multi.root, node => node.type === 'button')[0].props.onClick()
+assert.deepEqual(teamUpdates.at(-1), [])
+multi.app.unmount()
+for (const state of [{ disabled: true }, { loading: true }]) {
+  const blockedSelect = mount(LuSelect, { ...state, options: selectOptions, 'onUpdate:modelValue': () => assert.fail('blocked select update') })
+  const select = findAll(blockedSelect.root, node => node.type === 'select')[0]
+  select.options[1].selected = true
+  select.listeners.change()
+  assert.equal(select.props.disabled, true)
+  blockedSelect.app.unmount()
+}
+const radioValue = ref('first'), groupDisabled = ref(false), radioRoot = { children: [] }, radioUpdates = []
+const radioApp = renderer.createApp({ render: () => h(LuRadioGroup, {
+  modelValue: radioValue.value, disabled: groupDisabled.value, size: 'large',
+  'aria-label': 'Plan', 'onUpdate:modelValue': value => { radioValue.value = value; radioUpdates.push(value) }
+}, () => [h(LuRadio, { value: 'first', border: true }), h(LuRadio, { value: 'second' }), h(LuRadio, { value: 'third', disabled: true })]) })
+radioApp.mount(radioRoot)
+const radios = findAll(radioRoot, node => node.type === 'input')
+assert.equal(radios[0].props.checked, true)
+assert.equal(radios[0].props.name, radios[1].props.name)
+radios[1].props.onChange()
+await nextTick()
+assert.equal(radioValue.value, 'second')
+assert.equal(radios[0].props.checked, false)
+radios[2].props.onChange()
+assert.deepEqual(radioUpdates, ['second'])
+groupDisabled.value = true
+await nextTick()
+assert.equal(radios[0].props.disabled, true)
+radios[0].props.onChange()
+assert.deepEqual(radioUpdates, ['second'])
+radioApp.unmount()
+const inputUpdates = [], inputChanges = []
+let inputCleared = 0
+const richInput = mount(LuInput, { modelValue: 'hello', clearable: true, id: 'username', name: 'username', maxlength: 20, showWordLimit: true,
+  'onUpdate:modelValue': value => inputUpdates.push(value), onChange: value => inputChanges.push(value), onClear: () => inputCleared++ })
+const nativeInput = findAll(richInput.root, node => node.type === 'input')[0]
+assert.equal(nativeInput.props.id, 'username')
+assert.equal(nativeInput.props.name, 'username')
+assert.equal(nativeInput.props.maxlength, 20)
+nativeInput.props.onCompositionstart()
+nativeInput.props.onInput({ target: { value: '拼' }, isComposing: true })
+assert.equal(inputUpdates.length, 0)
+nativeInput.props.onCompositionend({ target: { value: '拼音' } })
+assert.deepEqual(inputUpdates, ['拼音'])
+nativeInput.props.onInput({ target: { value: '拼音' }, isComposing: false })
+assert.deepEqual(inputUpdates, ['拼音'])
+findAll(richInput.root, node => node.type === 'button')[0].props.onClick()
+assert.equal(inputUpdates.at(-1), '')
+assert.deepEqual(inputChanges, [''])
+assert.equal(inputCleared, 1)
+assert.equal(nativeInput.focused, true)
+richInput.app.unmount()
+const password = mount(LuInput, { modelValue: 'secret', showPassword: true })
+const passwordInput = findAll(password.root, node => node.type === 'input')[0]
+assert.equal(passwordInput.props.type, 'password')
+await findAll(password.root, node => node.type === 'button')[0].props.onClick()
+await nextTick()
+assert.equal(passwordInput.props.type, 'text')
+assert.equal(findAll(password.root, node => node.type === 'button')[0].props['aria-pressed'], true)
+password.app.unmount()
+const textarea = mount(LuInput, { type: 'textarea', rows: 5, readonly: true, modelValue: 'Read only', clearable: true,
+  'onUpdate:modelValue': () => assert.fail('readonly update') })
+const nativeTextarea = findAll(textarea.root, node => node.type === 'textarea')[0]
+assert.equal(nativeTextarea.props.rows, 5)
+nativeTextarea.props.onInput({ target: { value: 'changed' } })
+assert.equal(findAll(textarea.root, node => node.type === 'button').length, 0)
+textarea.app.unmount()
+let alertClosed = 0
+const alert = mount(LuAlert, { type: 'error', title: 'Failed', onClose: () => alertClosed++ })
+assert.equal(findAll(alert.root, node => node.props?.role === 'alert').length, 1)
+findAll(alert.root, node => node.type === 'button')[0].props.onClick({})
+await nextTick()
+assert.equal(alertClosed, 1)
+assert.equal(findAll(alert.root, node => node.props?.role === 'alert').length, 0)
+alert.app.unmount()
+const empty = mount(LuEmpty, { description: 'No results' })
+assert.equal(findAll(empty.root, node => node.text === 'No results').length, 1)
+empty.app.unmount()
+const busy = mount(LuButton, { loading: true, onClick: () => assert.fail('busy button click') })
+const busyButton = findAll(busy.root, node => node.type === 'button')[0]
+assert.equal(busyButton.props['aria-busy'], true)
+busyButton.props.onClick({})
+busy.app.unmount()
+console.log('Passed: select native value mapping/multiple/clear/guards, radio groups, input IME/clear/password/textarea, alert dismissal, empty state and button loading.')

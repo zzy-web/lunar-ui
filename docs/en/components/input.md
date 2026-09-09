@@ -1,6 +1,6 @@
 # Input
 
-`LuInput` captures single-line text. Use it as `<lu-input>`. It supports `v-model`, native input types, placeholder text, sizes, disabled state, readonly state, and prefix or suffix slots.
+`LuInput` supports text, passwords and textareas. Use it as `<lu-input>`, with `v-model`, clearing, character counts, sizes, disabled and readonly states, and prefix or suffix slots.
 
 <script setup>
 import { ref } from 'vue'
@@ -123,3 +123,56 @@ Use the `prefix` and `suffix` slots to extend the input.
 | --- | --- |
 | `prefix` | Prefix content. |
 | `suffix` | Suffix content. |
+
+## Clearable input
+
+<DemoBlock>
+  <lu-input v-model="inputValue" clearable aria-label="Name" placeholder="Enter a name" clear-label="Clear input" />
+<template #source>
+
+```vue
+<lu-input v-model="value" clearable aria-label="Name" />
+```
+
+</template>
+</DemoBlock>
+
+## Password visibility
+
+<DemoBlock>
+  <lu-input v-model="keyword" show-password autocomplete="new-password" aria-label="Password" password-label="Show password" />
+<template #source>
+
+```vue
+<lu-input v-model="password" show-password autocomplete="new-password" aria-label="Password" />
+```
+
+</template>
+</DemoBlock>
+
+## Textarea and character count
+
+<DemoBlock>
+  <lu-input v-model="inputValue" type="textarea" :rows="4" :maxlength="120" show-word-limit aria-label="Description" />
+<template #source>
+
+```vue
+<lu-input v-model="description" type="textarea" :rows="4" :maxlength="120" show-word-limit aria-label="Description" />
+```
+
+</template>
+</DemoBlock>
+
+## Extended API
+
+- `clearable` / `showPassword` / `showWordLimit`: boolean, default `false`.
+- `maxlength`: optional native character limit; the counter appears only when set and is hidden for passwords.
+- `rows`: textarea rows, default `3`.
+- `resize`: `none | both | horizontal | vertical`, default `vertical`.
+- `clearLabel` / `passwordLabel`: accessible action labels, default `Clear input` / `Show password`.
+- `change(value: string)`: native committed change, or clear action.
+- `clear()`: emitted when the clear button is used.
+- `focus(event: FocusEvent)` / `blur(event: FocusEvent)`: native focus events.
+- Exposed methods: `focus()`, `blur()`, `select()`.
+
+The original `input` and `update:modelValue` events remain supported. Input updates wait until IME composition completes. Native attributes are forwarded to the input or textarea, including `id`, `name` and ARIA attributes. The counter follows native UTF-16 length semantics. Prefix and suffix slots apply to single-line inputs.

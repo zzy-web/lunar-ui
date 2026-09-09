@@ -35,12 +35,15 @@ jobs:
         run: npm ci
 
       - name: Build docs
-        run: npm run docs:build
+        run: |
+          npm run typecheck
+          npm run test:components
+          npm run docs:build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: docs/.vitepress/dist
 
   deploy:
     environment:

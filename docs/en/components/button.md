@@ -121,3 +121,24 @@ Loading and disabled buttons do not emit click events.
 | Slot | Description |
 | --- | --- |
 | `default` | Button content. |
+
+## Text, link and icon buttons
+
+<DemoBlock>
+<lu-button type="primary" text>Edit</lu-button>
+<lu-button type="primary" link>Details</lu-button>
+<lu-button type="primary" circle aria-label="Add item"><template #icon>+</template></lu-button>
+<lu-button loading>Saving</lu-button>
+<template #source>
+
+```vue
+<lu-button type="primary" text>Edit</lu-button>
+<lu-button type="primary" link>Details</lu-button>
+<lu-button type="primary" circle aria-label="Add item"><template #icon>+</template></lu-button>
+<lu-button loading>Saving</lu-button>
+```
+
+</template>
+</DemoBlock>
+
+`text`, `link` and `circle` are optional booleans, default `false`. The `icon` slot places an icon before the label; loading replaces that icon with a spinner and sets `aria-busy`. Icon-only buttons need `aria-label`. Link mode styles a button; use an anchor for navigation.

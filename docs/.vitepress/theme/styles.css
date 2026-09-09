@@ -210,9 +210,11 @@ body {
   border-radius: 6px;
 }
 
-.vp-doc table {
+.vp-doc > div > table {
   width: 100%;
-  min-width: 640px;
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
   margin: 20px 0 32px;
   border-collapse: separate;
   border: 1px solid var(--vp-c-divider);
@@ -222,8 +224,8 @@ body {
   font-size: 14px;
 }
 
-.vp-doc th,
-.vp-doc td {
+.vp-doc > div > table th,
+.vp-doc > div > table td {
   border: 0;
   border-right: 1px solid var(--vp-c-divider);
   border-bottom: 1px solid var(--vp-c-divider);
@@ -232,26 +234,26 @@ body {
   text-align: left;
 }
 
-.vp-doc th {
+.vp-doc > div > table th {
   background: var(--vp-c-bg-soft);
   color: var(--vp-c-text-1);
   font-weight: 600;
 }
 
-.vp-doc tr:last-child td {
+.vp-doc > div > table tr:last-child td {
   border-bottom: 0;
 }
 
-.vp-doc th:last-child,
-.vp-doc td:last-child {
+.vp-doc > div > table th:last-child,
+.vp-doc > div > table td:last-child {
   border-right: 0;
 }
 
-.vp-doc td {
+.vp-doc > div > table td {
   color: var(--vp-c-text-2);
 }
 
-.vp-doc td code {
+.vp-doc > div > table td code {
   white-space: nowrap;
 }
 

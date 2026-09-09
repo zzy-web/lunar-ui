@@ -2,10 +2,16 @@
 
 A compact Vue 3 component library inspired by Element Plus.
 
-## Install
+## Local development
+
+The package name is currently a placeholder. Build and pack this repository for local use before publishing under your own scope.
 
 ```bash
-npm install @your-scope/lunar-ui
+npm ci
+npm run dev
+# Build a local package:
+npm run build:lib
+npm pack
 ```
 
 ## Use
@@ -33,6 +39,20 @@ createApp(App).use(LunarUI).mount('#app')
 - `LuSwitch`
 - `LuTag`
 - `LuCalendar`
+- `LuSelect`
+- `LuRadio`
+- `LuRadioGroup`
+- `LuAlert`
+- `LuEmpty`
+
+## Validation
+
+- `npm run test:components`: build the library and run interaction checks.
+- `npm run typecheck`: check library, playground and documentation Vue types.
+- `npm run build`: build library files in `dist` and documentation in `docs/.vitepress/dist`.
+- `npm run docs:preview`: preview the built documentation.
+
+The documentation includes Chinese and English pages, local search, a filterable component overview, and interactive examples with copyable source.
 
 ## Dialog
 

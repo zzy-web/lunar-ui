@@ -1,88 +1,56 @@
 import { defineConfig } from 'vitepress'
+import { componentGroups } from './components'
 
-const socialLinks = [
-  { icon: 'github', link: 'https://git.chatgpt-team.site/2365586c-3e98-4d23-82d3-e4b1956311b1/appgprj_6aa018a4d3f48191b8ef9129d5a72a76' }
-] as const
-
+const socialLinks = [{ icon: 'github', link: 'https://github.com/zzy-web/lunar-ui' }] as const
+function theme(en: boolean) {
+  const prefix = en ? '/en' : ''
+  return {
+    nav: [
+      { text: en ? 'Guide' : '指南', link: `${prefix}/guide/quick-start` },
+      { text: en ? 'Components' : '组件', link: `${prefix}/components/` },
+      { text: '0.1.0', link: 'https://github.com/zzy-web/lunar-ui' }
+    ],
+    sidebar: [
+      { text: en ? 'Get started' : '开始使用', items: [
+        { text: en ? 'Introduction' : '介绍', link: `${prefix}/` },
+        { text: en ? 'Quick start' : '快速开始', link: `${prefix}/guide/quick-start` },
+        { text: en ? 'Theming' : '主题定制', link: `${prefix}/guide/theming` },
+        { text: en ? 'All components' : '组件总览', link: `${prefix}/components/` }
+      ] },
+      ...componentGroups.map(group => ({
+        text: en ? group.en : group.zh,
+        collapsed: false,
+        items: group.items.map(item => ({ text: en ? item.name : `${item.name} ${item.zh}`, link: `${prefix}/components/${item.slug}` }))
+      }))
+    ],
+    outline: { label: en ? 'On this page' : '本页目录', level: [2, 3] as [number, number] },
+    docFooter: { prev: en ? 'Previous' : '上一页', next: en ? 'Next' : '下一页' },
+    lastUpdated: { text: en ? 'Last updated' : '最后更新' },
+    darkModeSwitchLabel: en ? 'Appearance' : '外观',
+    sidebarMenuLabel: en ? 'Menu' : '菜单',
+    returnToTopLabel: en ? 'Back to top' : '返回顶部',
+    socialLinks
+  }
+}
 export default defineConfig({
   title: 'Lunar UI',
-  description: '一个受 Element Plus 启发的轻量 Vue 3 组件库。',
+  description: '轻量、易用、支持主题定制的 Vue 3 组件库。',
   base: '/lunar-ui/',
-  outDir: '../dist',
-  locales: {
-    root: {
-      label: '简体中文',
-      lang: 'zh-CN',
-      title: 'Lunar UI',
-      description: '一个受 Element Plus 启发的轻量 Vue 3 组件库。',
-      themeConfig: {
-        nav: [
-          { text: '指南', link: '/' },
-          { text: '组件', link: '/components/button' }
-        ],
-        sidebar: [
-          {
-            text: '指南',
-            items: [
-              { text: '介绍', link: '/' }
-            ]
-          },
-          {
-            text: '组件',
-            items: [
-              { text: 'Button 按钮', link: '/components/button' },
-              { text: 'Checkbox 复选框', link: '/components/checkbox' },
-              { text: 'Switch 开关', link: '/components/switch' },
-              { text: 'Calendar 日历', link: '/components/calendar' },
-              { text: 'Tag 标签', link: '/components/tag' },
-              { text: 'Input 输入框', link: '/components/input' },
-              { text: 'Card 卡片', link: '/components/card' },
-              { text: 'Form 表单', link: '/components/form' },
-              { text: 'Table 表格', link: '/components/table' },
-              { text: 'Tour 漫游式引导', link: '/components/tour' },
-              { text: 'Dialog 对话框', link: '/components/dialog' }
-            ]
-          }
-        ],
-        socialLinks
-      }
-    },
-    en: {
-      label: 'English',
-      lang: 'en-US',
-      title: 'Lunar UI',
-      description: 'A compact Vue 3 component library inspired by Element Plus.',
-      themeConfig: {
-        nav: [
-          { text: 'Guide', link: '/en/' },
-          { text: 'Components', link: '/en/components/button' }
-        ],
-        sidebar: [
-          {
-            text: 'Guide',
-            items: [
-              { text: 'Introduction', link: '/en/' }
-            ]
-          },
-          {
-            text: 'Components',
-            items: [
-              { text: 'Button', link: '/en/components/button' },
-              { text: 'Checkbox', link: '/en/components/checkbox' },
-              { text: 'Switch', link: '/en/components/switch' },
-              { text: 'Calendar', link: '/en/components/calendar' },
-              { text: 'Tag', link: '/en/components/tag' },
-              { text: 'Input', link: '/en/components/input' },
-              { text: 'Card', link: '/en/components/card' },
-              { text: 'Form', link: '/en/components/form' },
-              { text: 'Table', link: '/en/components/table' },
-              { text: 'Tour', link: '/en/components/tour' },
-              { text: 'Dialog', link: '/en/components/dialog' }
-            ]
-          }
-        ],
-        socialLinks
+  outDir: '.vitepress/dist',
+  lastUpdated: true,
+  themeConfig: {
+    search: {
+      provider: 'local',
+      options: {
+        locales: { root: { translations: {
+          button: { buttonText: '搜索文档', buttonAriaLabel: '搜索文档' },
+          modal: { noResultsText: '没有找到相关结果', resetButtonTitle: '清除搜索', footer: { selectText: '选择', navigateText: '切换', closeText: '关闭' } }
+        } } }
       }
     }
+  },
+  locales: {
+    root: { label: '简体中文', lang: 'zh-CN', themeConfig: theme(false) },
+    en: { label: 'English', lang: 'en-US', description: 'A lightweight, themeable Vue 3 component library.', themeConfig: theme(true) }
   }
 })

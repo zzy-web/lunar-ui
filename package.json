@@ -6,8 +6,10 @@
   "main": "dist/index.umd.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "sideEffects": ["**/*.css"],
   "files": ["dist"],
   "scripts": {
+    "typecheck": "vue-tsc --noEmit",
     "test:components": "npm run build:lib && node scripts/component-smoke.mjs",
     "site:build": "vite build --mode site",
     "dev": "vitepress dev docs",
