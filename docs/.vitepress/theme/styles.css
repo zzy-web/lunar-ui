@@ -1,3 +1,15 @@
+:root {
+  --vp-sidebar-bg-color: #fff;
+}
+
+.VPNavBar,
+.VPNavBar .content,
+.VPLocalNav,
+.VPSidebar,
+.VPSidebar .curtain {
+  background-color: #fff !important;
+}
+
 .vp-doc .lu-demo-block {
   margin: 20px 0 28px;
   overflow: hidden;
