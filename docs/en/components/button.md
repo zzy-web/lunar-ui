@@ -36,6 +36,8 @@ Add `plain` for a lighter visual style.
   <lu-button plain>Plain</lu-button>
   <lu-button type="primary" plain>Primary</lu-button>
   <lu-button type="success" plain>Success</lu-button>
+  <lu-button type="warning" plain>Warning</lu-button>
+  <lu-button type="danger" plain>Danger</lu-button>
 
   <template #source>
 
@@ -44,6 +46,8 @@ Add `plain` for a lighter visual style.
   <lu-button plain>Plain</lu-button>
   <lu-button type="primary" plain>Primary</lu-button>
   <lu-button type="success" plain>Success</lu-button>
+  <lu-button type="warning" plain>Warning</lu-button>
+  <lu-button type="danger" plain>Danger</lu-button>
 </template>
 ```
 

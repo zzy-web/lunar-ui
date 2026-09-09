@@ -17,6 +17,15 @@
   --epx-color-primary-light-5: #a0cfff;
   --epx-color-primary-light-7: #c6e2ff;
   --epx-color-primary-light-9: #ecf5ff;
+  --epx-color-success-light-3: #95d475;
+  --epx-color-success-light-7: #d1edc4;
+  --epx-color-success-light-9: #f0f9eb;
+  --epx-color-warning-light-3: #eebe77;
+  --epx-color-warning-light-7: #f8e3c5;
+  --epx-color-warning-light-9: #fdf6ec;
+  --epx-color-danger-light-3: #f89898;
+  --epx-color-danger-light-7: #fbc4c4;
+  --epx-color-danger-light-9: #fef0f0;
   --epx-color-white: #ffffff;
   --epx-box-shadow-light: 0 2px 12px rgba(0, 0, 0, 0.1);
   --epx-box-shadow-overlay: 0 8px 24px rgba(0, 0, 0, 0.18);
@@ -31,6 +40,15 @@ html.dark,
   --epx-color-primary-light-5: #2a598a;
   --epx-color-primary-light-7: #213d5b;
   --epx-color-primary-light-9: #18222c;
+  --epx-color-success-light-3: #4e8e2f;
+  --epx-color-success-light-7: #1c2518;
+  --epx-color-success-light-9: #151b11;
+  --epx-color-warning-light-3: #a77730;
+  --epx-color-warning-light-7: #292218;
+  --epx-color-warning-light-9: #1d1b17;
+  --epx-color-danger-light-3: #b25252;
+  --epx-color-danger-light-7: #2b1d1d;
+  --epx-color-danger-light-9: #201919;
   --epx-text-color-primary: #e5eaf3;
   --epx-text-color-regular: #cfd3dc;
   --epx-border-color: #4c4d4f;
@@ -46,17 +64,28 @@ html.dark,
 }
 
 .epx-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 32px; padding: 8px 15px; border: 1px solid var(--epx-border-color); border-radius: var(--epx-border-radius-base); background: var(--epx-bg-color); color: var(--epx-text-color-regular); font-size: 14px; line-height: 1; white-space: nowrap; cursor: pointer; transition: background-color var(--epx-transition-duration), border-color var(--epx-transition-duration), color var(--epx-transition-duration), opacity var(--epx-transition-duration); }
-.epx-button:hover { color: var(--epx-color-primary); border-color: var(--epx-color-primary-light-7); background: var(--epx-color-primary-light-9); }
+.epx-button:not(.is-disabled):not(.is-loading):hover { color: var(--epx-color-primary); border-color: var(--epx-color-primary-light-7); background: var(--epx-color-primary-light-9); }
 .epx-button.is-disabled, .epx-button.is-loading { cursor: not-allowed; opacity: 0.6; }
 .epx-button--primary { color: var(--epx-color-white); border-color: var(--epx-color-primary); background: var(--epx-color-primary); }
-.epx-button--primary:hover { color: var(--epx-color-white); border-color: var(--epx-color-primary-light-3); background: var(--epx-color-primary-light-3); }
+.epx-button--primary:not(.is-disabled):not(.is-loading):hover { color: var(--epx-color-white); border-color: var(--epx-color-primary-light-3); background: var(--epx-color-primary-light-3); }
 .epx-button--success { color: var(--epx-color-white); border-color: var(--epx-color-success); background: var(--epx-color-success); }
+.epx-button--success:not(.is-disabled):not(.is-loading):hover { color: var(--epx-color-white); border-color: var(--epx-color-success-light-3); background: var(--epx-color-success-light-3); }
 .epx-button--warning { color: var(--epx-color-white); border-color: var(--epx-color-warning); background: var(--epx-color-warning); }
+.epx-button--warning:not(.is-disabled):not(.is-loading):hover { color: var(--epx-color-white); border-color: var(--epx-color-warning-light-3); background: var(--epx-color-warning-light-3); }
 .epx-button--danger { color: var(--epx-color-white); border-color: var(--epx-color-danger); background: var(--epx-color-danger); }
+.epx-button--danger:not(.is-disabled):not(.is-loading):hover { color: var(--epx-color-white); border-color: var(--epx-color-danger-light-3); background: var(--epx-color-danger-light-3); }
 .epx-button--large { height: 40px; padding: 12px 19px; font-size: 14px; }
 .epx-button--small { height: 24px; padding: 5px 11px; font-size: 12px; }
 .epx-button.is-round { border-radius: 20px; }
 .epx-button.is-plain { background: var(--epx-bg-color); }
+.epx-button--primary.is-plain { color: var(--epx-color-primary); border-color: var(--epx-color-primary-light-7); background: var(--epx-color-primary-light-9); }
+.epx-button--success.is-plain { color: var(--epx-color-success); border-color: var(--epx-color-success-light-7); background: var(--epx-color-success-light-9); }
+.epx-button--warning.is-plain { color: var(--epx-color-warning); border-color: var(--epx-color-warning-light-7); background: var(--epx-color-warning-light-9); }
+.epx-button--danger.is-plain { color: var(--epx-color-danger); border-color: var(--epx-color-danger-light-7); background: var(--epx-color-danger-light-9); }
+.epx-button--primary.is-plain:not(.is-disabled):not(.is-loading):hover { color: var(--epx-color-white); border-color: var(--epx-color-primary); background: var(--epx-color-primary); }
+.epx-button--success.is-plain:not(.is-disabled):not(.is-loading):hover { color: var(--epx-color-white); border-color: var(--epx-color-success); background: var(--epx-color-success); }
+.epx-button--warning.is-plain:not(.is-disabled):not(.is-loading):hover { color: var(--epx-color-white); border-color: var(--epx-color-warning); background: var(--epx-color-warning); }
+.epx-button--danger.is-plain:not(.is-disabled):not(.is-loading):hover { color: var(--epx-color-white); border-color: var(--epx-color-danger); background: var(--epx-color-danger); }
 .epx-button__loading { width: 1em; height: 1em; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: epx-spin 0.8s linear infinite; }
 
 .epx-input { --epx-input-height: 32px; position: relative; display: inline-flex; width: 100%; font-size: 14px; vertical-align: middle; }
