@@ -17,10 +17,6 @@
   .VPSidebar {
     padding-right: 20px !important;
   }
-
-  .VPContent.has-sidebar {
-    padding-left: var(--vp-sidebar-width) !important;
-  }
 }
 
 .VPSidebarGroup .title {
