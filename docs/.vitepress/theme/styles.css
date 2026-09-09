@@ -1,6 +1,8 @@
 :root {
-  --vp-sidebar-bg-color: #fff;
+  --vp-sidebar-bg-color: var(--vp-c-bg);
   --vp-sidebar-width: 236px;
+  --lu-sidebar-hover-bg: var(--vp-c-bg-soft);
+  --lu-sidebar-active-bg: var(--epx-color-primary-light-9);
 }
 
 .VPNavBar,
@@ -8,7 +10,7 @@
 .VPLocalNav,
 .VPSidebar,
 .VPSidebar .curtain {
-  background-color: #fff !important;
+  background-color: var(--vp-c-bg) !important;
 }
 
 @media (min-width: 960px) {
@@ -36,15 +38,15 @@
 }
 
 .VPSidebarItem .link:hover {
-  background-color: #f5f7fa !important;
+  background-color: var(--lu-sidebar-hover-bg) !important;
 }
 
 .VPSidebarItem.is-active > .item .link {
-  background-color: #ecf5ff !important;
+  background-color: var(--lu-sidebar-active-bg) !important;
 }
 
 .VPSidebarItem.is-active > .item .link > .text {
-  color: #409eff !important;
+  color: var(--vp-c-brand-1) !important;
   font-weight: 600 !important;
 }
 

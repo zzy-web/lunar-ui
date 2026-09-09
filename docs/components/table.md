@@ -78,7 +78,7 @@ const users = [
     <lu-table-column prop="name" label="姓名" />
     <lu-table-column prop="status" label="状态" align="center" />
     <template #status="{ row }">
-      <span :style="{ color: row.status === '在线' ? '#67c23a' : '#909399' }">{{ row.status }}</span>
+      <span :style="{ color: row.status === '在线' ? 'var(--epx-color-success)' : 'var(--epx-color-info)' }">{{ row.status }}</span>
     </template>
   </lu-table>
 
@@ -91,7 +91,7 @@ const users = [
     <lu-table-column prop="status" label="状态" align="center" />
 
     <template #status="{ row }">
-      <span :style="{ color: row.status === '在线' ? '#67c23a' : '#909399' }">
+      <span :style="{ color: row.status === '在线' ? 'var(--epx-color-success)' : 'var(--epx-color-info)' }">
         {{ row.status }}
       </span>
     </template>

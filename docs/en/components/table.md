@@ -78,7 +78,7 @@ Use a slot with the same name as `prop` to customize cell content.
     <lu-table-column prop="name" label="Name" />
     <lu-table-column prop="status" label="Status" align="center" />
     <template #status="{ row }">
-      <span :style="{ color: row.status === 'Online' ? '#67c23a' : '#909399' }">{{ row.status }}</span>
+      <span :style="{ color: row.status === 'Online' ? 'var(--epx-color-success)' : 'var(--epx-color-info)' }">{{ row.status }}</span>
     </template>
   </lu-table>
 
@@ -91,7 +91,7 @@ Use a slot with the same name as `prop` to customize cell content.
     <lu-table-column prop="status" label="Status" align="center" />
 
     <template #status="{ row }">
-      <span :style="{ color: row.status === 'Online' ? '#67c23a' : '#909399' }">
+      <span :style="{ color: row.status === 'Online' ? 'var(--epx-color-success)' : 'var(--epx-color-info)' }">
         {{ row.status }}
       </span>
     </template>

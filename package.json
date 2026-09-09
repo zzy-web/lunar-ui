@@ -12,8 +12,9 @@
     "dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "build": "vite build && vue-tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",
-    "release": "npm run build && npm publish --access public"
+    "build:lib": "vite build && vue-tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",
+    "build": "npm run build:lib && npm run docs:build",
+    "release": "npm run build:lib && npm publish --access public"
   },
   "keywords": ["vue3", "component-library", "element-plus", "ui"],
   "author": "",
