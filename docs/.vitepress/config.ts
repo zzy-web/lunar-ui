@@ -34,6 +34,8 @@ export default defineConfig({
               { text: 'Input 输入框', link: '/components/input' },
               { text: 'Card 卡片', link: '/components/card' },
               { text: 'Form 表单', link: '/components/form' },
+              { text: 'Table 表格', link: '/components/table' },
+              { text: 'Tour 漫游式引导', link: '/components/tour' },
               { text: 'Dialog 对话框', link: '/components/dialog' }
             ]
           }
@@ -65,6 +67,8 @@ export default defineConfig({
               { text: 'Input', link: '/en/components/input' },
               { text: 'Card', link: '/en/components/card' },
               { text: 'Form', link: '/en/components/form' },
+              { text: 'Table', link: '/en/components/table' },
+              { text: 'Tour', link: '/en/components/tour' },
               { text: 'Dialog', link: '/en/components/dialog' }
             ]
           }
