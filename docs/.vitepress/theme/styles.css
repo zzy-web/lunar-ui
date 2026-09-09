@@ -1,5 +1,6 @@
 :root {
   --vp-sidebar-bg-color: #fff;
+  --vp-sidebar-width: 236px;
 }
 
 .VPNavBar,
@@ -8,6 +9,43 @@
 .VPSidebar,
 .VPSidebar .curtain {
   background-color: #fff !important;
+}
+
+@media (min-width: 960px) {
+  .VPSidebar {
+    padding-right: 20px !important;
+  }
+
+  .VPContent.has-sidebar {
+    padding-left: var(--vp-sidebar-width) !important;
+  }
+}
+
+.VPSidebarGroup .title {
+  padding-bottom: 8px !important;
+}
+
+.VPSidebarItem .item {
+  margin: 3px 0 !important;
+}
+
+.VPSidebarItem .link {
+  border-radius: 6px !important;
+  padding: 7px 10px !important;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.VPSidebarItem .link:hover {
+  background-color: #f5f7fa !important;
+}
+
+.VPSidebarItem.is-active > .item .link {
+  background-color: #ecf5ff !important;
+}
+
+.VPSidebarItem.is-active > .item .link > .text {
+  color: #409eff !important;
+  font-weight: 600 !important;
 }
 
 .vp-doc .lu-demo-block {
