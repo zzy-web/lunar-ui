@@ -38,16 +38,23 @@ const checked = ref(false)
 
 ## Props
 
-- `modelValue`: 布尔值，默认 `false`.
-- `label`: 字符串；默认插槽优先于此文本。
-- `indeterminate`: 布尔值，默认 `false`.
-- `disabled`: 布尔值，默认 `false`.
-- `size`: `large`, `default` 或 `small`. 默认 `default`.
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `modelValue` | `boolean` | `false` | 绑定值。 |
+| `label` | `string` | — | 标签文本，可由默认插槽覆盖。 |
+| `indeterminate` | `boolean` | `false` | 半选展示状态，由父组件控制。 |
+| `disabled` | `boolean` | `false` | 是否禁用。 |
+| `size` | `'large' \| 'default' \| 'small'` | `'default'` | 组件尺寸。 |
 
 ## 事件
 
-`update:modelValue` / `change`: `(value: boolean)`.
+| 事件名 | 参数 / 签名 | 说明 |
+| --- | --- | --- |
+| `update:modelValue` | `(value: boolean)` | 更新绑定值。 |
+| `change` | `(value: boolean)` | 用户更改值时触发。 |
 
 ## 插槽
 
-`default`: 标签内容。
+| 插槽名 | 插槽参数 | 说明 |
+| --- | --- | --- |
+| `default` | — | 标签内容。 |

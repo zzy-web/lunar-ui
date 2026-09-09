@@ -79,17 +79,37 @@ const options = [{ label: 'Design', value: 1 }, { label: 'Engineering', value: 2
 
 ## Props
 
-- `modelValue`：`string | number | (string | number)[]`；单选清空后为 `undefined`，多选清空后为 `[]`。
-- `options`：`SelectOption[]`，默认 `[]`；每项包含唯一的 `value`、`label` 和可选 `disabled`。
-- `multiple` / `clearable` / `disabled` / `loading`：布尔值，默认 `false`。
-- `size`：`large | default | small`，默认 `default`。
-- `placeholder` / `loadingText` / `emptyText`：提示文案，默认“请选择”/“加载中…”/“暂无选项”。
-- `clearLabel`：清空按钮的可访问名称，默认 `Clear selection`。
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `modelValue` | `SelectValue \| SelectValue[]` | `undefined` | 绑定值；SelectValue 为 string 或 number。 |
+| `options` | `SelectOption[]` | `[]` | 选项数组，每项包含 label、value 和可选 disabled。 |
+| `multiple` | `boolean` | `false` | 多选模式。 |
+| `clearable` | `boolean` | `false` | 显示清空按钮。 |
+| `disabled` | `boolean` | `false` | 是否禁用。 |
+| `loading` | `boolean` | `false` | 加载状态，同时禁止交互。 |
+| `size` | `'large' \| 'default' \| 'small'` | `'default'` | 组件尺寸。 |
+| `placeholder` | `string` | `'请选择'` | 未选择时的提示。 |
+| `loadingText` | `string` | `'加载中…'` | 加载文案。 |
+| `emptyText` | `string` | `'暂无选项'` | 无选项时的提示。 |
+| `clearLabel` | `string` | `'Clear selection'` | 清空按钮可访问名称。 |
 
 ## 事件
 
-`update:modelValue` / `change`：返回选中值；`clear`：清空时触发；`focus` / `blur`：原生焦点事件。
+| 事件名 | 参数 / 签名 | 说明 |
+| --- | --- | --- |
+| `update:modelValue` | `(value: SelectValue \| SelectValue[] \| undefined)` | 更新绑定值。 |
+| `change` | `(value: SelectValue \| SelectValue[] \| undefined)` | 选择或清空时触发。 |
+| `clear` | `()` | 清空时触发。 |
+| `focus` | `(event: FocusEvent)` | 获得焦点。 |
+| `blur` | `(event: FocusEvent)` | 失去焦点。 |
+
+## 方法
+
+| 方法名 | 参数 / 签名 | 说明 |
+| --- | --- | --- |
+| `focus` | `() => void` | 聚焦选择器。 |
+| `blur` | `() => void` | 移除焦点。 |
 
 ## 使用说明
 
-通过 ref 调用 `focus()` / `blur()`。`SelectOption` 和 `SelectValue` 可从库入口导入。本组件采用受控 `v-model`，暂不提供搜索、远程筛选或虚拟滚动；多选以原生列表显示，按住 Ctrl / Command 可选择多项。选项值应唯一，避免同时使用数值 1 与字符串 "1" 等原生控件无法区分的值。
+清空单选值为 `undefined`，多选值为 `[]`。可从库入口导入 `SelectOption` 和 `SelectValue`。本组件采用原生 select，暂不提供搜索、远程筛选或虚拟滚动；多选时按住 Ctrl / Command 可选择多项。选项值应唯一，避免混用数值 `1` 和字符串 `"1"`。

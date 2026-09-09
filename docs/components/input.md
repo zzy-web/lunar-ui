@@ -99,31 +99,6 @@ const value = ref('')
   </template>
 </DemoBlock>
 
-## Props
-
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number` | `''` | 输入框绑定值。 |
-| `type` | `string` | `'text'` | 原生 `input` 的 `type` 属性。 |
-| `size` | `'large' \| 'default' \| 'small'` | `'default'` | 输入框尺寸。 |
-| `placeholder` | `string` | `undefined` | 占位提示文本。 |
-| `disabled` | `boolean` | `false` | 是否禁用输入框。 |
-| `readonly` | `boolean` | `false` | 是否只读。 |
-
-## 事件
-
-| 事件名 | 说明 |
-| --- | --- |
-| `update:modelValue` | 输入值变化时触发，用于支持 `v-model`。 |
-| `input` | 输入值变化时触发。 |
-
-## 插槽
-
-| 插槽名 | 说明 |
-| --- | --- |
-| `prefix` | 输入框前缀内容。 |
-| `suffix` | 输入框后缀内容。 |
-
 ## 可清空输入
 
 <DemoBlock>
@@ -163,16 +138,51 @@ const value = ref('')
 </template>
 </DemoBlock>
 
-## 增强 API
+## Props
 
-- `clearable` / `showPassword` / `showWordLimit`：布尔值，默认 `false`。
-- `maxlength`：原生长度限制；设置后可显示字数统计，密码输入不显示统计。
-- `rows`：文本域行数，默认 `3`。
-- `resize`：`none | both | horizontal | vertical`，默认 `vertical`。
-- `clearLabel` / `passwordLabel`：操作按钮可访问名称，默认 `Clear input` / `Show password`。
-- `change(value: string)`：原生提交更改或清空时触发。
-- `clear()`：点击清空按钮时触发。
-- `focus(event: FocusEvent)` / `blur(event: FocusEvent)`：原生焦点事件。
-- 暴露方法：`focus()`、`blur()`、`select()`。
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `modelValue` | `string \| number` | `''` | 输入框绑定值。 |
+| `type` | `string` | `'text'` | 原生 `input` 的 `type` 属性。 |
+| `size` | `'large' \| 'default' \| 'small'` | `'default'` | 输入框尺寸。 |
+| `placeholder` | `string` | `undefined` | 占位提示文本。 |
+| `disabled` | `boolean` | `false` | 是否禁用输入框。 |
+| `readonly` | `boolean` | `false` | 是否只读。 |
+| `clearable` | `boolean` | `false` | 显示清空按钮。 |
+| `showPassword` | `boolean` | `false` | 启用密码显示切换。 |
+| `showWordLimit` | `boolean` | `false` | 设置 maxlength 时显示字数，密码输入不显示。 |
+| `maxlength` | `number` | — | 原生输入长度限制。 |
+| `rows` | `number` | `3` | 文本域行数。 |
+| `resize` | `'none' \| 'both' \| 'horizontal' \| 'vertical'` | `'vertical'` | 文本域拖动缩放方式。 |
+| `clearLabel` | `string` | `'Clear input'` | 清空按钮可访问名称。 |
+| `passwordLabel` | `string` | `'Show password'` | 密码切换按钮可访问名称。 |
+
+## 事件
+
+| 事件名 | 说明 |
+| --- | --- |
+| `update:modelValue` | 输入值变化时触发，用于支持 `v-model`。 |
+| `input` | 输入值变化时触发。 |
+| `change` | 原生提交更改或清空时触发，参数为字符串。 |
+| `clear` | 点击清空按钮时触发，无参数。 |
+| `focus` | 获得焦点，参数为 FocusEvent。 |
+| `blur` | 失去焦点，参数为 FocusEvent。 |
+
+## 插槽
+
+| 插槽名 | 说明 |
+| --- | --- |
+| `prefix` | 输入框前缀内容。 |
+| `suffix` | 输入框后缀内容。 |
+
+## 方法
+
+| 方法名 | 签名 | 说明 |
+| --- | --- | --- |
+| `focus` | `() => void` | 聚焦输入框。 |
+| `blur` | `() => void` | 移除焦点。 |
+| `select` | `() => void` | 选中输入文字。 |
+
+## 使用说明
 
 原有 `input` 与 `update:modelValue` 事件保留。输入法组词期间不更新绑定值。原生属性传给 input 或 textarea，包括 `id`、`name` 与 ARIA 属性。字数按原生 UTF-16 长度统计。前后缀插槽适用于单行输入。

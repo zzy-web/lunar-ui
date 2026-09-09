@@ -83,16 +83,31 @@ const version = ref(0)
 
 ## Props
 
-- `title` / `description`: title and description strings.
-- `type`: `success | info | warning | error`, default `info`.
-- `effect`: `light | dark`, default `light`.
-- `closable`: default `true`. `showIcon` / `center`: default `false`.
-- `closeText`: custom dismissal text; `closeLabel`: accessible close label, default `Close alert`.
+| Attribute | Type | Default | Description |
+| --- | --- | --- | --- |
+| `title` | `string` | — | Title. |
+| `description` | `string` | — | Description. |
+| `type` | `'success' \| 'info' \| 'warning' \| 'error'` | `'info'` | Semantic type. |
+| `effect` | `'light' \| 'dark'` | `'light'` | Theme effect. |
+| `closable` | `boolean` | `true` | Show the close button. |
+| `showIcon` | `boolean` | `false` | Show the status icon. |
+| `center` | `boolean` | `false` | Center the content. |
+| `closeText` | `string` | — | Custom close button text. |
+| `closeLabel` | `string` | `'Close alert'` | Accessible close button label. |
 
 ## Events
 
-`close(event: MouseEvent)`: emitted after dismissing; the component hides itself. Remount or change its `key` to show it again.
+| Event | Signature | Description |
+| --- | --- | --- |
+| `close` | `(event: MouseEvent)` | Emitted on dismissal; the component hides itself. |
+
+## Slots
+
+| Slot | Slot props | Description |
+| --- | --- | --- |
+| `title` | — | Custom title. |
+| `default` | — | Custom description. |
 
 ## Usage notes
 
-The `title` slot replaces the title; `default` replaces the description. Warning and error use `role="alert"`; information and success use `role="status"`.
+Remount the component or change its `key` to show it again. Warning and error use `role="alert"`; information and success use `role="status"`.

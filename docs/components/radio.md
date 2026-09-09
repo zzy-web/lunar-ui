@@ -95,20 +95,40 @@ const standalone = ref(false)
 </template>
 </DemoBlock>
 
-## Props
+## Radio Props
 
-- `value`：Radio 必填，类型 `string | number | boolean`。标签仅作为展示，选中值由 `value` 决定。
-- `modelValue`：同 `value` 类型；有组时由组统一管理。
-- `label`：Radio 默认文本，可由默认插槽覆盖。
-- `disabled`：默认 `false`；组禁用时所有子项禁用。
-- `size`：`large | default | small`；子项未设置时继承组尺寸。
-- `border`：Radio 边框样式，默认 `false`。
-- `name`：原生 radio 名称；组未传时自动生成，避免多个组互相影响。
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `modelValue` | `RadioValue` | `undefined` | 独立使用时的绑定值；RadioValue 为 string、number 或 boolean。 |
+| `value` | `RadioValue` | — | 必填，当前选项值。 |
+| `label` | `string` | — | 标签文本，默认显示 value，可用插槽覆盖。 |
+| `name` | `string` | — | 原生 radio 名称；在组内继承组名称。 |
+| `disabled` | `boolean` | `false` | 是否禁用。 |
+| `size` | `'large' \| 'default' \| 'small'` | `'default'` | 未设置时继承组尺寸。 |
+| `border` | `boolean` | `false` | 显示边框。 |
+
+## RadioGroup Props
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `modelValue` | `RadioValue` | `undefined` | 组选中值。 |
+| `disabled` | `boolean` | `false` | 是否禁用。 |
+| `size` | `'large' \| 'default' \| 'small'` | `'default'` | 组件尺寸。 |
+| `name` | `string` | — | 原生组名称；未提供时自动生成唯一名称。 |
 
 ## 事件
 
-Radio 与 RadioGroup 支持 `update:modelValue(value)` 和 `change(value)`。组内由组发出绑定更新，Radio 仍发出自身的 `change`。
+| 事件名 | 参数 / 签名 | 说明 |
+| --- | --- | --- |
+| `update:modelValue` | `(value: RadioValue)` | 更新绑定值；组内由 RadioGroup 发出。 |
+| `change` | `(value: RadioValue)` | 选项变化时触发；Radio 和 RadioGroup 均支持。 |
+
+## 插槽
+
+| 插槽名 | 插槽参数 | 说明 |
+| --- | --- | --- |
+| `default` | — | Radio 的标签内容，或 RadioGroup 的子项。 |
 
 ## 使用说明
 
-默认插槽：Radio 标签 / RadioGroup 子项。请为组设置 `aria-label` 或 `aria-labelledby`。Tab 进入组，方向键切换同组原生单选框。
+请为组设置 `aria-label` 或 `aria-labelledby`。Tab 进入组，方向键切换同组原生单选框。组禁用时全部子项禁用。

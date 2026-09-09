@@ -38,11 +38,18 @@ const enabled = ref(false)
 
 ## Props
 
-- `modelValue`: boolean, default `false`.
-- `disabled` / `loading`: boolean, default `false`.
-- `activeText` / `inactiveText`: string.
-- `size`: `large`, `default`, or `small`. Default `default`.
+| Attribute | Type | Default | Description |
+| --- | --- | --- | --- |
+| `modelValue` | `boolean` | `false` | Bound value. |
+| `disabled` | `boolean` | `false` | Whether the control is disabled. |
+| `loading` | `boolean` | `false` | Loading state; also prevents toggling. |
+| `activeText` | `string` | — | Text to the right of the switch. |
+| `inactiveText` | `string` | — | Text to the left of the switch. |
+| `size` | `'large' \| 'default' \| 'small'` | `'default'` | Component size. |
 
 ## Events
 
-`update:modelValue` / `change`: `(value: boolean)`.
+| Event | Signature | Description |
+| --- | --- | --- |
+| `update:modelValue` | `(value: boolean)` | Update the bound value. |
+| `change` | `(value: boolean)` | Emitted when the user changes the value. |

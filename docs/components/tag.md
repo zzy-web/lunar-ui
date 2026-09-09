@@ -46,16 +46,23 @@ const visible = ref(true)
 
 ## Props
 
-- `type`: `primary` （默认）, `success`, `warning`, `danger` 或 `info`.
-- `effect`: `light` （默认）, `dark` 或 `plain`.
-- `size`: `large`, `default` 或 `small`. 默认 `default`.
-- `closable` / `round`: 布尔值，默认 `false`.
-- `closeLabel`: 字符串，默认 `Close tag`；关闭按钮的无障碍名称。
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `type` | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `'primary'` | 语义类型。 |
+| `effect` | `'light' \| 'dark' \| 'plain'` | `'light'` | 主题效果。 |
+| `size` | `'large' \| 'default' \| 'small'` | `'default'` | 组件尺寸。 |
+| `closable` | `boolean` | `false` | 显示关闭按钮。 |
+| `round` | `boolean` | `false` | 使用圆角样式。 |
+| `closeLabel` | `string` | `'Close tag'` | 关闭按钮可访问名称。 |
 
 ## 事件
 
-`close`: `(event: MouseEvent)`.
+| 事件名 | 参数 / 签名 | 说明 |
+| --- | --- | --- |
+| `close` | `(event: MouseEvent)` | 点击关闭按钮触发，由父组件决定移除标签。 |
 
 ## 插槽
 
-`default`: 标签内容。
+| 插槽名 | 插槽参数 | 说明 |
+| --- | --- | --- |
+| `default` | — | 标签内容。 |

@@ -81,11 +81,21 @@ const created = ref(false)
 
 ## Props
 
-- `description`: default “暂无数据”; provide translated text as needed.
-- `image`: optional image URL; without it, only text and actions are shown.
-- `imageAlt`: image alternative text, default empty string for decorative images.
-- `imageSize`: image width in pixels, default `120`.
+| Attribute | Type | Default | Description |
+| --- | --- | --- | --- |
+| `description` | `string` | `'暂无数据'` | Empty-state description. |
+| `image` | `string` | — | Optional image URL; omitted by default. |
+| `imageAlt` | `string` | `''` | Image alternative text; leave empty for decorative images. |
+| `imageSize` | `number` | `120` | Image width in pixels. |
+
+## Slots
+
+| Slot | Slot props | Description |
+| --- | --- | --- |
+| `image` | — | Custom image content. |
+| `description` | — | Custom description. |
+| `default` | — | Action buttons. |
 
 ## Usage notes
 
-Slots: `image` replaces the image, `description` replaces the text, `default` contains actions. The component emits no events; buttons handle actions.
+The component emits no events; actions are handled by buttons in the default slot.

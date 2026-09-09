@@ -79,17 +79,37 @@ const options = [{ label: 'Design', value: 1 }, { label: 'Engineering', value: 2
 
 ## Props
 
-- `modelValue`: `string | number | (string | number)[]`. Clearing returns `undefined` in single mode or `[]` in multiple mode.
-- `options`: `SelectOption[]`, default `[]`. Each option has a unique `value`, `label` and optional `disabled`.
-- `multiple` / `clearable` / `disabled` / `loading`: booleans, default `false`.
-- `size`: `large | default | small`, default `default`.
-- `placeholder` / `loadingText` / `emptyText`: default Chinese labels; override these for your language.
-- `clearLabel`: accessible clear button label, default `Clear selection`.
+| Attribute | Type | Default | Description |
+| --- | --- | --- | --- |
+| `modelValue` | `SelectValue \| SelectValue[]` | `undefined` | Bound value; SelectValue is string or number. |
+| `options` | `SelectOption[]` | `[]` | Options with label, value and optional disabled. |
+| `multiple` | `boolean` | `false` | Enable multiple selection. |
+| `clearable` | `boolean` | `false` | Show the clear button. |
+| `disabled` | `boolean` | `false` | Whether the control is disabled. |
+| `loading` | `boolean` | `false` | Loading state; disables interaction. |
+| `size` | `'large' \| 'default' \| 'small'` | `'default'` | Component size. |
+| `placeholder` | `string` | `'请选择'` | Placeholder when no option is selected. |
+| `loadingText` | `string` | `'加载中…'` | Loading message. |
+| `emptyText` | `string` | `'暂无选项'` | Message when there are no options. |
+| `clearLabel` | `string` | `'Clear selection'` | Accessible clear button label. |
 
 ## Events
 
-`update:modelValue` / `change`: selected value; `clear`: selection cleared; `focus` / `blur`: native focus events.
+| Event | Signature | Description |
+| --- | --- | --- |
+| `update:modelValue` | `(value: SelectValue \| SelectValue[] \| undefined)` | Update the bound value. |
+| `change` | `(value: SelectValue \| SelectValue[] \| undefined)` | Emitted on selection or clear. |
+| `clear` | `()` | Emitted when cleared. |
+| `focus` | `(event: FocusEvent)` | Receives focus. |
+| `blur` | `(event: FocusEvent)` | Loses focus. |
+
+## Methods
+
+| Method | Signature | Description |
+| --- | --- | --- |
+| `focus` | `() => void` | Focus the select. |
+| `blur` | `() => void` | Blur the select. |
 
 ## Usage notes
 
-Call `focus()` / `blur()` through a template ref. Import `SelectOption` and `SelectValue` from the library entry. This controlled component does not provide search, remote filtering or virtualization. Multiple mode uses a native list; hold Ctrl / Command to select multiple options. Use unique option values; avoid mixing values such as numeric 1 and string "1" that native controls cannot distinguish.
+Clearing returns `undefined` in single mode or `[]` in multiple mode. Import `SelectOption` and `SelectValue` from the library entry. This native select does not provide search, remote filtering or virtualization. Hold Ctrl / Command for multiple selection. Use unique values; avoid mixing numeric `1` and string `"1"`.

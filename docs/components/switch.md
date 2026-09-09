@@ -38,11 +38,18 @@ const enabled = ref(false)
 
 ## Props
 
-- `modelValue`: 布尔值，默认 `false`.
-- `disabled` / `loading`: 布尔值，默认 `false`.
-- `activeText` / `inactiveText`: 字符串。
-- `size`: `large`, `default` 或 `small`. 默认 `default`.
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `modelValue` | `boolean` | `false` | 绑定值。 |
+| `disabled` | `boolean` | `false` | 是否禁用。 |
+| `loading` | `boolean` | `false` | 加载状态，同时禁止切换。 |
+| `activeText` | `string` | — | 开关右侧文字。 |
+| `inactiveText` | `string` | — | 开关左侧文字。 |
+| `size` | `'large' \| 'default' \| 'small'` | `'default'` | 组件尺寸。 |
 
 ## 事件
 
-`update:modelValue` / `change`: `(value: boolean)`.
+| 事件名 | 参数 / 签名 | 说明 |
+| --- | --- | --- |
+| `update:modelValue` | `(value: boolean)` | 更新绑定值。 |
+| `change` | `(value: boolean)` | 用户更改值时触发。 |

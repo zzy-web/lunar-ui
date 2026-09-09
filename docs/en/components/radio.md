@@ -95,20 +95,40 @@ const standalone = ref(false)
 </template>
 </DemoBlock>
 
-## Props
+## Radio Props
 
-- `value`: required on Radio, type `string | number | boolean`. Labels are display text; `value` identifies the selection.
-- `modelValue`: same type as `value`; the group manages selection when present.
-- `label`: Radio label, overridden by the default slot.
-- `disabled`: default `false`; a disabled group disables every child.
-- `size`: `large | default | small`; children inherit the group size unless overridden.
-- `border`: Radio border style, default `false`.
-- `name`: native radio name; groups generate a unique name when omitted.
+| Attribute | Type | Default | Description |
+| --- | --- | --- | --- |
+| `modelValue` | `RadioValue` | `undefined` | Standalone bound value; RadioValue is string, number or boolean. |
+| `value` | `RadioValue` | — | Required value of this option. |
+| `label` | `string` | — | Label text; falls back to value, overridden by the slot. |
+| `name` | `string` | — | Native radio name; inherited from the group when present. |
+| `disabled` | `boolean` | `false` | Whether the control is disabled. |
+| `size` | `'large' \| 'default' \| 'small'` | `'default'` | Inherits group size when omitted. |
+| `border` | `boolean` | `false` | Show a border. |
+
+## RadioGroup Props
+
+| Attribute | Type | Default | Description |
+| --- | --- | --- | --- |
+| `modelValue` | `RadioValue` | `undefined` | Selected group value. |
+| `disabled` | `boolean` | `false` | Whether the control is disabled. |
+| `size` | `'large' \| 'default' \| 'small'` | `'default'` | Component size. |
+| `name` | `string` | — | Native group name; a unique name is generated when omitted. |
 
 ## Events
 
-Radio and RadioGroup support `update:modelValue(value)` and `change(value)`. Within a group, the group emits model updates; the child still emits its own `change`.
+| Event | Signature | Description |
+| --- | --- | --- |
+| `update:modelValue` | `(value: RadioValue)` | Update the bound value; emitted by RadioGroup for grouped radios. |
+| `change` | `(value: RadioValue)` | Selection changed; supported by Radio and RadioGroup. |
+
+## Slots
+
+| Slot | Slot props | Description |
+| --- | --- | --- |
+| `default` | — | Radio label content or RadioGroup children. |
 
 ## Usage notes
 
-Default slot: Radio label / RadioGroup children. Label the group with `aria-label` or `aria-labelledby`. Tab enters the group; arrow keys move between native radio buttons.
+Label the group using `aria-label` or `aria-labelledby`. Tab enters the group; arrow keys move between native radio buttons. Disabling the group disables all children.

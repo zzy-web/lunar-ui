@@ -99,31 +99,6 @@ Use the `prefix` and `suffix` slots to extend the input.
   </template>
 </DemoBlock>
 
-## Props
-
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number` | `''` | Input value. |
-| `type` | `string` | `'text'` | Native `input` `type` attribute. |
-| `size` | `'large' \| 'default' \| 'small'` | `'default'` | Input size. |
-| `placeholder` | `string` | `undefined` | Placeholder text. |
-| `disabled` | `boolean` | `false` | Disables the input. |
-| `readonly` | `boolean` | `false` | Makes the input readonly. |
-
-## Events
-
-| Event | Description |
-| --- | --- |
-| `update:modelValue` | Emitted when the input value changes. Used by `v-model`. |
-| `input` | Emitted when the input value changes. |
-
-## Slots
-
-| Slot | Description |
-| --- | --- |
-| `prefix` | Prefix content. |
-| `suffix` | Suffix content. |
-
 ## Clearable input
 
 <DemoBlock>
@@ -163,16 +138,51 @@ Use the `prefix` and `suffix` slots to extend the input.
 </template>
 </DemoBlock>
 
-## Extended API
+## Props
 
-- `clearable` / `showPassword` / `showWordLimit`: boolean, default `false`.
-- `maxlength`: optional native character limit; the counter appears only when set and is hidden for passwords.
-- `rows`: textarea rows, default `3`.
-- `resize`: `none | both | horizontal | vertical`, default `vertical`.
-- `clearLabel` / `passwordLabel`: accessible action labels, default `Clear input` / `Show password`.
-- `change(value: string)`: native committed change, or clear action.
-- `clear()`: emitted when the clear button is used.
-- `focus(event: FocusEvent)` / `blur(event: FocusEvent)`: native focus events.
-- Exposed methods: `focus()`, `blur()`, `select()`.
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `modelValue` | `string \| number` | `''` | Input value. |
+| `type` | `string` | `'text'` | Native `input` `type` attribute. |
+| `size` | `'large' \| 'default' \| 'small'` | `'default'` | Input size. |
+| `placeholder` | `string` | `undefined` | Placeholder text. |
+| `disabled` | `boolean` | `false` | Disables the input. |
+| `readonly` | `boolean` | `false` | Makes the input readonly. |
+| `clearable` | `boolean` | `false` | Show the clear button. |
+| `showPassword` | `boolean` | `false` | Enable password visibility toggle. |
+| `showWordLimit` | `boolean` | `false` | Show character count when maxlength is set; hidden for passwords. |
+| `maxlength` | `number` | — | Native maximum input length. |
+| `rows` | `number` | `3` | Textarea row count. |
+| `resize` | `'none' \| 'both' \| 'horizontal' \| 'vertical'` | `'vertical'` | Textarea resize behavior. |
+| `clearLabel` | `string` | `'Clear input'` | Accessible clear button label. |
+| `passwordLabel` | `string` | `'Show password'` | Accessible password toggle label. |
+
+## Events
+
+| Event | Description |
+| --- | --- |
+| `update:modelValue` | Emitted when the input value changes. Used by `v-model`. |
+| `input` | Emitted when the input value changes. |
+| `change` | Committed native value change or clearing; receives a string. |
+| `clear` | Clear button used; no arguments. |
+| `focus` | Receives focus; argument: FocusEvent. |
+| `blur` | Loses focus; argument: FocusEvent. |
+
+## Slots
+
+| Slot | Description |
+| --- | --- |
+| `prefix` | Prefix content. |
+| `suffix` | Suffix content. |
+
+## Methods
+
+| Method | Signature | Description |
+| --- | --- | --- |
+| `focus` | `() => void` | Focus the input. |
+| `blur` | `() => void` | Blur the input. |
+| `select` | `() => void` | Select input text. |
+
+## Usage notes
 
 The original `input` and `update:modelValue` events remain supported. Input updates wait until IME composition completes. Native attributes are forwarded to the input or textarea, including `id`, `name` and ARIA attributes. The counter follows native UTF-16 length semantics. Prefix and suffix slots apply to single-line inputs.

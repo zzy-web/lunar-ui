@@ -46,16 +46,23 @@ const visible = ref(true)
 
 ## Props
 
-- `type`: `primary` (default), `success`, `warning`, `danger`, or `info`.
-- `effect`: `light` (default), `dark`, or `plain`.
-- `size`: `large`, `default`, or `small`. Default `default`.
-- `closable` / `round`: boolean, default `false`.
-- `closeLabel`: string, default `Close tag`; accessible label of the close button.
+| Attribute | Type | Default | Description |
+| --- | --- | --- | --- |
+| `type` | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `'primary'` | Semantic type. |
+| `effect` | `'light' \| 'dark' \| 'plain'` | `'light'` | Theme effect. |
+| `size` | `'large' \| 'default' \| 'small'` | `'default'` | Component size. |
+| `closable` | `boolean` | `false` | Show a close button. |
+| `round` | `boolean` | `false` | Use rounded corners. |
+| `closeLabel` | `string` | `'Close tag'` | Accessible close button label. |
 
 ## Events
 
-`close`: `(event: MouseEvent)`.
+| Event | Signature | Description |
+| --- | --- | --- |
+| `close` | `(event: MouseEvent)` | Emitted on close click; the parent decides whether to remove the tag. |
 
 ## Slots
 
-`default`: Label content.
+| Slot | Slot props | Description |
+| --- | --- | --- |
+| `default` | — | Tag content. |

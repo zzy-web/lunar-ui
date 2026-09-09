@@ -83,16 +83,31 @@ const version = ref(0)
 
 ## Props
 
-- `title` / `description`：标题与描述字符串。
-- `type`：`success | info | warning | error`，默认 `info`。
-- `effect`：`light | dark`，默认 `light`。
-- `closable`：默认 `true`。`showIcon` / `center`：默认 `false`。
-- `closeText`：自定义关闭文字；`closeLabel`：关闭按钮可访问名称，默认 `Close alert`。
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `title` | `string` | — | 标题。 |
+| `description` | `string` | — | 描述。 |
+| `type` | `'success' \| 'info' \| 'warning' \| 'error'` | `'info'` | 语义类型。 |
+| `effect` | `'light' \| 'dark'` | `'light'` | 主题效果。 |
+| `closable` | `boolean` | `true` | 显示关闭按钮。 |
+| `showIcon` | `boolean` | `false` | 显示类型图标。 |
+| `center` | `boolean` | `false` | 内容居中。 |
+| `closeText` | `string` | — | 自定义关闭文字。 |
+| `closeLabel` | `string` | `'Close alert'` | 关闭按钮的可访问名称。 |
 
 ## 事件
 
-`close(event: MouseEvent)`：关闭后触发，组件自行隐藏。需要重新显示时重新挂载组件或更新 `key`。
+| 事件名 | 参数 / 签名 | 说明 |
+| --- | --- | --- |
+| `close` | `(event: MouseEvent)` | 关闭时触发，组件自行隐藏。 |
+
+## 插槽
+
+| 插槽名 | 插槽参数 | 说明 |
+| --- | --- | --- |
+| `title` | — | 自定义标题。 |
+| `default` | — | 自定义描述。 |
 
 ## 使用说明
 
-插槽 `title` 覆盖标题，`default` 覆盖描述。警告与错误使用 `role="alert"`，普通信息和成功提示使用 `role="status"`。
+需要重新显示时重新挂载组件或更新 `key`。警告与错误使用 `role="alert"`，普通信息和成功提示使用 `role="status"`。

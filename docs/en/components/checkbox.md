@@ -38,16 +38,23 @@ const checked = ref(false)
 
 ## Props
 
-- `modelValue`: boolean, default `false`.
-- `label`: string; default slot overrides the label.
-- `indeterminate`: boolean, default `false`.
-- `disabled`: boolean, default `false`.
-- `size`: `large`, `default`, or `small`. Default `default`.
+| Attribute | Type | Default | Description |
+| --- | --- | --- | --- |
+| `modelValue` | `boolean` | `false` | Bound value. |
+| `label` | `string` | — | Label text, overridden by the default slot. |
+| `indeterminate` | `boolean` | `false` | Parent-controlled indeterminate state. |
+| `disabled` | `boolean` | `false` | Whether the control is disabled. |
+| `size` | `'large' \| 'default' \| 'small'` | `'default'` | Component size. |
 
 ## Events
 
-`update:modelValue` / `change`: `(value: boolean)`.
+| Event | Signature | Description |
+| --- | --- | --- |
+| `update:modelValue` | `(value: boolean)` | Update the bound value. |
+| `change` | `(value: boolean)` | Emitted when the user changes the value. |
 
 ## Slots
 
-`default`: Label content.
+| Slot | Slot props | Description |
+| --- | --- | --- |
+| `default` | — | Label content. |

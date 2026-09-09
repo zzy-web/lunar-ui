@@ -98,30 +98,6 @@ Loading and disabled buttons do not emit click events.
   </template>
 </DemoBlock>
 
-## Props
-
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `type` | `'default' \| 'primary' \| 'success' \| 'warning' \| 'danger'` | `'default'` | Button type. |
-| `size` | `'large' \| 'default' \| 'small'` | `'default'` | Button size. |
-| `nativeType` | `'button' \| 'submit' \| 'reset'` | `'button'` | Native `button` `type` attribute. |
-| `plain` | `boolean` | `false` | Uses the plain button style. |
-| `round` | `boolean` | `false` | Uses rounded button corners. |
-| `loading` | `boolean` | `false` | Shows the loading state. |
-| `disabled` | `boolean` | `false` | Disables the button. |
-
-## Events
-
-| Event | Description |
-| --- | --- |
-| `click` | Emitted when the button is clicked. Disabled or loading buttons do not emit it. |
-
-## Slots
-
-| Slot | Description |
-| --- | --- |
-| `default` | Button content. |
-
 ## Text, link and icon buttons
 
 <DemoBlock>
@@ -140,5 +116,35 @@ Loading and disabled buttons do not emit click events.
 
 </template>
 </DemoBlock>
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `type` | `'default' \| 'primary' \| 'success' \| 'warning' \| 'danger'` | `'default'` | Button type. |
+| `size` | `'large' \| 'default' \| 'small'` | `'default'` | Button size. |
+| `nativeType` | `'button' \| 'submit' \| 'reset'` | `'button'` | Native `button` `type` attribute. |
+| `plain` | `boolean` | `false` | Uses the plain button style. |
+| `round` | `boolean` | `false` | Uses rounded button corners. |
+| `loading` | `boolean` | `false` | Shows the loading state. |
+| `disabled` | `boolean` | `false` | Disables the button. |
+| `text` | `boolean` | `false` | Text button style. |
+| `link` | `boolean` | `false` | Link-style button; remains a button element. |
+| `circle` | `boolean` | `false` | Circular button style. |
+
+## Events
+
+| Event | Description |
+| --- | --- |
+| `click` | Emitted when the button is clicked. Disabled or loading buttons do not emit it. |
+
+## Slots
+
+| Slot | Description |
+| --- | --- |
+| `default` | Button content. |
+| `icon` | Icon before the label; replaced by the loading indicator when busy. |
+
+## Usage notes
 
 `text`, `link` and `circle` are optional booleans, default `false`. The `icon` slot places an icon before the label; loading replaces that icon with a spinner and sets `aria-busy`. Icon-only buttons need `aria-label`. Link mode styles a button; use an anchor for navigation.

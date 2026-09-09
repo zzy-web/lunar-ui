@@ -81,11 +81,21 @@ const created = ref(false)
 
 ## Props
 
-- `description`：默认“暂无数据”。
-- `image`：可选图片 URL；不传时仅展示文案与操作。
-- `imageAlt`：图片替代文本，默认空字符串（装饰图）。
-- `imageSize`：图片宽度，默认 `120`，单位 px。
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `description` | `string` | `'暂无数据'` | 空状态说明。 |
+| `image` | `string` | — | 可选图片 URL，不传时不展示图片。 |
+| `imageAlt` | `string` | `''` | 图片替代文本，装饰图可留空。 |
+| `imageSize` | `number` | `120` | 图片宽度，单位 px。 |
+
+## 插槽
+
+| 插槽名 | 插槽参数 | 说明 |
+| --- | --- | --- |
+| `image` | — | 自定义图片内容。 |
+| `description` | — | 自定义说明。 |
+| `default` | — | 操作按钮。 |
 
 ## 使用说明
 
-插槽 `image` 自定义图片；`description` 自定义说明；`default` 放置操作按钮。组件不发出事件，操作由插槽内按钮处理。
+组件不发出事件，操作由插槽内按钮处理。

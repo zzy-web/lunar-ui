@@ -61,21 +61,30 @@ const isWeekend = (date: Date) => [0, 6].includes(date.getDay())
 
 ## Props
 
-- `modelValue?: Date`: selected date. Without a binding, the calendar maintains its own selection, initially today. Invalid dates fall back to the internal selection.
-- `firstDayOfWeek`: integer from `0` (Sunday) to `6` (Saturday), default `1`.
-- `locale`: `'zh-CN'` (default) or `'en-US'`.
-- `disabledDate?: (date: Date) => boolean`: return true to disable a date.
+| Attribute | Type | Default | Description |
+| --- | --- | --- | --- |
+| `modelValue` | `Date` | — | Selected date; defaults internally to today. Invalid dates fall back to internal selection. |
+| `firstDayOfWeek` | `0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6` | `1` | First day of the week; 0 is Sunday. |
+| `locale` | `'zh-CN' \| 'en-US'` | `'zh-CN'` | Display language. |
+| `disabledDate` | `(date: Date) => boolean` | — | Return true to disable a date. |
 
 ## Events
 
-- `update:modelValue(date: Date)` / `change(date: Date)`: emitted on date selection, with a new local-midnight Date.
-- `panel-change(date: Date)`: emitted when navigation or date selection changes the displayed month; receives the first day of that month. External model updates do not emit this event.
-
-Month navigation preserves the selection. Today returns to the current month without selecting a date. Selecting a neighboring month's date switches to that month. Replace the bound Date object to update it externally.
+| Event | Signature | Description |
+| --- | --- | --- |
+| `update:modelValue` | `(date: Date)` | Update selection with a new Date at local midnight. |
+| `change` | `(date: Date)` | Emitted on date selection. |
+| `panel-change` | `(date: Date)` | Month navigation or selection changes the panel; receives its first day. External updates do not emit this event. |
 
 ## Slots
 
-- `header`：`{ date: Date, title: string, selectMonth: (action: 'prev' | 'today' | 'next') => void }`
-- `date-cell`：`{ date: Date, data: { date: Date, day: string, type: string, isSelected: boolean, isToday: boolean, disabled: boolean } }`
+| Slot | Slot props | Description |
+| --- | --- | --- |
+| `header` | `{ date: Date, title: string, selectMonth: (action: 'prev' \| 'today' \| 'next') => void }` | Custom calendar header. |
+| `date-cell` | `{ date: Date, data: CalendarCell }` | Custom date content. |
 
-`day` uses `YYYY-MM-DD`; `type` is `prev-month`, `current-month` or `next-month`. Date cells are buttons: use noninteractive slot content. Tab focuses enabled buttons, Enter or Space selects a date. The calendar always displays six weeks.
+## Usage notes
+
+`CalendarCell` describes the slot data: `date: Date`, `day: string`, `type: string`, `isSelected: boolean`, `isToday: boolean`, `disabled: boolean`. `day` uses `YYYY-MM-DD`; `type` is `prev-month`, `current-month` or `next-month`. Use noninteractive content inside date buttons.
+
+Month navigation preserves selection. Today returns to the current month without selecting a date; selecting a neighboring date changes the month. Replace the Date object for external updates. Tab focuses date buttons, Enter or Space selects. Six weeks are always displayed.
