@@ -1,6 +1,6 @@
 :root {
   --vp-sidebar-bg-color: var(--vp-c-bg);
-  --vp-sidebar-width: 236px;
+  --vp-sidebar-width: 260px;
   --lu-sidebar-hover-bg: var(--vp-c-bg-soft);
   --lu-sidebar-active-bg: var(--epx-color-primary-light-9);
   --vp-c-brand-1: #409eff;
@@ -38,7 +38,7 @@ body {
   border-bottom: 1px solid var(--vp-c-divider);
 }
 
-.VPNavBar .title {
+.VPNavBarTitle > a.title {
   font-size: 18px;
   font-weight: 700;
 }
@@ -55,47 +55,42 @@ body {
   scrollbar-color: var(--vp-c-divider) transparent;
 }
 
-.VPSidebarGroup .title {
-  padding: 0 10px 8px !important;
-  color: var(--vp-c-text-1) !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
+.VPSidebarItem > .item {
+  margin: 2px 0;
 }
 
-.VPSidebarItem .item {
-  margin: 4px 0 !important;
-}
-
-.VPSidebarItem .link {
-  min-height: 38px;
-  border-radius: 4px !important;
-  padding: 8px 10px !important;
+.VPSidebarItem > .item > .link {
+  min-height: 36px;
+  border-radius: 4px;
+  padding: 6px 10px;
   transition: background-color 0.2s, color 0.2s;
 }
 
-.VPSidebarItem .link > .text {
-  line-height: 22px !important;
+.VPSidebarItem > .item > .link > .text {
+  margin: 0;
+  padding: 0;
+  line-height: 24px;
 }
 
-.VPSidebarItem .link:hover {
+.VPSidebarItem > .item > .link:hover {
   background-color: var(--lu-sidebar-hover-bg) !important;
 }
 
-.VPSidebarItem.is-active > .item .link {
+.VPSidebarItem.is-active > .item > .link {
   background-color: var(--lu-sidebar-active-bg) !important;
 }
 
-.VPSidebarItem.is-active > .item .link > .text {
+.VPSidebarItem.is-active > .item > .link > .text {
   color: var(--vp-c-brand-1) !important;
   font-weight: 600 !important;
 }
 
 .VPDoc {
-  padding-top: 56px !important;
+  padding-top: 32px !important;
 }
 
 .VPDoc .content-container {
-  max-width: 780px !important;
+  max-width: 880px !important;
 }
 
 .vp-doc h1,
@@ -220,7 +215,7 @@ body {
   border: 1px solid var(--vp-c-divider);
   border-radius: 6px;
   border-spacing: 0;
-  overflow: hidden;
+  overflow-y: hidden;
   font-size: 14px;
 }
 
