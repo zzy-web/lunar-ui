@@ -14,10 +14,13 @@ import { LuSelect } from './components/select'
 import { LuRadio, LuRadioGroup } from './components/radio'
 import { LuAlert } from './components/alert'
 import { LuEmpty } from './components/empty'
+import { LuPagination } from './components/pagination'
+import { LuProgress } from './components/progress'
+import { LuDivider } from './components/divider'
 import './styles/index.css'
 import './styles/extended.css'
 
-const components = [LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty]
+const components = [LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, LuPagination, LuProgress, LuDivider]
 
 export { EpxButton, EpxInput, EpxCard, EpxDialog, EpxForm, EpxFormItem, EpxTable, EpxTableColumn, EpxTour, LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour }
 export * from './components/button'
@@ -35,6 +38,10 @@ export * from './components/select'
 export * from './components/radio'
 export * from './components/alert'
 export * from './components/empty'
+
+export * from './components/pagination'
+export * from './components/progress'
+export * from './components/divider'
 
 export default {
   install(app: App) {

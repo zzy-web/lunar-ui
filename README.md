@@ -44,6 +44,9 @@ createApp(App).use(LunarUI).mount('#app')
 - `LuRadioGroup`
 - `LuAlert`
 - `LuEmpty`
+- `LuPagination`
+- `LuProgress`
+- `LuDivider`
 
 ## Validation
 

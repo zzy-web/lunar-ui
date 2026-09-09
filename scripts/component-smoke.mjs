@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { createRenderer, h, nextTick, ref } from 'vue'
 import LunarUI, { LuCheckbox, LuSwitch, LuTag, LuCalendar, LuInput, LuButton, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, EpxCheckbox, EpxSwitch, EpxTag, EpxCalendar, EpxSelect, EpxRadio, EpxRadioGroup, EpxAlert, EpxEmpty } from '../dist/index.js'
+import { LuPagination, EpxPagination, LuProgress, EpxProgress, LuDivider, EpxDivider } from '../dist/index.js'
 
 const renderer = createRenderer({
   createElement: type => ({
@@ -20,9 +21,19 @@ const renderer = createRenderer({
     if (['multiple', 'selected', 'disabled', 'value'].includes(key)) node[key] = value
     if (key === 'value') node._value = value
   },
-  insert: (node, parent) => { parent.children.push(node); node.parent = parent },
+  insert: (node, parent, anchor = null) => {
+    if (node.parent) {
+      const previous = node.parent.children.indexOf(node)
+      if (previous >= 0) node.parent.children.splice(previous, 1)
+    }
+    const index = anchor ? parent.children.indexOf(anchor) : -1
+    if (index < 0) parent.children.push(node)
+    else parent.children.splice(index, 0, node)
+    node.parent = parent
+  },
   remove: node => { const list = node.parent.children; list.splice(list.indexOf(node), 1) },
-  parentNode: node => node.parent, nextSibling: () => null
+  parentNode: node => node.parent,
+  nextSibling: node => node.parent?.children[node.parent.children.indexOf(node) + 1] ?? null
 })
 function mount(component, props) {
   const root = { children: [] }
@@ -266,3 +277,99 @@ assert.equal(busyButton.props['aria-busy'], true)
 busyButton.props.onClick({})
 busy.app.unmount()
 console.log('Passed: select native value mapping/multiple/clear/guards, radio groups, input IME/clear/password/textarea, alert dismissal, empty state and button loading.')
+
+for (const [component, alias] of [[LuPagination, EpxPagination], [LuProgress, EpxProgress], [LuDivider, EpxDivider]]) {
+  assert.equal(component, alias)
+  assert.ok(registered.includes(component.name))
+}
+const activePage = ref(1), recordTotal = ref(1000), paginationDisabled = ref(false)
+const paginationRoot = { children: [] }, pageChanges = []
+const paginationApp = renderer.createApp({ render: () => h(LuPagination, {
+  currentPage: activePage.value, total: recordTotal.value, disabled: paginationDisabled.value,
+  'onUpdate:currentPage': value => { activePage.value = value }, onChange: value => pageChanges.push(value)
+}) })
+paginationApp.mount(paginationRoot)
+const paginationButtons = () => findAll(paginationRoot, node => node.type === 'button')
+const activeButton = () => paginationButtons().find(node => node.props['aria-current'] === 'page')
+assert.equal(paginationButtons()[0].props.disabled, true)
+paginationButtons()[0].props.onClick()
+activeButton().props.onClick()
+assert.deepEqual(pageChanges, [])
+paginationButtons().at(-1).props.onClick()
+await nextTick()
+assert.equal(activePage.value, 2)
+assert.equal(activeButton().text, '2')
+activePage.value = 50
+await nextTick()
+assert.deepEqual(paginationButtons().slice(1, -1).map(node => node.text), ['1', '49', '50', '51', '100'])
+assert.equal(findAll(paginationRoot, node => node.props?.class === 'epx-pagination__ellipsis').length, 2)
+paginationButtons().at(-2).props.onClick()
+await nextTick()
+assert.equal(activePage.value, 100)
+assert.equal(paginationButtons().at(-1).props.disabled, true)
+assert.deepEqual(paginationButtons().slice(1, -1).map(node => node.text), ['1', '96', '97', '98', '99', '100'])
+paginationDisabled.value = true
+await nextTick()
+assert.ok(paginationButtons().every(node => node.props.disabled))
+paginationButtons()[0].props.onClick()
+assert.deepEqual(pageChanges, [2, 100])
+recordTotal.value = 15
+await nextTick()
+assert.equal(activeButton().text, '2')
+assert.equal(activePage.value, 100)
+assert.deepEqual(pageChanges, [2, 100])
+paginationApp.unmount()
+for (const props of [{ total: 0 }, { total: NaN, currentPage: Infinity }, { total: -10, pageSize: 0 }, { total: 10, pageSize: Infinity }]) {
+  const view = mount(LuPagination, props)
+  const buttons = findAll(view.root, node => node.type === 'button')
+  assert.equal(buttons.length, 3)
+  assert.equal(buttons[0].props.disabled, true)
+  assert.equal(buttons.at(-1).props.disabled, true)
+  view.app.unmount()
+}
+const hiddenPagination = mount(LuPagination, { total: 0, hideOnSinglePage: true })
+assert.equal(findAll(hiddenPagination.root, node => node.type === 'nav').length, 0)
+hiddenPagination.app.unmount()
+const hugePagination = mount(LuPagination, { total: Number.MAX_VALUE, pageSize: 1, currentPage: Number.MAX_VALUE })
+assert.ok(findAll(hugePagination.root, node => node.type === 'button').length <= 9)
+hugePagination.app.unmount()
+console.log('Passed: pagination registration, navigation, ellipses, controlled updates, disabled guards, total changes and invalid inputs.')
+
+for (const [percentage, expected] of [[-5, 0], [145, 100], [NaN, 0], [Infinity, 0], [42.5, 42.5]]) {
+  const view = mount(LuProgress, { percentage, strokeWidth: -1, ariaLabel: 'Upload', format: value => `Done ${value}` })
+  const track = findAll(view.root, node => node.props?.role === 'progressbar')[0]
+  assert.equal(track.props['aria-label'], 'Upload')
+  assert.equal(track.props['aria-valuenow'], expected)
+  assert.equal(track.props.style.height, '1px')
+  assert.equal(track.children[0].props.style.width, `${expected}%`)
+  assert.ok(findAll(view.root, node => node.text === `Done ${expected}`).length)
+  view.app.unmount()
+}
+const unknownProgress = mount(LuProgress, { indeterminate: true, showText: false, color: '#123456' })
+assert.equal(findAll(unknownProgress.root, node => node.props?.role === 'progressbar')[0].props['aria-valuenow'], undefined)
+assert.equal(findAll(unknownProgress.root, node => node.type === 'span').length, 0)
+assert.equal(findAll(unknownProgress.root, node => node.props?.class === 'epx-progress__bar')[0].props.style.backgroundColor, '#123456')
+unknownProgress.app.unmount()
+const slotProgressRoot = { children: [] }, livePercentage = ref(20), liveIndeterminate = ref(false)
+const slotProgressApp = renderer.createApp({ render: () => h(LuProgress, { percentage: livePercentage.value, indeterminate: liveIndeterminate.value }, {
+  default: ({ percentage }) => h('strong', {}, `${percentage} complete`)
+}) })
+slotProgressApp.mount(slotProgressRoot)
+livePercentage.value = 80
+await nextTick()
+assert.equal(findAll(slotProgressRoot, node => node.type === 'strong')[0].text, '80 complete')
+liveIndeterminate.value = true
+await nextTick()
+assert.equal(findAll(slotProgressRoot, node => node.props?.role === 'progressbar')[0].props['aria-valuenow'], undefined)
+slotProgressApp.unmount()
+for (const direction of ['horizontal', 'vertical']) {
+  const dividerRoot = { children: [] }
+  const dividerApp = renderer.createApp({ render: () => h(LuDivider, { direction, dashed: true, contentPosition: 'left' }, () => 'Section') })
+  dividerApp.mount(dividerRoot)
+  const separator = findAll(dividerRoot, node => node.props?.role === 'separator')[0]
+  assert.equal(separator.props['aria-orientation'], direction)
+  assert.ok(separator.props.class.includes('is-dashed'))
+  assert.equal(findAll(dividerRoot, node => node.type === 'span').length, direction === 'horizontal' ? 1 : 0)
+  dividerApp.unmount()
+}
+console.log('Passed: progress clamping, formatting, slots, updates and indeterminate semantics; divider orientations and slots.')
