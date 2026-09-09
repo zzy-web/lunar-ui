@@ -33,6 +33,7 @@ export default defineConfig({
               { text: 'Button 按钮', link: '/components/button' },
               { text: 'Input 输入框', link: '/components/input' },
               { text: 'Card 卡片', link: '/components/card' },
+              { text: 'Form 表单', link: '/components/form' },
               { text: 'Dialog 对话框', link: '/components/dialog' }
             ]
           }
@@ -63,6 +64,7 @@ export default defineConfig({
               { text: 'Button', link: '/en/components/button' },
               { text: 'Input', link: '/en/components/input' },
               { text: 'Card', link: '/en/components/card' },
+              { text: 'Form', link: '/en/components/form' },
               { text: 'Dialog', link: '/en/components/dialog' }
             ]
           }

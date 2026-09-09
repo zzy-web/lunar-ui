@@ -1,12 +1,13 @@
-import { createApp, ref } from 'vue'
+import { createApp, reactive, ref } from 'vue'
 import LunarUI from '../src'
 
 const App = {
   setup() {
     const name = ref('')
+    const profile = reactive({ username: '', email: '' })
     const dialogVisible = ref(false)
     const centeredDialogVisible = ref(false)
-    return { name, dialogVisible, centeredDialogVisible }
+    return { name, profile, dialogVisible, centeredDialogVisible }
   },
   template: `
     <main style="max-width: 760px; margin: 48px auto; font-family: Arial, sans-serif;">
@@ -18,6 +19,14 @@ const App = {
           </div>
           <lu-input v-model="name" placeholder="Please input" />
           <p>Name: {{ name || 'empty' }}</p>
+          <lu-form :model="profile" label-width="84px">
+            <lu-form-item label="Username" prop="username" required>
+              <lu-input v-model="profile.username" placeholder="Username" />
+            </lu-form-item>
+            <lu-form-item label="Email">
+              <lu-input v-model="profile.email" placeholder="Email" />
+            </lu-form-item>
+          </lu-form>
           <div style="display: flex; gap: 12px; flex-wrap: wrap;">
             <lu-button type="primary" @click="dialogVisible = true">Open dialog</lu-button>
             <lu-button @click="centeredDialogVisible = true">Centered dialog</lu-button>

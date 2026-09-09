@@ -23,6 +23,8 @@ createApp(App).use(LunarUI).mount('#app')
 - `LuButton`
 - `LuInput`
 - `LuCard`
+- `LuForm`
+- `LuFormItem`
 - `LuDialog`
 
 ## Dialog

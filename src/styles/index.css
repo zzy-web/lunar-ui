@@ -45,6 +45,17 @@
 .epx-card__body { padding: 20px; }
 .epx-card__footer { padding: 12px 20px; border-top: 1px solid var(--epx-border-color-light); color: var(--epx-text-color-regular); }
 
+.epx-form { display: block; color: var(--epx-text-color-primary); font-size: 14px; }
+.epx-form-item { display: flex; margin-bottom: 18px; }
+.epx-form--label-top .epx-form-item { display: block; }
+.epx-form-item__label { box-sizing: border-box; flex: 0 0 auto; min-height: 32px; padding: 0 12px 0 0; color: var(--epx-text-color-regular); line-height: 32px; text-align: right; }
+.epx-form--label-left .epx-form-item__label { text-align: left; }
+.epx-form--label-top .epx-form-item__label { display: block; min-height: 0; margin-bottom: 8px; padding: 0; line-height: 1.4; text-align: left; }
+.epx-form-item.is-required .epx-form-item__label::before { margin-right: 4px; color: var(--epx-color-danger); content: '*'; }
+.epx-form-item__content { position: relative; flex: 1; min-width: 0; }
+.epx-form-item__error { margin-top: 6px; color: var(--epx-color-danger); font-size: 12px; line-height: 1.2; }
+.epx-form-item.is-error .epx-input__wrapper { border-color: var(--epx-color-danger); box-shadow: 0 0 0 1px var(--epx-color-danger) inset; }
+
 .epx-overlay { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: flex-start; justify-content: center; padding: 0 16px 32px; background: rgba(0, 0, 0, 0.5); }
 .epx-overlay.is-transparent { pointer-events: none; background: transparent; }
 .epx-dialog { box-sizing: border-box; max-width: calc(100vw - 32px); overflow: hidden; border-radius: var(--epx-border-radius-base); background: var(--epx-bg-color); color: var(--epx-text-color-primary); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18); }
