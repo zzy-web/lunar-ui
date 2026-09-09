@@ -1,6 +1,6 @@
 import DefaultTheme from 'vitepress/theme'
 import DemoBlock from './components/DemoBlock.vue'
-import { LuButton, LuCard, LuDialog, LuForm, LuFormItem, LuInput, LuTable, LuTableColumn, LuTour } from '../../../src'
+import { LuButton, LuCard, LuDialog, LuForm, LuFormItem, LuInput, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag } from '../../../src'
 import '../../../src/styles/index.css'
 import './styles.css'
 
@@ -17,5 +17,8 @@ export default {
     app.component('LuTable', LuTable)
     app.component('LuTableColumn', LuTableColumn)
     app.component('LuTour', LuTour)
+    app.component('LuCheckbox', LuCheckbox)
+    app.component('LuSwitch', LuSwitch)
+    app.component('LuTag', LuTag)
   }
 }

@@ -29,6 +29,9 @@ createApp(App).use(LunarUI).mount('#app')
 - `LuTableColumn`
 - `LuTour`
 - `LuDialog`
+- `LuCheckbox`
+- `LuSwitch`
+- `LuTag`
 
 ## 本地开发
 

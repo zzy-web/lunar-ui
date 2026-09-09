@@ -31,6 +31,9 @@ export default defineConfig({
             text: '组件',
             items: [
               { text: 'Button 按钮', link: '/components/button' },
+              { text: 'Checkbox 复选框', link: '/components/checkbox' },
+              { text: 'Switch 开关', link: '/components/switch' },
+              { text: 'Tag 标签', link: '/components/tag' },
               { text: 'Input 输入框', link: '/components/input' },
               { text: 'Card 卡片', link: '/components/card' },
               { text: 'Form 表单', link: '/components/form' },
@@ -64,6 +67,9 @@ export default defineConfig({
             text: 'Components',
             items: [
               { text: 'Button', link: '/en/components/button' },
+              { text: 'Checkbox', link: '/en/components/checkbox' },
+              { text: 'Switch', link: '/en/components/switch' },
+              { text: 'Tag', link: '/en/components/tag' },
               { text: 'Input', link: '/en/components/input' },
               { text: 'Card', link: '/en/components/card' },
               { text: 'Form', link: '/en/components/form' },
