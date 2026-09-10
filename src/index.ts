@@ -48,3 +48,4 @@ export default {
     components.forEach((component) => app.component(component.name!, component))
   }
 }
+export type { TableRow, TableColumnProps, TableSortOrder } from './components/table'

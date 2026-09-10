@@ -6,3 +6,4 @@ export const EpxTableColumn = TableColumn
 export const LuTable = Table
 export const LuTableColumn = TableColumn
 export default LuTable
+export type { TableRow, TableColumnProps, TableSortOrder } from './src/types'

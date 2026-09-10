@@ -373,3 +373,72 @@ for (const direction of ['horizontal', 'vertical']) {
   dividerApp.unmount()
 }
 console.log('Passed: progress clamping, formatting, slots, updates and indeterminate semantics; divider orientations and slots.')
+
+// Table interaction regression coverage.
+const { LuTable, LuTableColumn } = await import('../dist/index.js')
+const tableData = ref([{ id: 1, profile: { score: 20 } }, { id: 2, profile: { score: 3 } }, { id: 3, profile: { score: 10 } }])
+const showExtra = ref(false), tableRef = ref(), tableRoot = { children: [] }, selections = [], sortEvents = []
+const tableApp = renderer.createApp({ render: () => h(LuTable, {
+  ref: tableRef, data: tableData.value, rowKey: 'id', height: 200,
+  onSelectionChange: rows => selections.push(rows.map(row => row.id)),
+  onSortChange: value => sortEvents.push(value)
+}, { default: () => [
+  h(LuTableColumn, { type: 'selection', selectable: row => row.id !== 3 }),
+  h(LuTableColumn, { type: 'index', index: 5 }),
+  h(LuTableColumn, { prop: 'profile.score', label: 'Score', sortable: '' }),
+  ...(showExtra.value ? [h(LuTableColumn, { label: 'Actions' }, { default: ({ row }) => h('button', {}, `Edit ${row.id}`), header: () => 'Custom header' })] : [])
+] }) })
+tableApp.mount(tableRoot)
+const boxes = () => findAll(tableRoot, n => n.type === 'input')
+const rows = () => findAll(tableRoot, n => n.type === 'tbody')[0].children.filter(n => n.type === 'tr')
+const textOf = node => (node.text ?? '') + (node.children ?? []).map(textOf).join('')
+const sortButton = () => findAll(tableRoot, n => n.props?.class === 'epx-table__sort')[0]
+assert.equal(rows().length, 3)
+assert.match(textOf(rows()[0]), /520/)
+boxes()[1].props.onChange(); await nextTick()
+assert.deepEqual(selections.at(-1), [1])
+assert.equal(boxes()[0].props.indeterminate, true)
+sortButton().props.onClick(); await nextTick()
+assert.match(textOf(rows()[0]), /53/)
+assert.deepEqual(tableData.value.map(r => r.id), [1, 2, 3])
+assert.equal(boxes()[3].props.checked, true)
+assert.equal(sortEvents.at(-1).order, 'ascending')
+sortButton().props.onClick(); await nextTick()
+assert.match(textOf(rows()[0]), /520/)
+sortButton().props.onClick(); await nextTick()
+assert.equal(sortEvents.at(-1).order, null)
+boxes()[0].props.onChange(); await nextTick()
+assert.deepEqual(selections.at(-1), [1, 2])
+assert.equal(boxes()[0].props.checked, true)
+assert.equal(boxes()[3].props.disabled, true)
+tableRef.value.clearSelection(); await nextTick()
+assert.deepEqual(selections.at(-1), [])
+tableRef.value.toggleRowSelection(tableData.value[0], true); await nextTick()
+tableData.value = tableData.value.map(row => ({ ...row })); await nextTick()
+assert.equal(boxes()[1].props.checked, true)
+tableData.value = tableData.value.slice(1); await nextTick()
+assert.deepEqual(selections.at(-1), [])
+showExtra.value = true; await nextTick()
+assert.equal(findAll(tableRoot, n => n.type === 'th').length, 4)
+assert.match(textOf(tableRoot), /Custom header/)
+assert.match(textOf(tableRoot), /Edit 2/)
+tableApp.unmount()
+console.log('Passed: table sort cycles, nested values, stable selection, select-all guards, exposed methods, reactive columns and scoped slots.')
+const customRows = [{ id: 2 }, { id: 1 }], customRoot = { children: [] }, customRef = ref(), clickedRows = []
+const customApp = renderer.createApp({ render: () => h(LuTable, { ref: customRef, data: customRows, onRowClick: row => clickedRows.push(row.id) }, {
+  default: () => [h(LuTableColumn, { prop: 'id', sortable: 'custom', label: 'ID' }), h(LuTableColumn, { prop: 'label', formatter: row => `Formatted ${row.id}` }), h(LuTableColumn, { prop: 'legacy' })],
+  legacy: ({ row }) => `Legacy ${row.id}`
+}) })
+customApp.mount(customRoot)
+customRef.value.sort('id', 'ascending'); await nextTick()
+assert.match(textOf(findAll(customRoot, n => n.type === 'tbody')[0]), /^2Formatted 2Legacy 2/)
+findAll(customRoot, n => n.type === 'tbody')[0].children.find(n => n.type === 'tr').props.onClick({})
+assert.deepEqual(clickedRows, [2])
+customApp.unmount()
+const emptyRoot = { children: [] }
+const emptyApp = renderer.createApp({ render: () => h(LuTable, { showHeader: false }, { empty: () => 'Nothing here', default: () => h(LuTableColumn, { prop: 'id' }) }) })
+emptyApp.mount(emptyRoot)
+assert.match(textOf(emptyRoot), /Nothing here/)
+assert.equal(findAll(emptyRoot, n => n.type === 'thead').length, 0)
+emptyApp.unmount()
+console.log('Passed: table custom sorting, formatter, legacy slots, row click and custom empty state.')

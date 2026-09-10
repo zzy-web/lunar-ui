@@ -281,3 +281,14 @@ html.dark,
 .epx-dialog-fade-enter-from, .epx-dialog-fade-leave-to { opacity: 0; }
 .epx-dialog-fade-enter-from .epx-dialog, .epx-dialog-fade-leave-to .epx-dialog { transform: translateY(-16px); }
 @keyframes epx-spin { to { transform: rotate(360deg); } }
+
+/* Table sorting, selection and bounded scrolling. */
+.epx-table--scroll > .epx-table__inner > thead > tr > th { position: sticky; top: 0; z-index: 1; }
+.epx-table__sort { display: inline-flex; align-items: center; gap: 8px; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.epx-table__sort:focus-visible { outline: 2px solid var(--epx-color-primary); outline-offset: 4px; border-radius: 2px; }
+.epx-table th[aria-sort="ascending"] .epx-table__sort,
+.epx-table th[aria-sort="descending"] .epx-table__sort { color: var(--epx-color-primary); }
+.epx-table input[type="checkbox"] { width: 16px; height: 16px; margin: 0; vertical-align: middle; accent-color: var(--epx-color-primary); cursor: pointer; }
+.epx-table input[type="checkbox"]:disabled { cursor: not-allowed; }
+.epx-table > .epx-table__inner > tbody > tr.is-selected > td { background: var(--epx-color-primary-light-9); }
+.epx-table__overflow { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

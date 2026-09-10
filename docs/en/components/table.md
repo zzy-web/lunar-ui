@@ -183,3 +183,78 @@ Override the cell padding to adjust density without changing the column API. Col
 | `--epx-table-header-bg` | `var(--epx-fill-color-light)` | Header background. |
 | `--epx-table-row-hover-bg` | `var(--epx-color-primary-light-9)` | Hovered or keyboard-focused row background. |
 | `--epx-table-stripe-bg` | `var(--epx-fill-color-lighter)` | Striped row background. |
+
+## Sorting, selection and index columns
+
+<DemoBlock source-label="View source">
+  <lu-table :data="users" row-key="id" border :max-height="260" :default-sort="{ prop: 'id', order: 'descending' }">
+    <lu-table-column type="selection" :selectable="row => row.id !== 2" />
+    <lu-table-column type="index" label="#" />
+    <lu-table-column prop="id" label="ID" sortable :width="80" />
+    <lu-table-column prop="name" label="Name" sortable />
+    <lu-table-column prop="role" label="Role" show-overflow-tooltip />
+  </lu-table>
+  <template #source>
+
+```vue
+<lu-table :data="users" row-key="id" border :max-height="260"
+  :default-sort="{ prop: 'id', order: 'descending' }"
+  @selection-change="rows => selectedRows = rows">
+  <lu-table-column type="selection" :selectable="row => row.id !== 2" />
+  <lu-table-column type="index" label="#" />
+  <lu-table-column prop="id" label="ID" sortable :width="80" />
+  <lu-table-column prop="name" label="Name" sortable />
+  <lu-table-column prop="role" label="Role" show-overflow-tooltip />
+</lu-table>
+```
+
+  </template>
+</DemoBlock>
+
+Sorting cycles through ascending, descending and unsorted without mutating `data`. Numbers sort numerically. Use `sortable="custom"` to emit sorting events for server-side sorting. Nested paths such as `profile.name` are supported.
+
+## Column slots and formatting
+
+Column `default` slots receive `{ row, column, index, $index }`; `header` receives `{ column }`. Column slots take precedence over table field slots, then `formatter`, then the raw value.
+
+<DemoBlock source-label="View source">
+  <lu-table :data="users" stripe>
+    <lu-table-column prop="name" label="Name">
+      <template #header>Member name</template>
+      <template #default="{ row }"><strong>{{ row.name }}</strong></template>
+    </lu-table-column>
+    <lu-table-column prop="role" label="Role" :formatter="(row, column, value) => 'Role: ' + value" />
+  </lu-table>
+  <template #source>
+
+```vue
+<lu-table-column prop="name" label="Name">
+  <template #header>Member name</template>
+  <template #default="{ row }"><strong>{{ row.name }}</strong></template>
+</lu-table-column>
+<lu-table-column prop="role" label="Role"
+  :formatter="(row, column, value) => 'Role: ' + value" />
+```
+
+  </template>
+</DemoBlock>
+
+## Additional API
+
+- Table `height` / `maxHeight`: numbers (px) or CSS lengths; the header stays visible when scrolling.
+- Table `showHeader`: defaults to `true`.
+- Table `defaultSort`: initial `{ prop, order }`, where order is `ascending`, `descending` or `null`.
+- Column `type`: `default`, `selection` or `index`; selection and index columns default to 56px.
+- Column `index`: starting number (default 1), or `(index) => number | string`.
+- Column `sortable`: `boolean | 'custom'`, off by default; requires a `prop`.
+- Column `sortMethod(a, b)`: numeric comparator; descending reverses its result.
+- Column `selectable(row, index)`: whether a row can be selected; index refers to the original data.
+- Column `formatter(row, column, value, index)`: formatted content, including VNodes.
+- Column `showOverflowTooltip`: single-line ellipsis with the raw field value in a native title tooltip.
+- Table `empty` slot: custom empty content, overriding `emptyText`.
+
+Events: `sort-change({ prop, order })`, `selection-change(rows)`, `select(rows, row)`, `select-all(rows)`, and `row-click(row, index, event)`. Row-click indices refer to the displayed order; checkbox clicks do not trigger row-click.
+
+Exposed methods: `sort(prop, order)`, `clearSort()`, `toggleRowSelection(row, selected?)`, `toggleAllSelection()`, `clearSelection()`, `getSelectionRows()`. Clearing sort restores input order. Selection methods respect `selectable`; toggling a row also emits `select`.
+
+Use a unique, stable `row-key` to preserve selection when row objects are replaced. Rows removed from `data` are deselected; selection is not retained across pages. Without a row key, selection uses object identity. Select-all applies only to selectable rows.
