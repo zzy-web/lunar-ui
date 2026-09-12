@@ -5,6 +5,7 @@ Display folders, organization charts and other hierarchical data with expansion,
 <script setup>
 import { ref } from 'vue'
 const tree = ref()
+const filterText = ref('')
 const selected = ref([])
 const data = [
   { id: 'design', label: 'Design resources', children: [
@@ -121,6 +122,32 @@ Use `node-key` for the key field and `props` to map other fields. The default sl
 
   </template>
 </DemoBlock>
+
+## Search
+
+Bind `filter-text` to a search input. Matching is case-insensitive against the mapped label. Matching nodes and their ancestors remain visible, and ancestor paths expand automatically. Clearing the query restores the previous expansion state. Selection and checkbox state are preserved; checkbox linking still uses the full tree, including hidden nodes. Empty results use `empty-text` / the `empty` slot.
+
+<DemoBlock direction="column">
+  <lu-input v-model="filterText" clearable placeholder="Search" aria-label="Search tree" />
+  <lu-tree :data="data" :filter-text="filterText" />
+  <template #source>
+
+```vue
+<script setup>
+import { ref } from 'vue'
+const filterText = ref('')
+</script>
+
+<template>
+  <lu-input v-model="filterText" clearable placeholder="Search" />
+  <lu-tree :data="data" :filter-text="filterText" />
+</template>
+```
+
+  </template>
+</DemoBlock>
+
+Use `treeRef.filter(value)` for imperative filtering. Supply `filter-node-method(value, data, node)` to customize matching. Whitespace-only queries clear the filter; the callback receives trimmed text. Data changes reapply the active filter.
 
 ## Props
 

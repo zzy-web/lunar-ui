@@ -5,6 +5,7 @@
 <script setup>
 import { ref } from 'vue'
 const tree = ref()
+const filterText = ref('')
 const selected = ref([])
 const data = [
   { id: 'design', label: '设计资源', children: [
@@ -128,6 +129,32 @@ const data = [
 
   </template>
 </DemoBlock>
+
+## 搜索节点
+
+将搜索框绑定到 `filter-text`，默认按映射后的节点标签进行不区分大小写的包含匹配。保留匹配节点及其祖先，并自动展开祖先路径；清空搜索后恢复原来的展开状态。搜索不会清空当前节点和勾选状态，父子勾选仍作用于完整子树（包括隐藏节点）。无匹配结果时显示 `empty-text` / `empty` 插槽。
+
+<DemoBlock direction="column">
+  <lu-input v-model="filterText" clearable placeholder="Search" aria-label="Search tree" />
+  <lu-tree :data="data" :filter-text="filterText" />
+  <template #source>
+
+```vue
+<script setup>
+import { ref } from 'vue'
+const filterText = ref('')
+</script>
+
+<template>
+  <lu-input v-model="filterText" clearable placeholder="Search" />
+  <lu-tree :data="data" :filter-text="filterText" />
+</template>
+```
+
+  </template>
+</DemoBlock>
+
+也可通过组件 ref 调用 `filter(value: string)`。使用 `filter-node-method(value, data, node)` 自定义匹配，返回布尔值。纯空白查询视为清空，回调接收去除首尾空白后的文本；数据更新会重新应用当前搜索。
 
 ## Props
 

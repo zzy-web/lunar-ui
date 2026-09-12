@@ -770,3 +770,45 @@ assert.equal(findAll(teleportHost, n => n.props?.role === 'menuitem').length, 1)
 teleportedMenu.app.unmount()
 assert.equal(teleportHost.children.length, 0)
 console.log('Passed: floating panels teleport to body and remove their nodes on unmount.')
+
+const searchRef = ref(), searchText = ref('needle')
+const searchData = ref([{ id: 0, label: 'Root', children: [
+  { id: 1, label: 'Hidden' },
+  { id: 2, label: 'Branch', children: [{ id: 3, label: 'Needle' }] }
+] }, { id: 4, label: 'Other' }])
+const searchRoot = { children: [] }
+const searchApp = renderer.createApp({ render: () => h(LuTree, {
+  ref: searchRef, data: searchData.value, filterText: searchText.value,
+  showCheckbox: true, defaultCheckedKeys: [3], currentNodeKey: 3
+}) })
+searchApp.mount(searchRoot)
+const searchItems = () => findAll(searchRoot, n => n.props?.role === 'treeitem')
+const searchLabels = () => searchItems().map(n => n.props['aria-label'])
+assert.deepEqual(searchLabels(), ['Root', 'Branch', 'Needle'])
+const searchChecks = searchRef.value.getCheckedKeys()
+const searchParent = searchItems()[0]
+searchParent.props.onKeydown({ key: 'ArrowRight', target: searchParent, currentTarget: searchParent, preventDefault() {} })
+await nextTick()
+assert.equal(searchItems()[1].props.tabindex, 0)
+searchText.value = 'missing'; await nextTick()
+assert.deepEqual(searchLabels(), [])
+assert.match(textOf(searchRoot), /No Data/)
+assert.deepEqual(searchRef.value.getCheckedKeys(), searchChecks)
+assert.equal(searchRef.value.getCurrentKey(), 3)
+searchText.value = ' '; await nextTick()
+assert.deepEqual(searchLabels(), ['Root', 'Other'])
+searchRef.value.filter('NEEDLE'); await nextTick()
+assert.deepEqual(searchLabels(), ['Root', 'Branch', 'Needle'])
+searchData.value[0].children[1].children.push({ id: 5, label: 'Needle two' }); await nextTick()
+assert.deepEqual(searchLabels(), ['Root', 'Branch', 'Needle', 'Needle two'])
+searchRef.value.filter(''); await nextTick()
+assert.deepEqual(searchLabels(), ['Root', 'Other'])
+searchApp.unmount()
+const customSearch = mount(LuTree, {
+  data: [{ id: 0, name: 'Parent', items: [{ id: 1, name: 'Child', code: 'abc' }] }],
+  props: { label: 'name', children: 'items' }, filterText: ' abc ',
+  filterNodeMethod: (value, data, node) => data.code === value && node.label === 'Child'
+})
+assert.deepEqual(findAll(customSearch.root, n => n.props?.role === 'treeitem').map(n => n.props['aria-label']), ['Parent', 'Child'])
+customSearch.app.unmount()
+console.log('Passed: tree search, ancestor expansion, keyboard navigation, empty results, state restoration, reactive data and custom filtering.')

@@ -5,15 +5,15 @@
       class="epx-tree__node" :class="{ 'is-current': highlightCurrent && currentKey === node.key, 'is-disabled': node.disabled }"
       role="treeitem" :aria-label="node.label" :aria-level="node.level"
       :aria-posinset="node.index + 1" :aria-setsize="node.siblingCount"
-      :aria-expanded="node.children.length ? expanded.has(node.key) : undefined"
+      :aria-expanded="node.children.length ? activeExpanded.has(node.key) : undefined"
       :aria-selected="currentKey === node.key" :aria-disabled="node.disabled || undefined"
       :aria-checked="showCheckbox ? (halfChecked.has(node.key) ? 'mixed' : checked.has(node.key)) : undefined"
       :tabindex="focusKey === node.key ? 0 : -1" :style="{ paddingInlineStart: `${(node.level - 1) * indent + 8}px` }"
       @focus="focusKey = node.key" @click="activate(node)" @keydown="onKeydown($event, node)">
       <button v-if="node.children.length" class="epx-tree__toggle" type="button" tabindex="-1"
-        :aria-label="`${expanded.has(node.key) ? 'Collapse' : 'Expand'} ${node.label}`"
-        :aria-expanded="expanded.has(node.key)" @click.stop="toggleExpand(node)">
-        <svg viewBox="0 0 16 16" aria-hidden="true" :class="{ 'is-expanded': expanded.has(node.key) }"><path d="m6 3 5 5-5 5" /></svg>
+        :aria-label="`${activeExpanded.has(node.key) ? 'Collapse' : 'Expand'} ${node.label}`"
+        :aria-expanded="activeExpanded.has(node.key)" @click.stop="toggleExpand(node)">
+        <svg viewBox="0 0 16 16" aria-hidden="true" :class="{ 'is-expanded': activeExpanded.has(node.key) }"><path d="m6 3 5 5-5 5" /></svg>
       </button>
       <span v-else class="epx-tree__spacer" aria-hidden="true" />
       <input v-if="showCheckbox" class="epx-tree__checkbox" type="checkbox" tabindex="-1"
@@ -21,7 +21,7 @@
         :disabled="node.disabled" @click.stop @change="checkNode(node, ($event.target as HTMLInputElement).checked)" />
       <span class="epx-tree__label"><slot :node="node" :data="node.data">{{ node.label }}</slot></span>
     </div>
-    <div v-if="!nodes.length" class="epx-tree__empty"><slot name="empty">{{ emptyText }}</slot></div>
+    <div v-if="!visibleNodes.length" class="epx-tree__empty"><slot name="empty">{{ emptyText }}</slot></div>
   </div>
 </template>
 
@@ -45,11 +45,13 @@ const props = withDefaults(defineProps<{
   expandOnClickNode?: boolean
   indent?: number
   emptyText?: string
+  filterText?: string
+  filterNodeMethod?: (value: string, data: TreeData, node: TreeNode) => boolean
   ariaLabel?: string
 }>(), {
   data: () => [], nodeKey: 'id', props: () => ({}), defaultExpandedKeys: () => [],
   defaultCheckedKeys: () => [], highlightCurrent: true, expandOnClickNode: true,
-  indent: 18, emptyText: 'No Data', ariaLabel: 'Tree'
+  filterText: '', indent: 18, emptyText: 'No Data', ariaLabel: 'Tree'
 })
 const emit = defineEmits<{
   'node-click': [data: TreeData, node: TreeNode]
@@ -88,6 +90,31 @@ const allNodes = computed(() => {
 })
 const nodeMap = computed(() => new Map(allNodes.value.map(node => [node.key, node])))
 const expanded = ref(new Set<TreeKey>())
+const query = ref(props.filterText)
+watch(() => props.filterText, value => { query.value = value })
+function filter(value: string) { query.value = value }
+const filtering = computed(() => query.value.trim().length > 0)
+const filteredKeys = computed(() => {
+  const keys = new Set<TreeKey>()
+  if (!filtering.value) return keys
+  const value = query.value.trim()
+  function visit(node: TreeNode): boolean {
+    const matches = props.filterNodeMethod
+      ? props.filterNodeMethod(value, node.data, node)
+      : node.label.toLowerCase().includes(value.toLowerCase())
+    const childMatches = node.children.map(visit).some(Boolean)
+    if (matches || childMatches) keys.add(node.key)
+    return matches || childMatches
+  }
+  nodes.value.forEach(visit)
+  return keys
+})
+const searchExpanded = ref(new Set<TreeKey>())
+watch(filteredKeys, keys => {
+  searchExpanded.value = new Set(allNodes.value.filter(node =>
+    node.children.some(child => keys.has(child.key))).map(node => node.key))
+}, { immediate: true })
+const activeExpanded = computed(() => filtering.value ? searchExpanded.value : expanded.value)
 const checked = ref(new Set<TreeKey>())
 const halfChecked = ref(new Set<TreeKey>())
 const currentKey = ref<TreeKey | null>(null)
@@ -100,7 +127,11 @@ function setElement(key: TreeKey, element: Element | ComponentPublicInstance | n
 const visibleNodes = computed(() => {
   const result: TreeNode[] = []
   function visit(list: TreeNode[]) {
-    list.forEach(node => { result.push(node); if (expanded.value.has(node.key)) visit(node.children) })
+    list.forEach(node => {
+      if (filtering.value && !filteredKeys.value.has(node.key)) return
+      result.push(node)
+      if (activeExpanded.value.has(node.key)) visit(node.children)
+    })
   }
   visit(nodes.value)
   return result
@@ -176,16 +207,16 @@ function getCurrentNode() { return currentKey.value == null ? null : nodeMap.val
 function toggleExpand(node: TreeNode) {
   if (!node.children.length) return
   focusNode(node.key)
-  if (expanded.value.has(node.key)) {
+  if (activeExpanded.value.has(node.key)) {
     let focused = focusKey.value == null ? undefined : nodeMap.value.get(focusKey.value)
     while (focused?.parentKey != null) {
       if (focused.parentKey === node.key) { focusNode(node.key); break }
       focused = nodeMap.value.get(focused.parentKey)
     }
-    expanded.value.delete(node.key)
+    activeExpanded.value.delete(node.key)
     emit('node-collapse', node.data, node)
   } else {
-    expanded.value.add(node.key)
+    activeExpanded.value.add(node.key)
     emit('node-expand', node.data, node)
   }
 }
@@ -211,11 +242,11 @@ function onKeydown(event: KeyboardEvent, node: TreeNode) {
     case 'Home': target = visibleNodes.value[0]; break
     case 'End': target = visibleNodes.value[visibleNodes.value.length - 1]; break
     case 'ArrowRight':
-      if (node.children.length && !expanded.value.has(node.key)) toggleExpand(node)
-      else target = node.children[0]
+      if (node.children.length && !activeExpanded.value.has(node.key)) toggleExpand(node)
+      else target = node.children.find(child => !filtering.value || filteredKeys.value.has(child.key))
       break
     case 'ArrowLeft':
-      if (node.children.length && expanded.value.has(node.key)) toggleExpand(node)
+      if (node.children.length && activeExpanded.value.has(node.key)) toggleExpand(node)
       else if (node.parentKey != null) target = nodeMap.value.get(node.parentKey)
       break
     case 'Enter': activate(node); break
@@ -250,5 +281,5 @@ watch(visibleNodes, list => {
   if (list.some(node => node.key === focusKey.value)) return
   focusKey.value = list[0]?.key ?? null
 }, { immediate: true })
-defineExpose({ getCheckedKeys, getCheckedNodes, getHalfCheckedKeys, getHalfCheckedNodes, setCheckedKeys, setChecked, getCurrentKey, getCurrentNode, setCurrentKey })
+defineExpose({ filter, getCheckedKeys, getCheckedNodes, getHalfCheckedKeys, getHalfCheckedNodes, setCheckedKeys, setChecked, getCurrentKey, getCurrentNode, setCurrentKey })
 </script>
