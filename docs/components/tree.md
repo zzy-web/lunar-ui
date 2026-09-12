@@ -166,4 +166,4 @@ const data = [
 
 Tab 进入树，↑/↓ 移动焦点，→ 展开或进入子节点，← 收起或返回父节点，Home/End 跳到首末可见节点，Enter 激活节点，空格切换勾选（无复选框时激活）。禁用节点可获得焦点并展开查看，但不能选中。插槽内控件保留自己的键盘操作。
 
-组件使用 `tree` / `treeitem` 语义，提供层级、展开、选中和半选状态。使用 `--epx-tree-node-height`（默认 `34px`）、`--epx-tree-node-hover-bg`、`--epx-tree-current-bg` 调整外观，颜色随明暗主题变化。
+组件使用 `tree` / `treeitem` 语义，提供层级、展开、选中和半选状态。使用 `--epx-tree-node-height`（默认沿用 `--epx-control-height`，即 `32px`）、`--epx-tree-node-hover-bg`、`--epx-tree-current-bg` 调整外观，颜色随明暗主题变化。复选框与 Checkbox、Table 共享外观，禁用节点仍保持清晰的文字与边框。

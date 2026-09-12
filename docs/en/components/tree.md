@@ -159,4 +159,4 @@ The default slot receives `{ data, node }`; `empty` overrides empty text. Types 
 
 Tab enters the tree. Up/Down move focus; Right expands or enters a child; Left collapses or moves to the parent; Home/End jump to the first/last visible node. Enter activates a node. Space checks a node, or activates it without checkboxes. Disabled nodes remain focusable and expandable but cannot be selected. Controls in node slots retain their own keyboard behavior.
 
-Tree/treeitem roles expose levels, positions, expansion, current selection and mixed checking. Customize `--epx-tree-node-height` (default `34px`), `--epx-tree-node-hover-bg` and `--epx-tree-current-bg`. Colors follow the light/dark theme.
+Tree/treeitem roles expose levels, positions, expansion, current selection and mixed checking. Customize `--epx-tree-node-height` (defaults to `--epx-control-height`, or `32px`), `--epx-tree-node-hover-bg` and `--epx-tree-current-bg`. Colors follow the light/dark theme. Checkboxes share their appearance with Checkbox and Table; disabled nodes retain readable labels and borders.

@@ -33,3 +33,6 @@
 - `--epx-border-color` / `--epx-border-color-light`：控件边框与分隔线。
 - `--epx-border-radius-base`：基础圆角。
 - `--epx-transition-duration`：过渡时长。
+- `--epx-text-color-secondary` / `--epx-text-color-disabled`：辅助文字与禁用文字，支持明暗主题。
+- `--epx-control-height`：Tree 与默认 Checkbox 的行高，默认 `32px`。
+- `--epx-control-size`：Checkbox、Tree 和 Table 的复选框尺寸，默认 `16px`。

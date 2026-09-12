@@ -33,3 +33,6 @@ Alternatively scope the dark palette to a container with `data-theme="dark"`. Fo
 - `--epx-border-color` / `--epx-border-color-light`：control and divider borders.
 - `--epx-border-radius-base`：base corner radius.
 - `--epx-transition-duration`：transition duration.
+- `--epx-text-color-secondary` / `--epx-text-color-disabled`: secondary and disabled text colors, with light/dark values.
+- `--epx-control-height`: Tree and default Checkbox row height, defaults to `32px`.
+- `--epx-control-size`: Checkbox, Tree and Table checkbox size, defaults to `16px`.
