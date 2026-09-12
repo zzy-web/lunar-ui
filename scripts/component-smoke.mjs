@@ -3,7 +3,9 @@ import { createRenderer, h, nextTick, ref } from 'vue'
 import LunarUI, { LuCheckbox, LuSwitch, LuTag, LuCalendar, LuInput, LuButton, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, EpxCheckbox, EpxSwitch, EpxTag, EpxCalendar, EpxSelect, EpxRadio, EpxRadioGroup, EpxAlert, EpxEmpty } from '../dist/index.js'
 import { LuPagination, EpxPagination, LuProgress, EpxProgress, LuDivider, EpxDivider } from '../dist/index.js'
 
+const teleportHost = { children: [] }
 const renderer = createRenderer({
+  querySelector: selector => selector === 'body' ? teleportHost : null,
   createElement: type => ({
     type, tagName: type.toUpperCase(), props: {}, children: [], listeners: {},
     addEventListener(name, handler) { this.listeners[name] = handler },
@@ -607,3 +609,164 @@ emptyTreeApp.mount(emptyTreeRoot)
 assert.match(textOf(emptyTreeRoot), /No folders yet/)
 emptyTreeApp.unmount()
 console.log('Passed: tree exports, registration, expansion, linked/strict checks, disabled descendants, slots, keyboard navigation, stable keys, data cleanup, field mapping and empty states.')
+
+const { LuTooltip, EpxTooltip, LuDropdown, EpxDropdown } = await import('../dist/index.js')
+assert.equal(LuTooltip, EpxTooltip)
+assert.equal(LuDropdown, EpxDropdown)
+assert.ok(registered.includes('LuTooltip') && registered.includes('LuDropdown'))
+const tooltipRoot = { children: [] }, tooltipDisabled = ref(false), tooltipEvents = [], tooltipUpdates = []
+let triggerClicks = 0
+const tooltipApp = renderer.createApp({ render: () => h(LuTooltip, {
+  content: 'Save changes', showAfter: 0, hideAfter: 0, disabled: tooltipDisabled.value, teleported: false,
+  onVisibleChange: value => tooltipEvents.push(value), 'onUpdate:visible': value => tooltipUpdates.push(value)
+}, { default: () => h('button', { 'aria-describedby': 'existing-help', onClick: () => triggerClicks++ }, 'Save') }) })
+tooltipApp.mount(tooltipRoot)
+const tooltipAnchor = () => findAll(tooltipRoot, n => n.props?.class === 'epx-tooltip')[0]
+const tooltipPanel = () => findAll(tooltipRoot, n => n.props?.role === 'tooltip')[0]
+const tooltipTrigger = () => findAll(tooltipRoot, n => n.type === 'button')[0]
+assert.equal(tooltipPanel(), undefined)
+tooltipAnchor().props.onMouseenter(); await nextTick()
+assert.match(textOf(tooltipPanel()), /Save changes/)
+assert.equal(tooltipTrigger().props['aria-describedby'], 'existing-help ' + tooltipPanel().props.id)
+tooltipTrigger().props.onClick()
+assert.equal(triggerClicks, 1)
+tooltipAnchor().props.onFocusin(); await nextTick()
+assert.deepEqual(tooltipUpdates, [true])
+tooltipAnchor().props.onMouseleave(); await nextTick()
+assert.ok(tooltipPanel(), 'focus keeps a tooltip open after pointer leaves')
+tooltipAnchor().props.onFocusout({ relatedTarget: null }); await nextTick()
+assert.equal(tooltipPanel(), undefined)
+assert.equal(tooltipTrigger().props['aria-describedby'], 'existing-help')
+tooltipAnchor().props.onMouseenter(); await nextTick()
+tooltipAnchor().props.onKeydown({ key: 'Escape', stopPropagation() {} }); await nextTick()
+assert.equal(tooltipPanel(), undefined)
+tooltipAnchor().props.onMouseenter(); await nextTick()
+tooltipDisabled.value = true; await nextTick()
+assert.equal(tooltipPanel(), undefined)
+tooltipAnchor().props.onFocusin(); await nextTick()
+assert.equal(tooltipPanel(), undefined)
+assert.deepEqual(tooltipEvents, [true, false, true, false, true, false])
+tooltipApp.unmount()
+
+const controlledTip = ref(false), tipControlRoot = { children: [] }, tipRequests = []
+const tipControlApp = renderer.createApp({ render: () => h(LuTooltip, {
+  content: 'Controlled', visible: controlledTip.value, teleported: false, showAfter: 0, hideAfter: 0,
+  'onUpdate:visible': value => tipRequests.push(value)
+}, { default: () => h('span', {}, 'Text trigger'), content: () => h('strong', {}, 'Slot description') }) })
+tipControlApp.mount(tipControlRoot)
+const tipControlAnchor = findAll(tipControlRoot, n => n.props?.class === 'epx-tooltip')[0]
+tipControlAnchor.props.onMouseenter(); await nextTick()
+assert.deepEqual(tipRequests, [true])
+assert.equal(findAll(tipControlRoot, n => n.props?.role === 'tooltip').length, 0)
+controlledTip.value = true; await nextTick()
+assert.match(textOf(tipControlRoot), /Slot description/)
+assert.equal(findAll(tipControlRoot, n => n.type === 'span' && n.props?.tabindex === 0).length, 1)
+tipControlApp.unmount()
+
+const delayedTip = mount(LuTooltip, { content: 'Delayed', showAfter: 15, hideAfter: 15, teleported: false })
+const delayedAnchor = findAll(delayedTip.root, n => n.props?.class === 'epx-tooltip')[0]
+delayedAnchor.props.onMouseenter(); delayedAnchor.props.onMouseleave()
+await new Promise(resolve => setTimeout(resolve, 30))
+assert.equal(findAll(delayedTip.root, n => n.props?.role === 'tooltip').length, 0)
+delayedAnchor.props.onMouseenter()
+await new Promise(resolve => setTimeout(resolve, 30)); await nextTick()
+assert.equal(findAll(delayedTip.root, n => n.props?.role === 'tooltip').length, 1)
+delayedAnchor.props.onMouseleave()
+findAll(delayedTip.root, n => n.props?.role === 'tooltip')[0].props.onMouseenter()
+await new Promise(resolve => setTimeout(resolve, 30)); await nextTick()
+assert.equal(findAll(delayedTip.root, n => n.props?.role === 'tooltip').length, 1)
+delayedTip.app.unmount()
+let unmountedTipUpdates = 0
+const pendingTip = mount(LuTooltip, { content: 'Pending', showAfter: 15, teleported: false, 'onUpdate:visible': () => unmountedTipUpdates++ })
+findAll(pendingTip.root, n => n.props?.class === 'epx-tooltip')[0].props.onMouseenter()
+pendingTip.app.unmount()
+await new Promise(resolve => setTimeout(resolve, 30))
+assert.equal(unmountedTipUpdates, 0)
+console.log('Passed: tooltip trigger preservation, focus/hover coordination, Escape, disabled state, controlled visibility, content slots and timer cleanup.')
+
+const menuRoot = { children: [] }, menuRef = ref(), menuCommands = [], menuEvents = []
+const menuDisabled = ref(false), menuHide = ref(true), menuOptions = ref([
+  { label: 'Zero', command: 0 }, { label: 'Disabled', command: 'blocked', disabled: true },
+  { label: 'Delete', command: 'delete', divided: true, danger: true }
+])
+const menuApp = renderer.createApp({ render: () => h(LuDropdown, {
+  ref: menuRef, options: menuOptions.value, disabled: menuDisabled.value, hideOnClick: menuHide.value,
+  teleported: false, 'aria-label': 'Action menu', onCommand: (...args) => menuCommands.push(args), onVisibleChange: value => menuEvents.push(value)
+}, { default: () => 'Actions', item: ({ option }) => `${option.label} action` }) })
+menuApp.mount(menuRoot)
+const menuTrigger = () => findAll(menuRoot, n => n.props?.['aria-haspopup'] === 'menu')[0]
+const menuPanel = () => findAll(menuRoot, n => n.props?.role === 'menu')[0]
+const menuItems = () => findAll(menuRoot, n => n.props?.role === 'menuitem')
+const menuKey = (key, target = menuItems()[0]) => menuPanel().props.onKeydown({ key, target, preventDefault() {}, stopPropagation() {} })
+// Allow the panel render, positioning render and focus continuation to settle.
+const settleFloating = () => new Promise(resolve => setImmediate(resolve))
+assert.equal(menuTrigger().props['aria-label'], 'Action menu')
+assert.equal(menuEvents.length, 0)
+menuTrigger().props.onKeydown({ key: 'ArrowUp', preventDefault() {} }); await settleFloating()
+assert.equal(menuTrigger().props['aria-expanded'], true)
+assert.equal(menuItems()[2].focused, true)
+assert.equal(menuPanel().props['aria-labelledby'], menuTrigger().props.id)
+assert.equal(menuTrigger().props['aria-controls'], menuPanel().props.id)
+assert.match(textOf(menuItems()[0]), /Zero action/)
+assert.equal(findAll(menuRoot, n => n.props?.role === 'separator').length, 1)
+menuItems()[0].focused = false
+menuKey('ArrowDown', menuItems()[2]); await nextTick()
+assert.equal(menuItems()[0].focused, true)
+menuItems()[2].focused = false
+menuKey('ArrowDown', menuItems()[0]); await nextTick()
+assert.equal(menuItems()[2].focused, true)
+menuItems()[1].props.onClick()
+assert.equal(menuCommands.length, 0)
+menuKey('Escape'); await nextTick()
+assert.equal(menuPanel(), undefined)
+assert.equal(menuTrigger().focused, true)
+menuRef.value.handleOpen(); await settleFloating()
+menuItems()[0].props.onClick(); await nextTick()
+assert.equal(menuCommands[0][0], 0)
+assert.equal(menuPanel(), undefined)
+menuHide.value = false
+menuRef.value.handleOpen(); await settleFloating()
+menuItems()[2].props.onClick(); await nextTick()
+assert.ok(menuPanel())
+assert.equal(menuCommands.at(-1)[0], 'delete')
+menuItems()[2].props.onFocus()
+menuItems()[0].focused = false
+menuOptions.value = menuOptions.value.slice(0, 2); await nextTick(); await nextTick()
+assert.equal(menuItems()[0].focused, true)
+menuKey('Tab'); await nextTick()
+assert.equal(menuPanel(), undefined)
+menuRef.value.handleOpen(); await nextTick()
+menuDisabled.value = true; await nextTick()
+assert.equal(menuPanel(), undefined)
+assert.equal(menuTrigger().props.disabled, true)
+menuRef.value.handleOpen(); await nextTick()
+assert.equal(menuPanel(), undefined)
+menuApp.unmount()
+
+const menuControl = ref(false), menuControlRoot = { children: [] }, menuRequests = []
+const menuControlApp = renderer.createApp({ render: () => h(LuDropdown, {
+  visible: menuControl.value, teleported: false, options: [], 'onUpdate:visible': value => menuRequests.push(value)
+}, { empty: () => 'Nothing available' }) })
+menuControlApp.mount(menuControlRoot)
+findAll(menuControlRoot, n => n.props?.['aria-haspopup'] === 'menu')[0].props.onClick(); await nextTick()
+assert.deepEqual(menuRequests, [true])
+assert.equal(findAll(menuControlRoot, n => n.props?.role === 'menu').length, 0)
+menuControl.value = true; await settleFloating()
+assert.match(textOf(menuControlRoot), /Nothing available/)
+const emptyMenu = findAll(menuControlRoot, n => n.props?.role === 'menu')[0]
+assert.equal(emptyMenu.focused, true)
+emptyMenu.props.onKeydown({ key: 'ArrowDown', preventDefault() {}, target: emptyMenu })
+menuControlApp.unmount()
+console.log('Passed: dropdown commands, disabled guards, focus return, arrow navigation, controlled state, empty menus, dynamic options and slots.')
+
+const teleportedTip = mount(LuTooltip, { content: 'Body tooltip', visible: true })
+await nextTick()
+assert.equal(findAll(teleportedTip.root, n => n.props?.role === 'tooltip').length, 0)
+assert.equal(findAll(teleportHost, n => n.props?.role === 'tooltip').length, 1)
+teleportedTip.app.unmount()
+const teleportedMenu = mount(LuDropdown, { visible: true, options: [{ label: 'Body action', command: 'body' }] })
+await nextTick()
+assert.equal(findAll(teleportHost, n => n.props?.role === 'menuitem').length, 1)
+teleportedMenu.app.unmount()
+assert.equal(teleportHost.children.length, 0)
+console.log('Passed: floating panels teleport to body and remove their nodes on unmount.')

@@ -1,5 +1,6 @@
 export const componentGroups = [
   { zh: '基础组件', en: 'Basic', items: [
+    { slug: 'dropdown', name: 'Dropdown', zh: '下拉菜单', fresh: true, description: ['操作菜单、禁用项与键盘导航', 'Action menus, disabled items and keyboard navigation'] },
     { slug: 'divider', name: 'Divider', zh: '分割线', fresh: true, description: ['水平、垂直与带文字的内容分隔', 'Horizontal, vertical and labeled separators'] },
     { slug: 'button', name: 'Button', zh: '按钮', description: ['常用操作与动作入口', 'Actions and interactions'] },
     { slug: 'card', name: 'Card', zh: '卡片', description: ['组织内容与操作', 'Content containers'] },
@@ -21,6 +22,7 @@ export const componentGroups = [
     { slug: 'empty', name: 'Empty', zh: '空状态', fresh: true, description: ['无数据说明与后续操作', 'Empty states and next actions'] }
   ] },
   { zh: '反馈组件', en: 'Feedback', items: [
+    { slug: 'tooltip', name: 'Tooltip', zh: '文字提示', fresh: true, description: ['悬停提示、焦点提示与自动定位', 'Hover and focus hints with automatic positioning'] },
     { slug: 'progress', name: 'Progress', zh: '进度条', fresh: true, description: ['任务进度、状态与不确定进度', 'Task progress, status and indeterminate loading'] },
     { slug: 'alert', name: 'Alert', zh: '提示', fresh: true, description: ['行内提示与状态反馈', 'Inline messages and feedback'] },
     { slug: 'dialog', name: 'Dialog', zh: '对话框', description: ['弹层内容与确认操作', 'Modal content and confirmation'] },
