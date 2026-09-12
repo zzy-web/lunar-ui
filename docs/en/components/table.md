@@ -241,6 +241,41 @@ Column `default` slots receive `{ row, column, index, $index }`; `header` receiv
 
 ## Additional API
 
+### Current row and row styles
+
+Click a row to make it current. Enable `highlight-current-row` to show its background. The current row is independent of checkbox selection; checkbox clicks do not change it.
+
+<DemoBlock source-label="View source">
+  <lu-table :data="users" row-key="id" highlight-current-row :current-row-key="1" size="small">
+    <lu-table-column prop="id" label="ID" sortable align="right" header-align="center" :width="80" />
+    <lu-table-column prop="name" label="Name" />
+    <lu-table-column prop="status" label="Status" />
+  </lu-table>
+  <template #source>
+
+```vue
+<lu-table :data="users" row-key="id" highlight-current-row :current-row-key="1" size="small"
+  @current-change="(row, oldRow) => console.log(row, oldRow)">
+  <lu-table-column prop="id" label="ID" sortable align="right" header-align="center" :width="80" />
+  <lu-table-column prop="name" label="Name" />
+  <lu-table-column prop="status" label="Status" />
+</lu-table>
+```
+
+  </template>
+</DemoBlock>
+
+- `size`: `small | default | large`, defaults to `default`. An inline `--epx-table-cell-padding` overrides the preset.
+- `highlightCurrentRow`: defaults to `false`. Customize the background using `--epx-table-current-row-bg`.
+- `currentRowKey`: `string | number | null`, requires `rowKey`. Applied initially and whenever the key changes; `null` clears the current row. Clicking can still change the current row.
+- `rowClassName`: a class string or `({ row, rowIndex }) => string`.
+- `rowStyle`: a style object or `({ row, rowIndex }) => CSSProperties`. Indices refer to displayed order. Stripe, hover and selection backgrounds take precedence over the row background.
+- Column `headerAlign`: `left | center | right`, falls back to `align`.
+- `current-change(row, oldRow)`: emitted when the current row object changes, including replacement with the same key. Removing the row clears it; no current row is represented by `null`.
+- `setCurrentRow(row?)`: exposed method to set or clear the current row. With `rowKey`, rows are matched by key. Sorting preserves the current row; checkbox selection methods do not affect it.
+
+### Sorting and selection
+
 - Table `height` / `maxHeight`: numbers (px) or CSS lengths; the header stays visible when scrolling.
 - Table `showHeader`: defaults to `true`.
 - Table `defaultSort`: initial `{ prop, order }`, where order is `ascending`, `descending` or `null`.

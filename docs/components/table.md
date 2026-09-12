@@ -245,6 +245,43 @@ const users = [
 
 ## 新增 API
 
+### 当前行与行样式
+
+点击行会更新当前行，`highlight-current-row` 开启高亮。当前行与复选框多选独立；复选框点击不会切换当前行。
+
+<DemoBlock>
+  <lu-table :data="users" row-key="id" highlight-current-row :current-row-key="1" size="small"
+    :row-style="({ row }) => ({ color: row.status === '离线' ? 'var(--epx-text-color-secondary)' : undefined })">
+    <lu-table-column prop="id" label="ID" sortable align="right" header-align="center" :width="80" />
+    <lu-table-column prop="name" label="姓名" />
+    <lu-table-column prop="status" label="状态" />
+  </lu-table>
+  <template #source>
+
+```vue
+<lu-table :data="users" row-key="id" highlight-current-row :current-row-key="1" size="small"
+  :row-style="({ row }) => ({ color: row.status === '离线' ? 'var(--epx-text-color-secondary)' : undefined })"
+  @current-change="(row, oldRow) => console.log(row, oldRow)">
+  <lu-table-column prop="id" label="ID" sortable align="right" header-align="center" :width="80" />
+  <lu-table-column prop="name" label="姓名" />
+  <lu-table-column prop="status" label="状态" />
+</lu-table>
+```
+
+  </template>
+</DemoBlock>
+
+- `size`：`small | default | large`，默认 `default`。内联 `--epx-table-cell-padding` 可覆盖尺寸预设。
+- `highlightCurrentRow`：是否高亮当前行，默认 `false`；通过 `--epx-table-current-row-bg` 自定义高亮背景。
+- `currentRowKey`：`string | number | null`，需要 `rowKey`。初始化或值变化时定位当前行，传入 `null` 清除；点击仍可切换当前行。
+- `rowClassName`：类名字符串或 `({ row, rowIndex }) => string`。
+- `rowStyle`：样式对象或 `({ row, rowIndex }) => CSSProperties`。索引为排序后的显示索引；斑马纹、悬停与选中背景优先于行背景。
+- Column `headerAlign`：`left | center | right`，默认沿用 `align`。
+- `current-change(row, oldRow)`：当前行对象变化时触发，未选中为 `null`；同 key 对象替换也触发，移除当前行时清空。
+- `setCurrentRow(row?)`：通过组件 ref 设置当前行，省略参数清空；设置 `rowKey` 时按 key 匹配。排序不会改变当前行，多选方法不影响当前行。
+
+### 排序与多选
+
 - Table `height` / `maxHeight`：数字（px）或 CSS 长度；滚动时固定表头。
 - Table `showHeader`：是否显示表头，默认 `true`。
 - Table `defaultSort`：初始排序 `{ prop, order }`，`order` 为 `ascending`、`descending` 或 `null`。

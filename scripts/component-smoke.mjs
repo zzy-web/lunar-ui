@@ -442,3 +442,47 @@ assert.match(textOf(emptyRoot), /Nothing here/)
 assert.equal(findAll(emptyRoot, n => n.type === 'thead').length, 0)
 emptyApp.unmount()
 console.log('Passed: table custom sorting, formatter, legacy slots, row click and custom empty state.')
+
+const currentData = ref([{ id: 0 }, { id: 1 }, { id: 2 }]), currentKey = ref(0)
+const currentRoot = { children: [] }, currentRef = ref(), currentEvents = [], currentClicks = []
+const currentApp = renderer.createApp({ render: () => h(LuTable, {
+  ref: currentRef, data: currentData.value, rowKey: 'id', currentRowKey: currentKey.value,
+  highlightCurrentRow: true, stripe: true, size: 'small',
+  rowClassName: ({ rowIndex }) => `row-${rowIndex}`,
+  rowStyle: ({ row }) => ({ color: row.id === 1 ? 'red' : 'inherit' }),
+  onCurrentChange: (row, oldRow) => currentEvents.push([row, oldRow]),
+  onRowClick: (row, index) => currentClicks.push([row.id, index])
+}, { default: () => [h(LuTableColumn, { prop: 'id', sortable: true, align: 'right', headerAlign: 'center' })] }) })
+currentApp.mount(currentRoot)
+const currentRows = () => findAll(currentRoot, n => n.type === 'tbody')[0].children.filter(n => n.type === 'tr')
+assert.match(currentRoot.children[0].props.class, /epx-table--small/)
+assert.match(currentRows()[0].props.class, /is-current/)
+assert.equal(findAll(currentRoot, n => n.type === 'th')[0].props.style.textAlign, 'center')
+assert.equal(findAll(currentRoot, n => n.type === 'td')[0].props.style.textAlign, 'right')
+assert.equal(currentRows()[1].props.style.color, 'red')
+currentRows()[1].props.onClick({}); await nextTick()
+assert.deepEqual(currentEvents.at(-1).map(row => row?.id), [1, 0])
+assert.deepEqual(currentClicks.at(-1), [1, 1])
+const eventCount = currentEvents.length
+currentRows()[1].props.onClick({}); await nextTick()
+assert.equal(currentEvents.length, eventCount)
+currentRef.value.sort('id', 'descending'); await nextTick()
+assert.match(currentRows()[1].props.class, /is-current/)
+assert.match(currentRows()[0].props.class, /row-0/)
+const oldCurrent = currentData.value[1]
+currentData.value = currentData.value.map(row => ({ ...row })); await nextTick()
+assert.equal(currentEvents.at(-1)[0], currentData.value[1])
+assert.equal(currentEvents.at(-1)[1], oldCurrent)
+currentData.value = currentData.value.filter(row => row.id !== 1); await nextTick()
+assert.equal(currentEvents.at(-1)[0], null)
+assert.ok(currentRows().every(row => !row.props.class.includes('is-current')))
+currentKey.value = 2; await nextTick()
+assert.match(currentRows()[0].props.class, /is-current/)
+currentRef.value.setCurrentRow(); await nextTick()
+assert.equal(currentEvents.at(-1)[0], null)
+currentRef.value.setCurrentRow({ id: 0 }); await nextTick()
+assert.equal(currentEvents.at(-1)[0], currentData.value[0])
+currentKey.value = null; await nextTick()
+assert.equal(currentEvents.at(-1)[0], null)
+currentApp.unmount()
+console.log('Passed: table current row, zero key, click events, sorting, replacement/removal, external key updates, clearing, size and row/header customization.')

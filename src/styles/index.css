@@ -225,7 +225,7 @@ html.dark,
   color: var(--epx-text-color-regular);
   font-weight: 600;
 }
-.epx-table__inner > tbody > tr > td { transition: background-color var(--epx-transition-duration); }
+.epx-table__inner > tbody > tr > td { background: inherit; transition: background-color var(--epx-transition-duration); }
 .epx-table--border { border: 1px solid var(--epx-border-color-light); }
 .epx-table--border > .epx-table__inner > thead > tr > th:not(:last-child),
 .epx-table--border > .epx-table__inner > tbody > tr > td:not(:last-child) { border-right: 1px solid var(--epx-border-color-light); }
@@ -292,3 +292,6 @@ html.dark,
 .epx-table input[type="checkbox"]:disabled { cursor: not-allowed; }
 .epx-table > .epx-table__inner > tbody > tr.is-selected > td { background: var(--epx-color-primary-light-9); }
 .epx-table__overflow { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.epx-table--small { --epx-table-cell-padding: 8px 12px; }
+.epx-table--large { --epx-table-cell-padding: 18px 20px; }
+.epx-table > .epx-table__inner > tbody > tr.is-current > td { background: var(--epx-table-current-row-bg, var(--epx-color-primary-light-9)); }

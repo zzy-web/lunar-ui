@@ -1,10 +1,10 @@
 <template>
-  <div class="epx-table" :class="{ 'epx-table--border': border, 'epx-table--stripe': stripe, 'epx-table--scroll': height != null || maxHeight != null }" :style="{ height: toSize(height), maxHeight: toSize(maxHeight) }">
+  <div class="epx-table" :class="[{ 'epx-table--border': border, 'epx-table--stripe': stripe, 'epx-table--scroll': height != null || maxHeight != null }, `epx-table--${size}`]" :style="{ height: toSize(height), maxHeight: toSize(maxHeight) }">
     <table class="epx-table__inner">
       <colgroup><col v-for="column in columns" :key="column.key" :style="{ width: toSize(column.width ?? (column.type === 'selection' || column.type === 'index' ? 56 : undefined)) }" /></colgroup>
       <thead v-if="showHeader">
         <tr>
-          <th v-for="column in columns" :key="column.key" scope="col" :style="getCellStyle(column)" :aria-sort="column.sortable ? (sortState.prop === column.prop && sortState.order ? sortState.order : 'none') : undefined">
+          <th v-for="column in columns" :key="column.key" scope="col" :style="getCellStyle(column, true)" :aria-sort="column.sortable ? (sortState.prop === column.prop && sortState.order ? sortState.order : 'none') : undefined">
             <input v-if="column.type === 'selection'" type="checkbox" aria-label="Select all rows" :checked="allSelected(column)" :indeterminate="someSelected(column)" :disabled="!eligibleRows(column).length" @change="toggleAllSelection(column)" />
             <button v-else-if="column.sortable" type="button" class="epx-table__sort" @click="cycleSort(column)">
               <CellContent :column="column" :header="true" /><span aria-hidden="true">{{ sortState.prop === column.prop && sortState.order ? (sortState.order === 'ascending' ? '↑' : '↓') : '↕' }}</span>
@@ -14,7 +14,7 @@
         </tr>
       </thead>
       <tbody v-if="displayData.length">
-        <tr v-for="(row, rowIndex) in displayData" :key="rowKey ? String(getRowKey(row)) : data.indexOf(row)" :class="{ 'is-selected': isSelected(row) }" @click="emit('row-click', row, rowIndex, $event)">
+        <tr v-for="(row, rowIndex) in displayData" :key="rowKey ? getRowKey(row) as string | number : data.indexOf(row)" :class="[{ 'is-selected': isSelected(row), 'is-current': highlightCurrentRow && currentRow === row }, typeof rowClassName === 'function' ? rowClassName({ row, rowIndex }) : rowClassName]" :style="typeof rowStyle === 'function' ? rowStyle({ row, rowIndex }) : rowStyle" @click="handleRowClick(row, rowIndex, $event)">
           <td v-for="column in columns" :key="column.key" :style="getCellStyle(column)">
             <input v-if="column.type === 'selection'" type="checkbox" :aria-label="`Select row ${rowIndex + 1}`" :checked="isSelected(row)" :disabled="!canSelect(row, column)" @click.stop @change="toggleRowSelection(row, undefined, column)" />
             <span v-else-if="column.type === 'index'">{{ typeof column.index === 'function' ? column.index(rowIndex) : rowIndex + (column.index ?? 1) }}</span>
@@ -30,11 +30,11 @@
 </template>
 
 <script setup lang="ts">
-import { toRef, Fragment, isVNode, ref, useSlots, watch } from 'vue'
+import { toRef, Fragment, isVNode, ref, shallowRef, useSlots, watch } from 'vue'
 import type { CSSProperties, Slots, VNode, VNodeChild } from 'vue'
 import TableColumnComponent from './table-column.vue'
 import { getTableValue } from './types'
-import type { TableColumnProps, TableRow, TableSortOrder } from './types'
+import type { TableColumnProps, TableRow, TableSortOrder, TableRowClassName, TableRowStyle } from './types'
 
 defineOptions({ name: 'LuTable' })
 type Column = TableColumnProps & { key: string; slots?: Slots }
@@ -48,13 +48,19 @@ const props = withDefaults(defineProps<{
   maxHeight?: string | number
   showHeader?: boolean
   defaultSort?: { prop: string; order: TableSortOrder }
-}>(), { data: () => [], emptyText: 'No Data', showHeader: true })
+  size?: 'small' | 'default' | 'large'
+  highlightCurrentRow?: boolean
+  currentRowKey?: string | number | null
+  rowClassName?: TableRowClassName
+  rowStyle?: TableRowStyle
+}>(), { data: () => [], emptyText: 'No Data', showHeader: true, size: 'default' })
 const emit = defineEmits<{
   'sort-change': [value: { prop: string | undefined; order: TableSortOrder }]
   'selection-change': [selection: TableRow[]]
   'select': [selection: TableRow[], row: TableRow]
   'select-all': [selection: TableRow[]]
   'row-click': [row: TableRow, index: number, event: MouseEvent]
+  'current-change': [currentRow: TableRow | null, oldCurrentRow: TableRow | null]
 }>()
 const slots = useSlots()
 // Read declaration slots during render, so reactive v-if/v-for columns stay current.
@@ -73,6 +79,27 @@ function readColumns(nodes: VNode[], prefix = ''): Column[] {
 const columns = toRef(() => readColumns(slots.default?.() || []))
 const sortState = ref<{ prop: string | undefined; order: TableSortOrder }>({ prop: props.defaultSort?.prop, order: props.defaultSort?.order ?? null })
 const selectedKeys = ref(new Set<unknown>())
+const currentRow = shallowRef<TableRow | null>(null)
+function setCurrentRow(row?: TableRow | null) {
+  const next = row == null ? null : props.data.find(candidate => getRowKey(candidate) === getRowKey(row)) ?? null
+  const previous = currentRow.value
+  if (next === previous) return
+  currentRow.value = next
+  emit('current-change', next, previous)
+}
+function handleRowClick(row: TableRow, index: number, event: MouseEvent) {
+  setCurrentRow(row)
+  emit('row-click', row, index, event)
+}
+watch(() => props.currentRowKey, key => {
+  setCurrentRow(key != null && props.rowKey ? props.data.find(row => getRowKey(row) === key) : null)
+}, { immediate: true })
+watch(() => props.data.map(getRowKey), () => {
+  if (currentRow.value) setCurrentRow(currentRow.value)
+  else if (props.currentRowKey != null && props.rowKey) {
+    setCurrentRow(props.data.find(row => getRowKey(row) === props.currentRowKey))
+  }
+})
 function getRowKey(row: TableRow) {
   if (typeof props.rowKey === 'function') return props.rowKey(row)
   return props.rowKey ? getTableValue(row, props.rowKey) as string | number : row
@@ -135,12 +162,12 @@ function sortedData(): TableRow[] {
 }
 const displayData = toRef(sortedData)
 function toSize(value?: string | number) { return typeof value === 'number' || (typeof value === 'string' && /^\d+(\.\d+)?$/.test(value)) ? `${value}px` : value }
-function getCellStyle(column: Column): CSSProperties { return { textAlign: column.align } }
+function getCellStyle(column: Column, header = false): CSSProperties { return { textAlign: header ? column.headerAlign ?? column.align : column.align } }
 function CellContent({ column, row, index = 0, header = false }: { column: Column; row?: TableRow; index?: number; header?: boolean }): VNodeChild {
   if (header) return column.slots?.header?.({ column }) ?? column.label
   if (!row) return ''
   const scope = { row, column, index, $index: index }
   return column.slots?.default?.(scope) ?? (column.prop ? slots[column.prop]?.(scope) : undefined) ?? column.formatter?.(row, column, getTableValue(row, column.prop), index) ?? String(getTableValue(row, column.prop) ?? '')
 }
-defineExpose({ clearSelection, toggleRowSelection, toggleAllSelection, getSelectionRows, sort, clearSort })
+defineExpose({ clearSelection, toggleRowSelection, toggleAllSelection, getSelectionRows, sort, clearSort, setCurrentRow })
 </script>

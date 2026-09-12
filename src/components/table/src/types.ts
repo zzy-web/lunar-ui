@@ -1,12 +1,16 @@
-import type { VNodeChild } from 'vue'
+import type { CSSProperties, VNodeChild } from 'vue'
 
 export type TableRow = Record<string, unknown>
 export type TableSortOrder = 'ascending' | 'descending' | null
+export interface TableRowScope { row: TableRow; rowIndex: number }
+export type TableRowClassName = string | ((scope: TableRowScope) => string)
+export type TableRowStyle = CSSProperties | ((scope: TableRowScope) => CSSProperties)
 export interface TableColumnProps {
   prop?: string
   label?: string
   width?: string | number
   align?: 'left' | 'center' | 'right'
+  headerAlign?: 'left' | 'center' | 'right'
   type?: 'default' | 'selection' | 'index'
   index?: number | ((index: number) => number | string)
   sortable?: boolean | 'custom'
