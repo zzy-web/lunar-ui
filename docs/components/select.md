@@ -1,9 +1,10 @@
 # Select 选择器
 
-从预设选项中选择值，支持单选、多选、清空、禁用与加载状态。使用原生 select，保留浏览器键盘操作和移动端选择体验。
+从预设选项中选择值，支持单选、多选标签、搜索、清空、禁用与加载状态。下拉面板使用统一主题样式，并支持键盘操作。
 
 <script setup>
 import { ref } from 'vue'
+const searchValue = ref(undefined)
 const value = ref(undefined)
 const multiple = ref([1])
 const options = [{ label: 'Design', value: 1 }, { label: 'Engineering', value: 2 }, { label: 'Archived', value: 3, disabled: true }]
@@ -77,12 +78,29 @@ const options = [{ label: 'Design', value: 1 }, { label: 'Engineering', value: 2
 </template>
 </DemoBlock>
 
+## 搜索选项
+
+设置 `filterable` 可按选项标签搜索，不区分大小写。多选无需按住 Ctrl / Command，点击选项即可切换，点击标签关闭按钮可移除。
+
+<DemoBlock>
+<lu-select v-model="searchValue" :options="options" filterable clearable aria-label="Search teams" placeholder="Search teams" />
+<template #source>
+
+```vue
+<lu-select v-model="searchValue" :options="options" filterable clearable placeholder="Search teams" />
+```
+
+</template>
+</DemoBlock>
+
 ## Props
 
 | 属性 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | `modelValue` | `SelectValue \| SelectValue[]` | `undefined` | 绑定值；SelectValue 为 string 或 number。 |
 | `options` | `SelectOption[]` | `[]` | 选项数组，每项包含 label、value 和可选 disabled。 |
+| `filterable` | `boolean` | `false` | 是否允许输入搜索选项。 |
+| `noMatchText` | `string` | `无匹配选项` | 搜索无结果时的提示。 |
 | `multiple` | `boolean` | `false` | 多选模式。 |
 | `clearable` | `boolean` | `false` | 显示清空按钮。 |
 | `disabled` | `boolean` | `false` | 是否禁用。 |
@@ -112,4 +130,4 @@ const options = [{ label: 'Design', value: 1 }, { label: 'Engineering', value: 2
 
 ## 使用说明
 
-清空单选值为 `undefined`，多选值为 `[]`。可从库入口导入 `SelectOption` 和 `SelectValue`。本组件采用原生 select，暂不提供搜索、远程筛选或虚拟滚动；多选时按住 Ctrl / Command 可选择多项。选项值应唯一，避免混用数值 `1` 和字符串 `"1"`。
+清空单选值为 `undefined`，多选值为 `[]`。方向键跳过禁用项，Enter 选择，Escape / Tab 关闭；下拉面板展开时 Home / End 定位首末可用项。多选后面板保持展开。选项值应唯一，保留字符串或数字类型。可从入口导入 `SelectOption` 和 `SelectValue`。暂不提供远程搜索或虚拟滚动。

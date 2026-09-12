@@ -174,17 +174,17 @@ const teamApp = renderer.createApp({
 })
 teamApp.mount(teamRoot)
 const teamSelect = findAll(teamRoot, node => node.type === 'select')[0]
-assert.equal(teamSelect.props['aria-label'], 'Team')
+assert.equal(findAll(teamRoot, node => node.props?.role === 'combobox')[0].props['aria-label'], 'Team')
 assert.equal(teamSelect.options.find(option => option._value === 1).selected, true)
 for (const option of teamSelect.options) option.selected = option._value === 2
 teamSelect.listeners.change()
 await nextTick()
 assert.equal(selectedTeam.value, 2)
 assert.equal(typeof selectedTeam.value, 'number')
-findAll(teamRoot, node => node.type === 'button')[0].props.onClick()
+findAll(teamRoot, node => node.props?.class === 'epx-select__clear')[0].props.onClick({ stopPropagation() {} })
 await nextTick()
 assert.equal(selectedTeam.value, undefined)
-assert.equal(teamSelect.focused, true)
+assert.equal(findAll(teamRoot, node => node.props?.role === 'combobox')[0].focused, true)
 assert.equal(teamSelect.options[0].selected, true)
 teamApp.unmount()
 const multi = mount(LuSelect, { modelValue: [1, 2], options: selectOptions, multiple: true, clearable: true,
@@ -194,7 +194,7 @@ assert.deepEqual(multiSelect.options.filter(option => option.selected).map(optio
 for (const option of multiSelect.options) option.selected = option._value === 2
 multiSelect.listeners.change()
 assert.deepEqual(teamUpdates.at(-1), [2])
-findAll(multi.root, node => node.type === 'button')[0].props.onClick()
+findAll(multi.root, node => node.props?.class === 'epx-select__clear')[0].props.onClick({ stopPropagation() {} })
 assert.deepEqual(teamUpdates.at(-1), [])
 multi.app.unmount()
 for (const state of [{ disabled: true }, { loading: true }]) {
@@ -812,3 +812,29 @@ const customSearch = mount(LuTree, {
 assert.deepEqual(findAll(customSearch.root, n => n.props?.role === 'treeitem').map(n => n.props['aria-label']), ['Parent', 'Child'])
 customSearch.app.unmount()
 console.log('Passed: tree search, ancestor expansion, keyboard navigation, empty results, state restoration, reactive data and custom filtering.')
+
+const customValue = ref(1), selectPopupRoot = { children: [] }
+const selectPopupApp = renderer.createApp({ render: () => h(LuSelect, {
+  modelValue: customValue.value, options: selectOptions, filterable: true,
+  'onUpdate:modelValue': value => { customValue.value = value }
+}) })
+selectPopupApp.mount(selectPopupRoot)
+const combo = findAll(selectPopupRoot, node => node.props?.role === 'combobox')[0]
+const pressSelect = key => combo.props.onKeydown({ key, preventDefault() {} })
+pressSelect('ArrowDown'); await nextTick()
+assert.equal(combo.props['aria-expanded'], true)
+pressSelect('ArrowDown'); pressSelect('Enter'); await nextTick()
+assert.equal(customValue.value, 2)
+assert.equal(combo.props['aria-expanded'], false)
+combo.props.onInput({ target: { value: 'missing' } }); await nextTick()
+assert.match(textOf(teleportHost), /无匹配选项/)
+combo.props.onInput({ target: { value: 'One' } }); await nextTick()
+assert.equal(findAll(teleportHost, n => n.props?.role === 'option').length, 1)
+pressSelect('Enter'); await nextTick()
+assert.equal(customValue.value, 1)
+pressSelect('ArrowDown'); await nextTick()
+pressSelect('End'); pressSelect('Enter'); await nextTick()
+assert.equal(customValue.value, 2)
+selectPopupApp.unmount()
+assert.equal(findAll(teleportHost, n => n.props?.role === 'listbox').length, 0)
+console.log('Passed: select custom popup, keyboard selection, disabled option skipping, search and popup cleanup.')
