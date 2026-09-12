@@ -49,8 +49,10 @@ const page = ref(1)
 
 ## Events
 
-- `update:currentPage(value: number)`: emitted when a user selects a different valid page.
-- `change(value: number)`: emitted alongside the model update.
+| Event | Parameters | Description |
+| --- | --- | --- |
+| `update:currentPage` | `value: number` | emitted when a user selects a different valid page. |
+| `change` | `value: number` | emitted alongside the model update. |
 
 ## Usage notes
 

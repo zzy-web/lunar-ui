@@ -57,7 +57,9 @@ const percentage = ref(40)
 
 ## Slots
 
-The default slot receives `{ percentage: number }` and replaces the progress text. It is hidden when `:show-text="false"`.
+| Slot | Scope | Description |
+| --- | --- | --- |
+| `default` | `{ percentage: number }` | The default slot receives `{ percentage: number }` and replaces the progress text. It is hidden when `:show-text="false"`. |
 
 ## Accessibility
 

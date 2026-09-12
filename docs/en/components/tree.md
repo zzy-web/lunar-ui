@@ -124,34 +124,58 @@ Use `node-key` for the key field and `props` to map other fields. The default sl
 
 ## Props
 
-- `data: TreeData[]`: node data, defaults to `[]`.
-- `nodeKey: string`: unique key field, defaults to `id`.
-- `props: TreeFieldNames`: field mappings, defaults to `{ label: 'label', children: 'children', disabled: 'disabled' }`.
-- `showCheckbox: boolean`: show checkboxes, defaults to `false`.
-- `checkStrictly: boolean`: independent checks, defaults to `false`.
-- `defaultExpandAll: boolean`: initially expand every branch, defaults to `false`.
-- `defaultExpandedKeys: TreeKey[]`: initially expanded keys, defaults to `[]`; ancestors are expanded too.
-- `defaultCheckedKeys: TreeKey[]`: initially checked keys, defaults to `[]`; disabled and unknown keys are ignored.
-- `currentNodeKey: TreeKey | null`: applied initially and when its value changes; `null` clears selection. Clicking can still change the current node.
-- `highlightCurrent: boolean`: highlight the current node, defaults to `true`.
-- `expandOnClickNode: boolean`: label clicks toggle expansion, defaults to `true`; arrows remain available when disabled.
-- `indent: number`: indentation per level in pixels, defaults to `18`.
-- `emptyText: string`: defaults to `No Data`.
-- `ariaLabel: string`: accessible tree name, defaults to `Tree`.
+| Attribute | Type | Default | Description |
+| --- | --- | --- | --- |
+| `data` | `TreeData[]` | `[]` | node data, defaults to `[]`. |
+| `nodeKey` | `string` | `'id'` | unique key field, defaults to `id`. |
+| `props` | `TreeFieldNames` | `{ label: 'label', children: 'children', disabled: 'disabled' }` | field mappings, defaults to `{ label: 'label', children: 'children', disabled: 'disabled' }`. |
+| `showCheckbox` | `boolean` | `false` | show checkboxes, defaults to `false`. |
+| `checkStrictly` | `boolean` | `false` | independent checks, defaults to `false`. |
+| `defaultExpandAll` | `boolean` | `false` | initially expand every branch, defaults to `false`. |
+| `defaultExpandedKeys` | `TreeKey[]` | `[]` | initially expanded keys, defaults to `[]`; ancestors are expanded too. |
+| `defaultCheckedKeys` | `TreeKey[]` | `[]` | initially checked keys, defaults to `[]`; disabled and unknown keys are ignored. |
+| `currentNodeKey` | `TreeKey \| null` | `undefined` | applied initially and when its value changes; `null` clears selection. Clicking can still change the current node. |
+| `highlightCurrent` | `boolean` | `true` | highlight the current node, defaults to `true`. |
+| `expandOnClickNode` | `boolean` | `true` | label clicks toggle expansion, defaults to `true`; arrows remain available when disabled. |
+| `indent` | `number` | `18` | indentation per level in pixels, defaults to `18`. |
+| `emptyText` | `string` | `'No Data'` | defaults to `No Data`. |
+| `ariaLabel` | `string` | `'Tree'` | accessible tree name, defaults to `Tree`. |
 
 Expansion and check defaults apply only on initialization. Data updates retain existing keys, remove invalid state and recalculate parents. New nodes start unchecked. Methods return fresh data after objects are replaced with the same keys. Input data is never mutated.
 
 ## Events
 
-- `node-click(data, node)`: enabled node activated.
-- `node-expand(data, node)` / `node-collapse(data, node)`: expansion toggled.
-- `current-change(data, node)`: current key changed; both arguments are `null` when cleared.
-- `check(data, state)`: a user checks via checkbox or Space. State includes `checkedKeys`, `checkedNodes`, `halfCheckedKeys` and `halfCheckedNodes`.
-- `check-change(data, checked, indeterminate)`: each node whose checked or mixed state changed, including linked nodes and method calls. Initialization does not emit this event.
+| Event | Parameters | Description |
+| --- | --- | --- |
+| `node-click` | `data, node` | enabled node activated. |
+| `node-expand` | `data, node` | expansion toggled. |
+| `node-collapse` | `data, node` | expansion toggled. |
+| `current-change` | `data, node` | current key changed; both arguments are `null` when cleared. |
+| `check` | `data, state` | a user checks via checkbox or Space. State includes `checkedKeys`, `checkedNodes`, `halfCheckedKeys` and `halfCheckedNodes`. |
+| `check-change` | `data, checked, indeterminate` | each node whose checked or mixed state changed, including linked nodes and method calls. Initialization does not emit this event. |
 
-## Methods and slots
+## Methods
+
+| Method | Signature | Description |
+| --- | --- | --- |
+| `getCheckedKeys` | `(leafOnly?: boolean) => TreeKey[]` | Read checked keys, optionally leaves only. |
+| `getCheckedNodes` | `(leafOnly?: boolean) => TreeData[]` | Read checked node data. |
+| `getHalfCheckedKeys` | `() => TreeKey[]` | Read indeterminate keys. |
+| `getHalfCheckedNodes` | `() => TreeData[]` | Read indeterminate node data. |
+| `setCheckedKeys` | `(keys: TreeKey[]) => void` | Set checked keys; [] clears checks. |
+| `setChecked` | `(key: TreeKey, checked: boolean) => void` | Set a node check, respecting disabled and linkage settings. |
+| `getCurrentKey` | `() => TreeKey \| null` | Read the current key. |
+| `getCurrentNode` | `() => TreeData \| null` | Read current node data. |
+| `setCurrentKey` | `(key?: TreeKey \| null) => void` | Set the current node; omit the key to clear. |
 
 Call these through a component ref: `getCheckedKeys(leafOnly?)`, `getCheckedNodes(leafOnly?)`, `getHalfCheckedKeys()`, `getHalfCheckedNodes()`, `setCheckedKeys(keys)`, `setChecked(key, checked)`, `getCurrentKey()`, `getCurrentNode()` and `setCurrentKey(key?)`. Setters respect disabled state. Use `setCheckedKeys([])` to clear checks and `setCurrentKey()` to clear the current node.
+
+## Slots
+
+| Slot | Scope | Description |
+| --- | --- | --- |
+| `default` | `{ data: TreeData, node: TreeNode }` | Custom node content. |
+| `empty` | — | Custom empty state, overriding emptyText. |
 
 The default slot receives `{ data, node }`; `empty` overrides empty text. Types `TreeKey`, `TreeData`, `TreeNode`, `TreeFieldNames` and `TreeCheckState` are exported. `EpxTree` is an alias of `LuTree`.
 

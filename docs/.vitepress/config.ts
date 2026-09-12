@@ -38,6 +38,13 @@ export default defineConfig({
   base: '/lunar-ui/',
   outDir: '.vitepress/dist',
   lastUpdated: true,
+  markdown: {
+    config(md) {
+      // Keep scrolling on a wrapper so the table itself can fill the article width.
+      md.renderer.rules.table_open = () => '<div class="lu-api-table" tabindex="0"><table>\n'
+      md.renderer.rules.table_close = () => '</table></div>\n'
+    }
+  },
   themeConfig: {
     search: {
       provider: 'local',

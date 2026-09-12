@@ -44,4 +44,6 @@ Separate content with horizontal, vertical, dashed or labeled dividers.
 
 ## Slots
 
-The default slot provides horizontal divider content; vertical mode does not render it. Includes separator semantics and orientation. This component emits no events.
+| Slot | Scope | Description |
+| --- | --- | --- |
+| `default` | — | The default slot provides horizontal divider content; vertical mode does not render it. Includes separator semantics and orientation. This component emits no events. |

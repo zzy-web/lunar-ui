@@ -49,8 +49,10 @@ const page = ref(1)
 
 ## 事件
 
-- `update:currentPage(value: number)`：用户选择不同且有效的页码时触发。
-- `change(value: number)`：与绑定值更新同时触发。
+| 事件名 | 参数 | 说明 |
+| --- | --- | --- |
+| `update:currentPage` | `value: number` | 用户选择不同且有效的页码时触发。 |
+| `change` | `value: number` | 与绑定值更新同时触发。 |
 
 ## 使用说明
 

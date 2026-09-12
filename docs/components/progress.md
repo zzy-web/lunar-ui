@@ -57,7 +57,9 @@ const percentage = ref(40)
 
 ## 插槽
 
-默认插槽接收 `{ percentage: number }`，可替换进度文字；`:show-text="false"` 时隐藏。
+| 插槽名 | 参数 | 说明 |
+| --- | --- | --- |
+| `default` | `{ percentage: number }` | 默认插槽接收 `{ percentage: number }`，可替换进度文字；`:show-text="false"` 时隐藏。 |
 
 ## 无障碍
 

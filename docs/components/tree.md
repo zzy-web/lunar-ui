@@ -131,34 +131,58 @@ const data = [
 
 ## Props
 
-- `data: TreeData[]`：节点数据，默认 `[]`。
-- `nodeKey: string`：唯一 key 字段，默认 `id`。
-- `props: TreeFieldNames`：字段映射，默认 `{ label: 'label', children: 'children', disabled: 'disabled' }`。
-- `showCheckbox: boolean`：显示复选框，默认 `false`。
-- `checkStrictly: boolean`：父子独立勾选，默认 `false`。
-- `defaultExpandAll: boolean`：初始化展开全部节点，默认 `false`。
-- `defaultExpandedKeys: TreeKey[]`：初始展开的 key，默认 `[]`，同时展开其祖先。
-- `defaultCheckedKeys: TreeKey[]`：初始勾选的 key，默认 `[]`，忽略禁用节点和不存在的 key。
-- `currentNodeKey: TreeKey | null`：初始化及值变化时设置当前节点，`null` 清空；用户点击仍可切换。
-- `highlightCurrent: boolean`：高亮当前节点，默认 `true`。
-- `expandOnClickNode: boolean`：点击标签切换展开，默认 `true`；关闭后仍可使用箭头展开。
-- `indent: number`：每级缩进像素，默认 `18`。
-- `emptyText: string`：空状态文本，默认 `No Data`。
-- `ariaLabel: string`：树的无障碍名称，默认 `Tree`。
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `data` | `TreeData[]` | `[]` | 节点数据，默认 `[]`。 |
+| `nodeKey` | `string` | `'id'` | 唯一 key 字段，默认 `id`。 |
+| `props` | `TreeFieldNames` | `{ label: 'label', children: 'children', disabled: 'disabled' }` | 字段映射，默认 `{ label: 'label', children: 'children', disabled: 'disabled' }`。 |
+| `showCheckbox` | `boolean` | `false` | 显示复选框，默认 `false`。 |
+| `checkStrictly` | `boolean` | `false` | 父子独立勾选，默认 `false`。 |
+| `defaultExpandAll` | `boolean` | `false` | 初始化展开全部节点，默认 `false`。 |
+| `defaultExpandedKeys` | `TreeKey[]` | `[]` | 初始展开的 key，默认 `[]`，同时展开其祖先。 |
+| `defaultCheckedKeys` | `TreeKey[]` | `[]` | 初始勾选的 key，默认 `[]`，忽略禁用节点和不存在的 key。 |
+| `currentNodeKey` | `TreeKey \| null` | `undefined` | 初始化及值变化时设置当前节点，`null` 清空；用户点击仍可切换。 |
+| `highlightCurrent` | `boolean` | `true` | 高亮当前节点，默认 `true`。 |
+| `expandOnClickNode` | `boolean` | `true` | 点击标签切换展开，默认 `true`；关闭后仍可使用箭头展开。 |
+| `indent` | `number` | `18` | 每级缩进像素，默认 `18`。 |
+| `emptyText` | `string` | `'No Data'` | 空状态文本，默认 `No Data`。 |
+| `ariaLabel` | `string` | `'Tree'` | 树的无障碍名称，默认 `Tree`。 |
 
 默认展开和勾选仅在初始化时应用。数据更新时保留仍存在的 key，移除失效状态并重新计算父节点；新增节点默认未勾选。同 key 数据替换后查询方法返回新数据。组件不会修改传入的节点数据。
 
 ## 事件
 
-- `node-click(data, node)`：点击可用节点。
-- `node-expand(data, node)` / `node-collapse(data, node)`：切换展开状态。
-- `current-change(data, node)`：当前 key 变化，清空时两个参数均为 `null`。
-- `check(data, state)`：用户通过复选框或空格勾选，`state` 包含 `checkedKeys`、`checkedNodes`、`halfCheckedKeys`、`halfCheckedNodes`。
-- `check-change(data, checked, indeterminate)`：每个勾选或半选状态变化的节点，包括联动节点；方法调用也触发，初始化不触发。
+| 事件名 | 参数 | 说明 |
+| --- | --- | --- |
+| `node-click` | `data, node` | 点击可用节点。 |
+| `node-expand` | `data, node` | 切换展开状态。 |
+| `node-collapse` | `data, node` | 切换展开状态。 |
+| `current-change` | `data, node` | 当前 key 变化，清空时两个参数均为 `null`。 |
+| `check` | `data, state` | 用户通过复选框或空格勾选，`state` 包含 `checkedKeys`、`checkedNodes`、`halfCheckedKeys`、`halfCheckedNodes`。 |
+| `check-change` | `data, checked, indeterminate` | 每个勾选或半选状态变化的节点，包括联动节点；方法调用也触发，初始化不触发。 |
 
-## 方法与插槽
+## 方法
+
+| 方法名 | 签名 | 说明 |
+| --- | --- | --- |
+| `getCheckedKeys` | `(leafOnly?: boolean) => TreeKey[]` | 读取勾选 key，可仅返回叶节点。 |
+| `getCheckedNodes` | `(leafOnly?: boolean) => TreeData[]` | 读取勾选节点数据。 |
+| `getHalfCheckedKeys` | `() => TreeKey[]` | 读取半选 key。 |
+| `getHalfCheckedNodes` | `() => TreeData[]` | 读取半选节点数据。 |
+| `setCheckedKeys` | `(keys: TreeKey[]) => void` | 设置勾选 key，传入 [] 清空。 |
+| `setChecked` | `(key: TreeKey, checked: boolean) => void` | 设置单个节点勾选状态，遵守禁用和联动配置。 |
+| `getCurrentKey` | `() => TreeKey \| null` | 读取当前 key。 |
+| `getCurrentNode` | `() => TreeData \| null` | 读取当前节点数据。 |
+| `setCurrentKey` | `(key?: TreeKey \| null) => void` | 设置当前节点，省略参数清空。 |
 
 通过组件 ref 调用 `getCheckedKeys(leafOnly?)`、`getCheckedNodes(leafOnly?)`、`getHalfCheckedKeys()`、`getHalfCheckedNodes()`、`setCheckedKeys(keys)`、`setChecked(key, checked)`、`getCurrentKey()`、`getCurrentNode()`、`setCurrentKey(key?)`。设置方法遵守禁用状态；`setCheckedKeys([])` 清空勾选，`setCurrentKey()` 清空当前节点。
+
+## 插槽
+
+| 插槽名 | 参数 | 说明 |
+| --- | --- | --- |
+| `default` | `{ data: TreeData, node: TreeNode }` | 自定义节点内容。 |
+| `empty` | — | 自定义空状态，覆盖 emptyText。 |
 
 默认插槽接收 `{ data, node }`；`empty` 插槽覆盖空状态文本。导出 `TreeKey`、`TreeData`、`TreeNode`、`TreeFieldNames`、`TreeCheckState` 类型，兼容 `EpxTree` 别名。
 

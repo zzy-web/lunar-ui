@@ -149,41 +149,6 @@ const users = [
   </template>
 </DemoBlock>
 
-## Table Props
-
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `data` | `Record<string, unknown>[]` | `[]` | 表格数据。 |
-| `border` | `boolean` | `false` | 是否显示纵向边框。 |
-| `stripe` | `boolean` | `false` | 是否显示斑马纹。 |
-| `emptyText` | `string` | `'No Data'` | 空状态文本。 |
-| `rowKey` | `string \| ((row) => string \| number)` | `undefined` | 行 key。 |
-
-## TableColumn Props
-
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `prop` | `string` | `undefined` | 数据字段名。 |
-| `label` | `string` | `undefined` | 表头文本。 |
-| `width` | `string \| number` | `undefined` | 列宽度。 |
-| `align` | `'left' \| 'center' \| 'right'` | `undefined` | 对齐方式。 |
-
-## 插槽
-
-| 插槽名 | 说明 |
-| --- | --- |
-| `default` | 表格列声明。 |
-| `[prop]` | 与列 `prop` 同名的自定义单元格插槽，参数为 `{ row, index }`。 |
-
-## 样式变量
-
-| 变量 | 默认值 | 说明 |
-| --- | --- | --- |
-| `--epx-table-cell-padding` | `14px 16px` | 单元格内边距，窄屏默认 12px 10px。 |
-| `--epx-table-header-bg` | `var(--epx-fill-color-light)` | 表头背景。 |
-| `--epx-table-row-hover-bg` | `var(--epx-color-primary-light-9)` | 悬停或包含键盘焦点的行背景。 |
-| `--epx-table-stripe-bg` | `var(--epx-fill-color-lighter)` | 斑马纹行背景。 |
-
 ## 排序、多选与序号
 
 `sortable` 支持升序、降序、取消排序三态，数字按数值排序，不修改传入的数组。`sortable="custom"` 只触发 `sort-change`，供服务端排序使用。`prop` 支持 `profile.name` 这样的嵌套路径。
@@ -243,9 +208,7 @@ const users = [
   </template>
 </DemoBlock>
 
-## 新增 API
-
-### 当前行与行样式
+## 当前行与行样式
 
 点击行会更新当前行，`highlight-current-row` 开启高亮。当前行与复选框多选独立；复选框点击不会切换当前行。
 
@@ -271,31 +234,82 @@ const users = [
   </template>
 </DemoBlock>
 
-- `size`：`small | default | large`，默认 `default`。内联 `--epx-table-cell-padding` 可覆盖尺寸预设。
-- `highlightCurrentRow`：是否高亮当前行，默认 `false`；通过 `--epx-table-current-row-bg` 自定义高亮背景。
-- `currentRowKey`：`string | number | null`，需要 `rowKey`。初始化或值变化时定位当前行，传入 `null` 清除；点击仍可切换当前行。
-- `rowClassName`：类名字符串或 `({ row, rowIndex }) => string`。
-- `rowStyle`：样式对象或 `({ row, rowIndex }) => CSSProperties`。索引为排序后的显示索引；斑马纹、悬停与选中背景优先于行背景。
-- Column `headerAlign`：`left | center | right`，默认沿用 `align`。
-- `current-change(row, oldRow)`：当前行对象变化时触发，未选中为 `null`；同 key 对象替换也触发，移除当前行时清空。
-- `setCurrentRow(row?)`：通过组件 ref 设置当前行，省略参数清空；设置 `rowKey` 时按 key 匹配。排序不会改变当前行，多选方法不影响当前行。
+## Table Props
 
-### 排序与多选
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `data` | `Record<string, unknown>[]` | `[]` | 表格数据。 |
+| `border` | `boolean` | `false` | 是否显示纵向边框。 |
+| `stripe` | `boolean` | `false` | 是否显示斑马纹。 |
+| `emptyText` | `string` | `'No Data'` | 空状态文本。 |
+| `rowKey` | `string \| ((row) => string \| number)` | `undefined` | 行 key。 |
+| `height` | `string \| number` | `undefined` | 数字（px）或 CSS 长度；滚动时固定表头。 |
+| `maxHeight` | `string \| number` | `undefined` | 数字（px）或 CSS 长度；滚动时固定表头。 |
+| `showHeader` | `boolean` | `true` | 是否显示表头，默认 `true`。 |
+| `defaultSort` | `{ prop: string; order: TableSortOrder }` | `undefined` | 初始排序 `{ prop, order }`，`order` 为 `ascending`、`descending` 或 `null`。 |
+| `size` | `'small' \| 'default' \| 'large'` | `'default'` | `small \| default \| large`，默认 `default`。内联 `--epx-table-cell-padding` 可覆盖尺寸预设。 |
+| `highlightCurrentRow` | `boolean` | `false` | 是否高亮当前行，默认 `false`；通过 `--epx-table-current-row-bg` 自定义高亮背景。 |
+| `currentRowKey` | `string \| number \| null` | `undefined` | `string \| number \| null`，需要 `rowKey`。初始化或值变化时定位当前行，传入 `null` 清除；点击仍可切换当前行。 |
+| `rowClassName` | `string \| (({ row, rowIndex }) => string)` | `undefined` | 类名字符串或 `({ row, rowIndex }) => string`。 |
+| `rowStyle` | `CSSProperties \| (({ row, rowIndex }) => CSSProperties)` | `undefined` | 样式对象或 `({ row, rowIndex }) => CSSProperties`。索引为排序后的显示索引；斑马纹、悬停与选中背景优先于行背景。 |
 
-- Table `height` / `maxHeight`：数字（px）或 CSS 长度；滚动时固定表头。
-- Table `showHeader`：是否显示表头，默认 `true`。
-- Table `defaultSort`：初始排序 `{ prop, order }`，`order` 为 `ascending`、`descending` 或 `null`。
-- Column `type`：`default`、`selection` 或 `index`；后两者默认列宽 56px。
-- Column `index`：序号起始值（默认 1），或 `(index) => number | string`。
-- Column `sortable`：`boolean | 'custom'`，默认关闭；排序列需要 `prop`。
-- Column `sortMethod(a, b)`：自定义比较函数，返回数字，降序自动反转结果。
-- Column `selectable(row, index)`：是否允许选中，默认允许；index 为原始数据索引。
-- Column `formatter(row, column, value, index)`：格式化内容，可返回 VNode。
-- Column `showOverflowTooltip`：单行省略，鼠标悬停通过原生 title 显示原始字段值。
-- Table `empty` 插槽：自定义空状态，优先于 `emptyText`。
+## TableColumn Props
 
-事件：`sort-change({ prop, order })`、`selection-change(rows)`、`select(rows, row)`、`select-all(rows)`、`row-click(row, index, event)`。行点击索引为排序后的索引；复选框点击不会触发行点击。
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `prop` | `string` | `undefined` | 数据字段名。 |
+| `label` | `string` | `undefined` | 表头文本。 |
+| `width` | `string \| number` | `undefined` | 列宽度。 |
+| `align` | `'left' \| 'center' \| 'right'` | `undefined` | 对齐方式。 |
+| `headerAlign` | `'left' \| 'center' \| 'right'` | `align` | `left \| center \| right`，默认沿用 `align`。 |
+| `type` | `'default' \| 'selection' \| 'index'` | `'default'` | `default`、`selection` 或 `index`；后两者默认列宽 56px。 |
+| `index` | `number \| ((index: number) => number \| string)` | `1` | 序号起始值（默认 1），或 `(index) => number \| string`。 |
+| `sortable` | `boolean \| 'custom'` | `false` | `boolean \| 'custom'`，默认关闭；排序列需要 `prop`。 |
+| `sortMethod` | `(a, b) => number` | `undefined` | 自定义比较函数，返回数字，降序自动反转结果。 |
+| `selectable` | `(row, index) => boolean` | `undefined` | 是否允许选中，默认允许；index 为原始数据索引。 |
+| `formatter` | `(row, column, value, index) => VNodeChild` | `undefined` | 格式化内容，可返回 VNode。 |
+| `showOverflowTooltip` | `boolean` | `false` | 单行省略，鼠标悬停通过原生 title 显示原始字段值。 |
 
-通过组件 ref 调用：`sort(prop, order)`、`clearSort()`、`toggleRowSelection(row, selected?)`、`toggleAllSelection()`、`clearSelection()`、`getSelectionRows()`。`clearSort` 恢复传入数据顺序。选择方法遵守 `selectable`；切换行选择也触发 `select`。
+## 插槽
+
+| 插槽名 | 说明 |
+| --- | --- |
+| `default` | 表格列声明。 |
+| `[prop]` | 与列 `prop` 同名的自定义单元格插槽，参数为 `{ row, index }`。 |
+| `empty` | 自定义空状态，覆盖 emptyText。 |
+| `TableColumn.default` | 自定义单元格：{ row, column, index, $index }。 |
+| `TableColumn.header` | 自定义列头：{ column }。 |
+
+## 样式变量
+
+| 变量 | 默认值 | 说明 |
+| --- | --- | --- |
+| `--epx-table-cell-padding` | `14px 16px` | 单元格内边距，窄屏默认 12px 10px。 |
+| `--epx-table-header-bg` | `var(--epx-fill-color-light)` | 表头背景。 |
+| `--epx-table-row-hover-bg` | `var(--epx-color-primary-light-9)` | 悬停或包含键盘焦点的行背景。 |
+| `--epx-table-stripe-bg` | `var(--epx-fill-color-lighter)` | 斑马纹行背景。 |
+
+## 事件
+
+| 事件名 | 参数 | 说明 |
+| --- | --- | --- |
+| `sort-change` | `{ prop, order }` | 排序状态变化。 |
+| `selection-change` | `rows` | 多选结果变化。 |
+| `select` | `rows, row` | 切换行勾选时触发。 |
+| `select-all` | `rows` | 切换全选时触发。 |
+| `row-click` | `row, index, event` | 点击行，索引为显示索引；复选框点击不触发。 |
+| `current-change` | `row, oldRow` | 当前行变化；同 key 数据替换也触发，清空为 null。 |
+
+## 方法
+
+| 方法名 | 签名 | 说明 |
+| --- | --- | --- |
+| `sort` | `(prop, order)` | 设置排序。 |
+| `clearSort` | `()` | 恢复传入数据顺序。 |
+| `toggleRowSelection` | `(row, selected?)` | 切换行勾选，遵守 selectable，也触发 select。 |
+| `toggleAllSelection` | `()` | 切换可选行的全选状态。 |
+| `clearSelection` | `()` | 清空多选。 |
+| `getSelectionRows` | `() => TableRow[]` | 读取多选结果。 |
+| `setCurrentRow` | `(row?)` | 设置当前行，按 rowKey 匹配；省略参数清空。 |
 
 多选建议设置唯一、稳定的 `row-key`。同 key 数据对象更新后保留选择，移出 `data` 的行自动清除选择；不保留跨分页选择。未设置 row-key 时按对象身份跟踪选择。全选只作用于允许选择的行。
