@@ -35,12 +35,17 @@
 .epx-select.is-multiple .epx-select__clear { right: 8px; top: 8px; transform: none; }
 .epx-radio-group { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
 .epx-radio { box-sizing: border-box; display: inline-flex; align-items: center; gap: 8px; min-height: 32px; color: var(--epx-text-color-regular); font-size: 14px; cursor: pointer; }
-.epx-radio__input { width: 16px; height: 16px; margin: 0; accent-color: var(--epx-color-primary); cursor: inherit; }
+.epx-radio__input { appearance: none; box-sizing: border-box; position: relative; flex-shrink: 0; width: 16px; height: 16px; margin: 0; border: 1px solid var(--epx-border-color); border-radius: 50%; background: var(--epx-bg-color); color: var(--epx-color-white); cursor: inherit; }
+.epx-radio:not(.is-disabled):hover .epx-radio__input { border-color: var(--epx-color-primary); }
+.epx-radio__input:checked { border-color: var(--epx-color-primary); background: var(--epx-color-primary); }
+.epx-radio__input:checked::after { content: ''; position: absolute; inset: 0; width: 6px; height: 6px; margin: auto; border-radius: 50%; background: currentColor; }
+.epx-radio__input:disabled { border-color: var(--epx-border-color-light); background: var(--epx-fill-color-light); color: var(--epx-text-color-disabled); }
+@media (forced-colors: active) { .epx-radio__input { appearance: auto; } .epx-radio__input::after { display: none; } }
 .epx-radio__input:focus-visible { outline: 2px solid var(--epx-color-primary); outline-offset: 3px; }
 .epx-radio.is-checked { color: var(--epx-color-primary); }
-.epx-radio.is-disabled { opacity: .55; cursor: not-allowed; }
+.epx-radio.is-disabled { color: var(--epx-text-color-disabled); cursor: not-allowed; }
 .epx-radio.is-bordered { padding: 0 12px; border: 1px solid var(--epx-border-color); border-radius: var(--epx-border-radius-base); }
-.epx-radio.is-bordered.is-checked { border-color: var(--epx-color-primary); background: var(--epx-color-primary-light-9); }
+.epx-radio.is-bordered.is-checked:not(.is-disabled) { border-color: var(--epx-color-primary); background: var(--epx-color-primary-light-9); }
 .epx-radio--large { min-height: 40px; }
 .epx-radio--small { min-height: 24px; font-size: 12px; }
 .epx-alert { --epx-alert-color: var(--epx-color-info); --epx-alert-bg: var(--epx-fill-color-light); box-sizing: border-box; display: flex; align-items: flex-start; gap: 12px; width: 100%; padding: 14px 16px; border-radius: var(--epx-border-radius-base); background: var(--epx-alert-bg); color: var(--epx-text-color-regular); font-size: 14px; line-height: 1.6; }

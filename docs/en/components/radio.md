@@ -5,6 +5,7 @@ Use radio buttons for mutually exclusive options. RadioGroup shares the selected
 <script setup>
 import { ref } from 'vue'
 const plan = ref('team')
+const borderedPlan = ref('team')
 const standalone = ref(false)
 </script>
 
@@ -22,7 +23,6 @@ const standalone = ref(false)
 <script setup>
 import { ref } from 'vue'
 const plan = ref('team')
-const standalone = ref(false)
 </script>
 
 <template>
@@ -40,7 +40,7 @@ const standalone = ref(false)
 ## Borders and sizes
 
 <DemoBlock>
-<lu-radio-group v-model="plan" size="large" aria-label="Plan with borders">
+<lu-radio-group v-model="borderedPlan" size="large" aria-label="Plan with borders">
   <lu-radio value="personal" border>Personal</lu-radio>
   <lu-radio value="team" border>Team</lu-radio>
 </lu-radio-group>
@@ -53,12 +53,11 @@ const standalone = ref(false)
 ```vue
 <script setup>
 import { ref } from 'vue'
-const plan = ref('team')
-const standalone = ref(false)
+const borderedPlan = ref('team')
 </script>
 
 <template>
-  <lu-radio-group v-model="plan" size="large" aria-label="Plan with borders">
+  <lu-radio-group v-model="borderedPlan" size="large" aria-label="Plan with borders">
     <lu-radio value="personal" border>Personal</lu-radio>
     <lu-radio value="team" border>Team</lu-radio>
   </lu-radio-group>
@@ -82,7 +81,6 @@ const standalone = ref(false)
 ```vue
 <script setup>
 import { ref } from 'vue'
-const plan = ref('team')
 const standalone = ref(false)
 </script>
 
