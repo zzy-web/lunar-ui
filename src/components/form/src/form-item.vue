@@ -3,7 +3,7 @@
     <label v-if="label" class="epx-form-item__label" :style="labelStyle">{{ label }}</label>
     <div class="epx-form-item__content">
       <slot />
-      <div v-if="errorMessage" class="epx-form-item__error">{{ errorMessage }}</div>
+      <div v-if="errorMessage" class="epx-form-item__error" :title="errorMessage" role="alert">{{ errorMessage }}</div>
     </div>
   </div>
 </template>
