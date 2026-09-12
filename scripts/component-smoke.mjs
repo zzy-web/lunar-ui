@@ -838,3 +838,45 @@ assert.equal(customValue.value, 2)
 selectPopupApp.unmount()
 assert.equal(findAll(teleportHost, n => n.props?.role === 'listbox').length, 0)
 console.log('Passed: select custom popup, keyboard selection, disabled option skipping, search and popup cleanup.')
+
+const limitedValue = ref([]), limitedRoot = { children: [] }
+const limitedApp = renderer.createApp({ render: () => h(LuSelect, {
+  modelValue: limitedValue.value, options: selectOptions.map(o => ({ ...o, group: 'Group' })), multiple: true, showSelectAll: true, multipleLimit: 1,
+  'onUpdate:modelValue': value => { limitedValue.value = value }
+}, { option: ({ option }) => `Custom ${option.label}` }) })
+limitedApp.mount(limitedRoot)
+const limitedInput = findAll(limitedRoot, n => n.props?.role === 'combobox')[0]
+limitedInput.props.onKeydown({ key: 'ArrowDown', preventDefault() {} }); await nextTick()
+const allButton = () => findAll(teleportHost, n => n.props?.class === 'epx-select__all')[0]
+allButton().props.onClick(); await nextTick()
+assert.deepEqual(limitedValue.value, [1])
+assert.match(textOf(teleportHost), /Group/)
+assert.match(textOf(teleportHost), /Custom One/)
+findAll(teleportHost, n => n.props?.role === 'option')[1].props.onClick(); await nextTick()
+assert.deepEqual(limitedValue.value, [1])
+findAll(teleportHost, n => n.props?.role === 'option')[0].props.onClick(); await nextTick()
+assert.deepEqual(limitedValue.value, [])
+limitedApp.unmount()
+const remoteRequests = [], remoteRoot = { children: [] }, remoteErrors = []
+const remoteApp = renderer.createApp({ render: () => h(LuSelect, {
+  debounce: 0, remoteMethod: query => new Promise((resolve, reject) => remoteRequests.push({ query, resolve, reject })),
+  onRemoteError: error => remoteErrors.push(error)
+}) })
+remoteApp.mount(remoteRoot)
+const remoteInput = findAll(remoteRoot, n => n.props?.role === 'combobox')[0]
+remoteInput.props.onKeydown({ key: 'ArrowDown', preventDefault() {} }); await nextTick()
+await new Promise(resolve => setTimeout(resolve, 5))
+remoteInput.props.onInput({ target: { value: 'new' } }); await nextTick()
+await new Promise(resolve => setTimeout(resolve, 5))
+assert.equal(remoteRequests.length, 2)
+remoteRequests[1].resolve([{ label: 'New result', value: 2 }]); await nextTick(); await nextTick()
+remoteRequests[0].resolve([{ label: 'Old result', value: 1 }]); await nextTick(); await nextTick()
+assert.match(textOf(teleportHost), /New result/)
+assert.doesNotMatch(textOf(teleportHost), /Old result/)
+remoteInput.props.onInput({ target: { value: 'fail' } }); await nextTick()
+await new Promise(resolve => setTimeout(resolve, 5))
+remoteRequests[2].reject(new Error('Expected failure')); await nextTick(); await nextTick()
+assert.equal(remoteErrors.length, 1)
+assert.match(textOf(teleportHost), /加载失败/)
+remoteApp.unmount()
+console.log('Passed: select groups, custom options, select-all limit, deselection, remote races and errors.')
