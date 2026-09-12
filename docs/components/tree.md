@@ -136,7 +136,7 @@ const data = [
 
 <DemoBlock direction="column">
   <lu-input v-model="filterText" clearable placeholder="Search" aria-label="Search tree" />
-  <lu-tree :data="data" :filter-text="filterText" />
+  <lu-tree :data="data" :filter-text="filterText" show-checkbox />
   <template #source>
 
 ```vue
@@ -147,7 +147,7 @@ const filterText = ref('')
 
 <template>
   <lu-input v-model="filterText" clearable placeholder="Search" />
-  <lu-tree :data="data" :filter-text="filterText" />
+  <lu-tree :data="data" :filter-text="filterText" show-checkbox />
 </template>
 ```
 
