@@ -1,6 +1,6 @@
 import EpxCalendar from './src/calendar.vue'
 
-const LuCalendar = EpxCalendar
+const LuCalendar: typeof EpxCalendar = EpxCalendar
 
 export { EpxCalendar, LuCalendar }
 export default EpxCalendar

@@ -1,6 +1,6 @@
 import Tour from './src/tour.vue'
 
-export const EpxTour = Tour
-export const LuTour = Tour
+export const EpxTour: typeof Tour = Tour
+export const LuTour: typeof Tour = Tour
 export default LuTour
 export type { TourStep } from './src/tour.vue'

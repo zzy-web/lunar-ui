@@ -1,6 +1,6 @@
 # 快速开始
 
-Lunar UI 是基于 Vue 3.5+ 的组件库。当前仓库仍在持续开发中，包名为占位名称，尚不代表已在 npm 发布。
+Lunar UI 是基于 Vue 3.5+ 的组件库，包名为 `lunar-ui`。当前可通过以下方式构建并安装本地包。
 
 ## 本地运行
 
@@ -14,18 +14,17 @@ npm run dev
 ## 构建与本地安装
 
 ```bash
-npm run build:lib
 npm pack
 # 在你的 Vue 应用中安装生成的压缩包：
-npm install /path/to/your-scope-lunar-ui-0.1.0.tgz
+npm install /path/to/lunar-ui-0.1.0.tgz
 ```
 
 ## 完整注册
 
 ```ts
 import { createApp } from 'vue'
-import LunarUI from '@your-scope/lunar-ui'
-import '@your-scope/lunar-ui/dist/style.css'
+import LunarUI from 'lunar-ui'
+import 'lunar-ui/dist/style.css'
 import App from './App.vue'
 
 createApp(App).use(LunarUI).mount('#app')
@@ -36,8 +35,8 @@ createApp(App).use(LunarUI).mount('#app')
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import { LuInput, LuButton } from '@your-scope/lunar-ui'
-import '@your-scope/lunar-ui/dist/style.css'
+import { LuInput, LuButton } from 'lunar-ui'
+import 'lunar-ui/dist/style.css'
 const name = ref('')
 </script>
 

@@ -1,5 +1,5 @@
 import EpxDivider from './src/divider.vue'
-const LuDivider = EpxDivider
+const LuDivider: typeof EpxDivider = EpxDivider
 export { EpxDivider, LuDivider }
 export default EpxDivider
 

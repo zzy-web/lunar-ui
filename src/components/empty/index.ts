@@ -1,4 +1,4 @@
 import EpxEmpty from './src/empty.vue'
-const LuEmpty = EpxEmpty
+const LuEmpty: typeof EpxEmpty = EpxEmpty
 export { EpxEmpty, LuEmpty }
 export default EpxEmpty

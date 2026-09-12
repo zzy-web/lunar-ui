@@ -4,13 +4,12 @@ A compact Vue 3 component library inspired by Element Plus.
 
 ## Local development
 
-The package name is currently a placeholder. Build and pack this repository for local use before publishing under your own scope.
+Build and pack this repository to try `lunar-ui` locally before publishing.
 
 ```bash
 npm ci
 npm run dev
-# Build a local package:
-npm run build:lib
+# Build and create a local package (prepack builds the library automatically):
 npm pack
 ```
 
@@ -18,8 +17,8 @@ npm pack
 
 ```ts
 import { createApp } from 'vue'
-import LunarUI from '@your-scope/lunar-ui'
-import '@your-scope/lunar-ui/dist/style.css'
+import LunarUI from 'lunar-ui'
+import 'lunar-ui/dist/style.css'
 
 createApp(App).use(LunarUI).mount('#app')
 ```
@@ -116,9 +115,20 @@ const visible = ref(false)
 
 ## Publish
 
-Update `name` in `package.json`, then run:
+The npm package name is `lunar-ui`. Sign in with an account that can publish it:
 
 ```bash
-npm login
+npm login --registry=https://registry.npmjs.org/
+npm whoami --registry=https://registry.npmjs.org/
 npm run release
 ```
+
+Publishing uses the official npm registry and public access, regardless of your
+local download mirror. `prepublishOnly` runs type checking and component tests;
+`prepack` builds the JavaScript bundles, CSS and TypeScript declarations. Only
+`dist`, package metadata, this README and the license are included in the package.
+
+For a local install, run `npm pack` and install the generated `.tgz` in your Vue 3
+application with `npm install /path/to/lunar-ui-0.1.0.tgz`. For later releases,
+increment the version with `npm version patch` (or `minor` / `major`) before
+publishing; npm does not allow overwriting an existing version.

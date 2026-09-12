@@ -1,6 +1,6 @@
 # Quick start
 
-Lunar UI is a Vue 3.5+ component library. This repository is in active development; the package name is currently a placeholder, not a confirmed npm release.
+Lunar UI is a Vue 3.5+ component library named `lunar-ui`. Build and install the local package using the steps below.
 
 ## Run locally
 
@@ -14,18 +14,17 @@ The documentation includes runnable examples. Use the public repository for the 
 ## Build and install locally
 
 ```bash
-npm run build:lib
 npm pack
 # In your Vue application, install the generated tarball:
-npm install /path/to/your-scope-lunar-ui-0.1.0.tgz
+npm install /path/to/lunar-ui-0.1.0.tgz
 ```
 
 ## Register all components
 
 ```ts
 import { createApp } from 'vue'
-import LunarUI from '@your-scope/lunar-ui'
-import '@your-scope/lunar-ui/dist/style.css'
+import LunarUI from 'lunar-ui'
+import 'lunar-ui/dist/style.css'
 import App from './App.vue'
 
 createApp(App).use(LunarUI).mount('#app')
@@ -36,8 +35,8 @@ createApp(App).use(LunarUI).mount('#app')
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import { LuInput, LuButton } from '@your-scope/lunar-ui'
-import '@your-scope/lunar-ui/dist/style.css'
+import { LuInput, LuButton } from 'lunar-ui'
+import 'lunar-ui/dist/style.css'
 const name = ref('')
 </script>
 

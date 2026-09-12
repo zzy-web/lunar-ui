@@ -1,5 +1,5 @@
 import EpxSelect from './src/select.vue'
-const LuSelect = EpxSelect
+const LuSelect: typeof EpxSelect = EpxSelect
 export { EpxSelect, LuSelect }
 export default EpxSelect
 
