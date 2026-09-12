@@ -295,3 +295,20 @@ html.dark,
 .epx-table--small { --epx-table-cell-padding: 8px 12px; }
 .epx-table--large { --epx-table-cell-padding: 18px 20px; }
 .epx-table > .epx-table__inner > tbody > tr.is-current > td { background: var(--epx-table-current-row-bg, var(--epx-color-primary-light-9)); }
+
+.epx-tree { width: 100%; color: var(--epx-text-color-regular); font-size: 14px; }
+.epx-tree__node { display: flex; align-items: center; gap: 6px; min-height: var(--epx-tree-node-height, 34px); padding: 3px 8px; box-sizing: border-box; border-radius: var(--epx-border-radius-base); cursor: pointer; }
+.epx-tree__node:hover { background: var(--epx-tree-node-hover-bg, var(--epx-fill-color-light)); }
+.epx-tree__node.is-current { background: var(--epx-tree-current-bg, var(--epx-color-primary-light-9)); color: var(--epx-color-primary); }
+.epx-tree__node.is-disabled { color: var(--epx-text-color-regular); opacity: 0.5; cursor: not-allowed; }
+.epx-tree__node:focus-visible { outline: 2px solid var(--epx-color-primary); outline-offset: -2px; }
+.epx-tree__toggle, .epx-tree__spacer { display: inline-flex; flex: 0 0 22px; width: 22px; height: 22px; align-items: center; justify-content: center; }
+.epx-tree__toggle { padding: 0; border: 0; border-radius: var(--epx-border-radius-base); background: transparent; color: inherit; cursor: pointer; }
+.epx-tree__toggle:hover { background: var(--epx-fill-color); }
+.epx-tree__toggle svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.8; transition: transform var(--epx-transition-duration); }
+.epx-tree__toggle svg.is-expanded { transform: rotate(90deg); }
+.epx-tree__checkbox { flex-shrink: 0; width: 16px; height: 16px; margin: 0; accent-color: var(--epx-color-primary); cursor: pointer; }
+.epx-tree__checkbox:disabled { cursor: not-allowed; }
+.epx-tree__label { min-width: 0; overflow-wrap: anywhere; line-height: 22px; }
+.epx-tree__empty { padding: 24px 16px; color: var(--epx-text-color-regular); text-align: center; }
+@media (prefers-reduced-motion: reduce) { .epx-tree__toggle svg { transition: none; } }

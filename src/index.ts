@@ -17,10 +17,11 @@ import { LuEmpty } from './components/empty'
 import { LuPagination } from './components/pagination'
 import { LuProgress } from './components/progress'
 import { LuDivider } from './components/divider'
+import { LuTree } from './components/tree'
 import './styles/index.css'
 import './styles/extended.css'
 
-const components = [LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, LuPagination, LuProgress, LuDivider]
+const components = [LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, LuPagination, LuProgress, LuDivider, LuTree]
 
 export { EpxButton, EpxInput, EpxCard, EpxDialog, EpxForm, EpxFormItem, EpxTable, EpxTableColumn, EpxTour, LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour }
 export * from './components/button'
@@ -42,6 +43,7 @@ export * from './components/empty'
 export * from './components/pagination'
 export * from './components/progress'
 export * from './components/divider'
+export * from './components/tree'
 
 export default {
   install(app: App) {

@@ -14,6 +14,7 @@ export const componentGroups = [
     { slug: 'form', name: 'Form', zh: '表单', description: ['表单布局与字段校验', 'Layout and field validation'] }
   ] },
   { zh: '数据展示', en: 'Data display', items: [
+    { slug: 'tree', name: 'Tree', zh: '树形控件', fresh: true, description: ['层级数据、节点展开与复选联动', 'Hierarchical data, expansion and linked checkboxes'] },
     { slug: 'pagination', name: 'Pagination', zh: '分页', fresh: true, description: ['页码切换与大数据量分页', 'Page navigation for large datasets'] },
     { slug: 'table', name: 'Table', zh: '表格', description: ['结构化数据与自定义列', 'Structured data and columns'] },
     { slug: 'calendar', name: 'Calendar', zh: '日历', description: ['月视图与日期选择', 'Month views and date selection'] },
