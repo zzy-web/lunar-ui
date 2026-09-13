@@ -1026,3 +1026,31 @@ const disabledUpload = mount(LuUpload, { disabled: true, drag: true, 'onUpdate:f
 findAll(disabledUpload.root, n => n.props?.role === 'button')[0].props.onDrop({ preventDefault() {}, dataTransfer: { files: [rawA] } })
 disabledUpload.app.unmount()
 console.log('Passed: upload registration, accept/limit guards, manual submit, deduplication, progress, cancellation races, retry, removal, async hooks and disabled drop.')
+const queueUploadRoot = { children: [] }, queueUploadRef = ref(), queueFiles = ref([]), queueRequests = [], sizeRejected = []
+const queueUploadApp = renderer.createApp({ render: () => h(LuUpload, {
+  ref: queueUploadRef, fileList: queueFiles.value, multiple: true, autoUpload: false, concurrency: 1, maxSize: 2, listType: 'picture-card',
+  'onUpdate:fileList': value => { queueFiles.value = value }, onReject: (file, reason) => sizeRejected.push(reason),
+  httpRequest: options => new Promise(resolve => queueRequests.push({ options, resolve }))
+}) })
+queueUploadApp.mount(queueUploadRoot)
+queueUploadRef.value.handleStart(new File(['long'], 'large.txt'))
+assert.deepEqual(sizeRejected, ['size'])
+queueUploadRef.value.handleStart(new File(['a'], 'image.png', { type: 'image/png' }))
+queueUploadRef.value.handleStart(rawB); await nextTick()
+assert.equal(findAll(queueUploadRoot, n => n.type === 'img').length, 1)
+const queueSubmission = queueUploadRef.value.submit()
+const flushUpload = async () => { for (let i = 0; i < 12; i++) await Promise.resolve(); await nextTick() }
+await flushUpload()
+assert.equal(queueRequests.length, 1)
+queueUploadRef.value.abort(queueFiles.value[0]); await flushUpload()
+assert.equal(queueRequests.length, 2, 'aborting a non-cooperative request must release the queue slot')
+assert.equal(queueRequests[0].options.signal.aborted, true)
+queueRequests[1].resolve('ok'); await queueSubmission; await nextTick()
+assert.equal(queueFiles.value[0].status, 'ready')
+assert.equal(queueFiles.value[1].status, 'success')
+queueRequests[0].resolve('late'); await flushUpload()
+assert.equal(queueFiles.value[0].status, 'ready')
+queueUploadRef.value.clearFiles(); await nextTick()
+assert.equal(findAll(queueUploadRoot, n => n.type === 'img').length, 0)
+queueUploadApp.unmount()
+console.log('Passed: upload size rejection, picture thumbnails, concurrency queue, cancellation slot release and stale response isolation.')

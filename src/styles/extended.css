@@ -199,3 +199,9 @@
 .epx-upload__file.is-fail .epx-upload__status { color: var(--epx-color-danger); }
 .epx-upload__file progress { width: 100%; order: 1; height: 6px; accent-color: var(--epx-color-primary); }
 .epx-upload button:focus-visible, .epx-upload__drop:focus-visible { outline: 2px solid var(--epx-color-primary); outline-offset: 2px; }
+.epx-upload__size { color: var(--epx-text-color-secondary); font-size: 12px; }
+.epx-upload__thumbnail { flex-shrink: 0; width: 64px; height: 64px; padding: 0; overflow: hidden; border: 0; border-radius: 4px; background: var(--epx-fill-color); cursor: pointer; }
+.epx-upload__thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+.epx-upload--picture-card .epx-upload__list { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.epx-upload--picture-card .epx-upload__thumbnail { width: 100%; height: 120px; }
+.epx-upload--picture-card .epx-upload__name { flex-basis: 100%; }

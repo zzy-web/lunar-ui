@@ -51,6 +51,27 @@ const files = ref([])
 
 ## 属性
 
+### 图片列表与上传控制
+
+<lu-upload multiple accept="image/*" list-type="picture-card" :max-size="5 * 1024 * 1024" :concurrency="2" :http-request="mockRequest">
+  <template #tip>选择图片查看缩略图，最大 5 MB；此处模拟上传。</template>
+</lu-upload>
+
+```vue
+<lu-upload action="/api/upload" multiple accept="image/*"
+  list-type="picture-card" :max-size="5 * 1024 * 1024" :concurrency="2">
+  <template #tip>每张图片最大 5 MB，同时上传 2 个文件</template>
+</lu-upload>
+```
+
+- `listType`：`text`（默认）、`picture`、`picture-card`，后两者自动生成本地图片缩略图；点击触发 `preview`，由业务打开预览。
+- `UploadFile.url`：已有图片的展示地址。组件创建的本地预览 URL 在移除或卸载时自动释放。
+- `maxSize`：单文件字节数上限，默认 0 不限；超过时触发 `reject(file, 'size')`，不加入列表。
+- `concurrency`：同时处理的文件数量，默认 3，最小 1；异步校验也占用名额。其余文件排队，取消、清空或外部移除会撤销对应任务。
+- `showSize`：显示文件大小，默认 true；`retryText`：失败行的重试按钮文案，默认“重试”。
+
+失败文件可直接逐项重试。取消自定义请求时，即使请求未响应 AbortSignal，也不会阻塞后续队列；实际网络取消仍需自定义请求配合。禁用后不启动排队任务，已开始的任务继续执行。
+
 - `fileList: UploadFile[]`：支持 `v-model:file-list`；不传时由组件管理。初始文件必须提供唯一 `uid` 和 `name`。
 - `action`：上传地址；使用默认请求时必填。`method` 默认 POST，`name` 默认 file。
 - `headers: Record<string, string>`、`data: Record<string, string | Blob>`、`withCredentials`（默认 false）：请求配置。multipart 的 Content-Type 及 boundary 由浏览器设置。

@@ -50,6 +50,25 @@ const files = ref([])
 
 ## Props
 
+### Pictures and upload scheduling
+
+<lu-upload multiple accept="image/*" list-type="picture-card" :max-size="5 * 1024 * 1024" :concurrency="2" :http-request="mockRequest" label="Choose images" success-text="Uploaded" retry-text="Retry">
+  <template #tip>Choose images to preview thumbnails, up to 5 MB each. Uploads are simulated.</template>
+</lu-upload>
+
+```vue
+<lu-upload action="/api/upload" multiple accept="image/*"
+  list-type="picture-card" :max-size="5 * 1024 * 1024" :concurrency="2" />
+```
+
+- `listType`: `text` (default), `picture`, or `picture-card`. Picture layouts generate local image thumbnails; clicks emit `preview` for your application to handle.
+- `UploadFile.url`: existing image URL. Generated local preview URLs are released on removal and unmount.
+- `maxSize`: maximum bytes per file, 0 means unlimited. Oversized files emit `reject(file, 'size')` and are not added.
+- `concurrency`: maximum simultaneous file tasks, including async validation, defaults to 3, minimum 1. Other tasks queue; cancellation, clearing and external removal cancel queued tasks.
+- `showSize`: display file sizes, default true. `retryText` customizes the per-file retry button.
+
+Failed files can be retried individually. Cancelled custom requests release queue capacity even if they ignore AbortSignal; actual network cancellation requires their cooperation. Disabling pauses new tasks while existing tasks continue.
+
 - `fileList: UploadFile[]`: optional `v-model:file-list`; internally managed when omitted. Initial entries require unique `uid` and `name`.
 - `action`: required for the default request. `method` defaults to POST; `name` defaults to file.
 - `headers`, `data` (string or Blob values), `withCredentials` (false): request settings. Let the browser set the multipart Content-Type boundary.
