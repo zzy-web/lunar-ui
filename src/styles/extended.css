@@ -143,3 +143,6 @@
 .epx-select__group { padding: 8px 10px 4px; color: var(--epx-text-color-secondary); font-size: 12px; font-weight: 600; }
 .epx-select__all { display: flex; justify-content: space-between; width: 100%; padding: 8px 10px; border: 0; border-bottom: 1px solid var(--epx-border-color-light); background: transparent; color: var(--epx-color-primary); font: inherit; cursor: pointer; }
 .epx-select__all:disabled { color: var(--epx-text-color-disabled); cursor: not-allowed; }
+.epx-select__header, .epx-select__footer { padding: 8px 10px; }
+.epx-select__header { border-bottom: 1px solid var(--epx-border-color-light); }
+.epx-select__footer { border-top: 1px solid var(--epx-border-color-light); }

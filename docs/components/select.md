@@ -157,6 +157,29 @@ async function remoteMethod(query) {
 
 ## Props
 
+### 创建选项与折叠标签
+
+```vue
+<lu-select v-model="tags" :options="options" multiple filterable allow-create
+  default-first-option :reserve-keyword="false" collapse-tags
+  collapse-tags-tooltip :max-collapse-tags="2" />
+```
+
+- `allowCreate`：搜索时创建字符串选项，默认关闭。
+- `defaultFirstOption`：搜索后按 Enter 选择首个可用结果，默认 true，保留原有行为；设为 false 可要求先使用方向键定位。
+- `reserveKeyword`：多选后保留搜索词，默认 true。
+- `collapseTags` / `maxCollapseTags`：折叠多选标签，默认关闭，展开数量默认 1。
+- `collapseTagsTooltip`：汇总标签使用原生 title 展示隐藏标签，默认关闭。
+- `filterMethod(query, option) => boolean`：自定义逐项本地过滤，不作用于远程结果。
+- `automaticDropdown`：聚焦时展开，默认关闭。
+- `teleported` / `appendTo`：面板挂载配置，默认 true / `'body'`。
+- `popperClass` / `placement` / `offset` / `height`：面板类名、方向、间距与最大高度，默认方向 `'bottom-start'`、间距 6、高度 280。
+- `noDataText`：无数据文案，优先于 `emptyText`。
+
+新增 `visible-change(boolean)` 和 `remove-tag(value)` 事件，以及 `open()` / `close()` 方法。支持 `prefix`、`header`、`footer`、`loading`、`empty` 插槽；`label({ value, label })` 自定义多选标签文本。
+
+搜索词为空时 Backspace 删除最后一个非禁用标签。输入法组合期间不触发中间搜索。重复选择相同值不再触发 change。当前保留 string/number 值和 options 数组 API，并非 Element Plus 的完全兼容替代。
+
 | 属性 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | `modelValue` | `SelectValue \| SelectValue[]` | `undefined` | 绑定值；SelectValue 为 string 或 number。 |

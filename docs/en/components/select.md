@@ -157,6 +157,22 @@ The demo simulates a 400 ms request. `remoteMethod(query)` returns a Promise of 
 
 ## Props
 
+### Creation and collapsed tags
+
+```vue
+<lu-select v-model="tags" :options="options" multiple filterable allow-create
+  default-first-option :reserve-keyword="false" collapse-tags
+  collapse-tags-tooltip :max-collapse-tags="2" />
+```
+
+Additional props: `allowCreate` (false), `defaultFirstOption` (true, preserves existing behavior), `reserveKeyword` (true), `collapseTags` (false), `maxCollapseTags` (1), and `collapseTagsTooltip` (false, native title tooltip). Creation requires searchable mode and creates string values.
+
+`filterMethod(query, option) => boolean` customizes local filtering. `automaticDropdown` opens on focus. Configure the panel with `teleported` (true), `appendTo` ('body'), `popperClass`, `placement` ('bottom-start'), `offset` (6), and `height` (280). `noDataText` overrides `emptyText`.
+
+New events: `visible-change(boolean)` and `remove-tag(value)`. Exposed methods: `open()` and `close()`. Slots: `prefix`, `header`, `footer`, `loading`, `empty`, and `label({ value, label })` for multiple tag labels.
+
+Backspace with an empty query removes the last enabled tag. IME composition does not trigger intermediate searches. Selecting the same value no longer emits change. Values remain string/number with the existing options array API; this is not a fully compatible Element Plus replacement.
+
 | Attribute | Type | Default | Description |
 | --- | --- | --- | --- |
 | `modelValue` | `SelectValue \| SelectValue[]` | `undefined` | Bound value; SelectValue is string or number. |

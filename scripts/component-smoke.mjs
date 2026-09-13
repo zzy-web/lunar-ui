@@ -880,3 +880,33 @@ assert.equal(remoteErrors.length, 1)
 assert.match(textOf(teleportHost), /加载失败/)
 remoteApp.unmount()
 console.log('Passed: select groups, custom options, select-all limit, deselection, remote races and errors.')
+const enhancedValue = ref([1, 2, 3]), enhancedRoot = { children: [] }, enhancedRef = ref(), visibilityEvents = [], removedTags = []
+const enhancedApp = renderer.createApp({ render: () => h(LuSelect, {
+  ref: enhancedRef, modelValue: enhancedValue.value, options: selectOptions, multiple: true,
+  filterable: true, allowCreate: true, defaultFirstOption: true, reserveKeyword: false,
+  collapseTags: true, collapseTagsTooltip: true,
+  'onUpdate:modelValue': value => { enhancedValue.value = value },
+  onVisibleChange: value => visibilityEvents.push(value), onRemoveTag: value => removedTags.push(value)
+}) })
+enhancedApp.mount(enhancedRoot)
+const enhancedInput = findAll(enhancedRoot, n => n.props?.role === 'combobox')[0]
+assert.equal(findAll(enhancedRoot, n => n.props?.class === 'epx-select__tag').length, 2)
+enhancedRef.value.open(); await nextTick()
+assert.deepEqual(visibilityEvents, [true])
+enhancedInput.props.onInput({ target: { value: 'New option' } }); await nextTick()
+enhancedInput.props.onKeydown({ key: 'Enter', preventDefault() {} }); await nextTick()
+assert.deepEqual(enhancedValue.value, [1, 2, 3, 'New option'])
+assert.equal(enhancedInput.props.value, '')
+enhancedInput.props.onKeydown({ key: 'Backspace', preventDefault() {} }); await nextTick()
+enhancedInput.props.onKeydown({ key: 'Backspace', preventDefault() {} }); await nextTick()
+assert.deepEqual(removedTags, ['New option', 2])
+assert.deepEqual(enhancedValue.value, [1, 3])
+enhancedInput.props.onCompositionstart()
+enhancedInput.props.onInput({ target: { value: 'draft' } }); await nextTick()
+assert.equal(enhancedInput.props.value, '')
+enhancedInput.props.onCompositionend({ target: { value: 'Finished' } }); await nextTick()
+assert.equal(enhancedInput.props.value, 'Finished')
+enhancedRef.value.close(); await nextTick()
+assert.deepEqual(visibilityEvents, [true, false])
+enhancedApp.unmount()
+console.log('Passed: select creation, collapsed tags, reserved keyword, IME, tag removal and visibility events.')
