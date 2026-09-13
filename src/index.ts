@@ -1,3 +1,6 @@
+import { LuTabs } from './components/tabs'
+import { LuBreadcrumb } from './components/breadcrumb'
+import { LuRate } from './components/rate'
 import { LuUpload } from './components/upload'
 import type { App } from 'vue'
 import { EpxButton, LuButton } from './components/button'
@@ -27,7 +30,7 @@ import { LuSkeleton, LuSkeletonItem } from './components/skeleton'
 import './styles/index.css'
 import './styles/extended.css'
 
-const components = [LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, LuPagination, LuProgress, LuDivider, LuTree, LuTooltip, LuDropdown, LuBadge, LuAvatar, LuSkeleton, LuSkeletonItem, LuUpload]
+const components = [LuTabs, LuBreadcrumb, LuRate, LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, LuPagination, LuProgress, LuDivider, LuTree, LuTooltip, LuDropdown, LuBadge, LuAvatar, LuSkeleton, LuSkeletonItem, LuUpload]
 
 export { EpxButton, EpxInput, EpxCard, EpxDialog, EpxForm, EpxFormItem, EpxTable, EpxTableColumn, EpxTour, LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour }
 export * from './components/button'
@@ -65,3 +68,7 @@ export * from './components/avatar'
 export * from './components/skeleton'
 
 export * from './components/upload'
+
+export * from './components/tabs'
+export * from './components/breadcrumb'
+export * from './components/rate'

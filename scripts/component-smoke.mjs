@@ -7,7 +7,7 @@ const teleportHost = { children: [] }
 const renderer = createRenderer({
   querySelector: selector => selector === 'body' ? teleportHost : null,
   createElement: type => ({
-    type, tagName: type.toUpperCase(), props: {}, children: [], listeners: {},
+    type, tagName: type.toUpperCase(), props: {}, children: [], listeners: {}, style: {},
     addEventListener(name, handler) { this.listeners[name] = handler },
     removeEventListener(name) { delete this.listeners[name] },
     focus() { this.focused = true }, blur() { this.focused = false }, select() { this.textSelected = true },
@@ -1054,3 +1054,56 @@ queueUploadRef.value.clearFiles(); await nextTick()
 assert.equal(findAll(queueUploadRoot, n => n.type === 'img').length, 0)
 queueUploadApp.unmount()
 console.log('Passed: upload size rejection, picture thumbnails, concurrency queue, cancellation slot release and stale response isolation.')
+
+const { LuTabs, EpxTabs, LuBreadcrumb, EpxBreadcrumb, LuRate, EpxRate } = await import('../dist/index.js')
+for (const [component, alias] of [[LuTabs, EpxTabs], [LuBreadcrumb, EpxBreadcrumb], [LuRate, EpxRate]]) {
+  assert.equal(component, alias)
+  assert.ok(registered.includes(component.name))
+}
+const tabItems = ref([{ name: 0, label: 'Overview' }, { name: 'blocked', label: 'Disabled', disabled: true }, { name: 'settings', label: 'Settings' }])
+const activeTab = ref(0), tabChanges = [], tabsRoot = { children: [] }
+const tabsApp = renderer.createApp({ render: () => h(LuTabs, { items: tabItems.value, modelValue: activeTab.value, 'onUpdate:modelValue': v => { activeTab.value = v }, onChange: v => tabChanges.push(v) }, { settings: () => h('strong', 'Settings panel') }) })
+tabsApp.mount(tabsRoot)
+const tabButtons = () => findAll(tabsRoot, n => n.props?.role === 'tab')
+assert.equal(tabButtons()[0].props['aria-selected'], true)
+await tabButtons()[0].props.onKeydown({ key: 'ArrowRight', preventDefault() {} })
+assert.equal(activeTab.value, 'settings')
+assert.equal(tabButtons()[2].focused, true)
+assert.equal(tabButtons()[2].props.tabindex, 0)
+tabButtons()[1].props.onClick(); await nextTick()
+assert.deepEqual(tabChanges, ['settings'])
+await tabButtons()[2].props.onKeydown({ key: 'Home', preventDefault() {} })
+assert.equal(activeTab.value, 0)
+tabItems.value = [{ name: 'only', label: 'Only' }]; await nextTick()
+assert.equal(tabButtons()[0].props['aria-selected'], true)
+tabsApp.unmount()
+const uncontrolledTabs = mount(LuTabs, { items: [{ name: 'a', label: 'A' }, { name: 'b', label: 'B' }] })
+findAll(uncontrolledTabs.root, n => n.props?.role === 'tab')[1].props.onClick(); await nextTick()
+assert.equal(findAll(uncontrolledTabs.root, n => n.props?.role === 'tab')[1].props['aria-selected'], true)
+uncontrolledTabs.app.unmount()
+const crumbs = mount(LuBreadcrumb, { items: [{ label: 'Home', href: '/' }, { label: 'Current', href: '/current' }], separator: '>' })
+assert.equal(findAll(crumbs.root, n => n.type === 'a').length, 1)
+assert.equal(findAll(crumbs.root, n => n.props?.['aria-current'] === 'page').length, 1)
+crumbs.app.unmount()
+const rateValue = ref(3), ratingRoot = { children: [] }, ratingChanges = []
+const ratingApp = renderer.createApp({ render: () => h(LuRate, { modelValue: rateValue.value, clearable: true, 'onUpdate:modelValue': v => { rateValue.value = v }, onChange: v => ratingChanges.push(v) }) })
+ratingApp.mount(ratingRoot)
+const slider = ratingRoot.children[0]
+slider.props.onKeydown({ key: 'End', preventDefault() {} }); await nextTick()
+assert.equal(slider.props['aria-valuenow'], 5)
+findAll(ratingRoot, n => n.props?.class?.includes('epx-rate__star'))[4].props.onClick(); await nextTick()
+assert.equal(rateValue.value, 0)
+slider.props.onKeydown({ key: 'ArrowLeft', preventDefault() {} }); await nextTick()
+assert.deepEqual(ratingChanges, [5, 0])
+ratingApp.unmount()
+for (const state of [{ disabled: true }, { readonly: true }]) {
+  const blockedRate = mount(LuRate, { ...state, 'onUpdate:modelValue': () => assert.fail('blocked rating update') })
+  blockedRate.root.children[0].props.onKeydown({ key: 'End', preventDefault() {} })
+  findAll(blockedRate.root, n => n.props?.class?.includes('epx-rate__star'))[0].props.onClick()
+  blockedRate.app.unmount()
+}
+const invalidRate = mount(LuRate, { modelValue: Infinity, max: NaN })
+assert.equal(invalidRate.root.children[0].props['aria-valuenow'], 0)
+assert.equal(invalidRate.root.children[0].props['aria-valuemax'], 5)
+invalidRate.app.unmount()
+console.log('Passed: tabs keyboard/disabled/dynamic/uncontrolled state, breadcrumb current-page semantics, rate keyboard/clear/guards and invalid values.')

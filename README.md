@@ -25,6 +25,10 @@ createApp(App).use(LunarUI).mount('#app')
 
 ## Components
 
+- `LuTabs`
+- `LuBreadcrumb`
+- `LuRate`
+
 - `LuButton`
 - `LuInput`
 - `LuUpload`

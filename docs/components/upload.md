@@ -49,13 +49,14 @@ const files = ref([])
 </template>
 </DemoBlock>
 
-## 属性
+## 图片列表与上传控制
 
-### 图片列表与上传控制
-
+<DemoBlock direction="column">
 <lu-upload multiple accept="image/*" list-type="picture-card" :max-size="5 * 1024 * 1024" :concurrency="2" :http-request="mockRequest">
   <template #tip>选择图片查看缩略图，最大 5 MB；此处模拟上传。</template>
 </lu-upload>
+
+<template #source>
 
 ```vue
 <lu-upload action="/api/upload" multiple accept="image/*"
@@ -64,35 +65,71 @@ const files = ref([])
 </lu-upload>
 ```
 
-- `listType`：`text`（默认）、`picture`、`picture-card`，后两者自动生成本地图片缩略图；点击触发 `preview`，由业务打开预览。
-- `UploadFile.url`：已有图片的展示地址。组件创建的本地预览 URL 在移除或卸载时自动释放。
-- `maxSize`：单文件字节数上限，默认 0 不限；超过时触发 `reject(file, 'size')`，不加入列表。
-- `concurrency`：同时处理的文件数量，默认 3，最小 1；异步校验也占用名额。其余文件排队，取消、清空或外部移除会撤销对应任务。
-- `showSize`：显示文件大小，默认 true；`retryText`：失败行的重试按钮文案，默认“重试”。
+</template>
+</DemoBlock>
 
-失败文件可直接逐项重试。取消自定义请求时，即使请求未响应 AbortSignal，也不会阻塞后续队列；实际网络取消仍需自定义请求配合。禁用后不启动排队任务，已开始的任务继续执行。
+## Upload Props
 
-- `fileList: UploadFile[]`：支持 `v-model:file-list`；不传时由组件管理。初始文件必须提供唯一 `uid` 和 `name`。
-- `action`：上传地址；使用默认请求时必填。`method` 默认 POST，`name` 默认 file。
-- `headers: Record<string, string>`、`data: Record<string, string | Blob>`、`withCredentials`（默认 false）：请求配置。multipart 的 Content-Type 及 boundary 由浏览器设置。
-- `multiple` / `drag` / `disabled`：多选、拖拽、禁用，默认 false。
-- `accept`：扩展名或 MIME 类型，例如 `.pdf,image/*`。选择与拖拽均过滤；服务端仍需校验文件。
-- `limit`：文件总数上限，默认 0 不限；超出时本批次不加入。
-- `autoUpload` / `showFileList`：自动上传、显示列表，默认 true。
-- `beforeUpload(file)`：可异步返回 false 阻止上传，文件保持待上传；抛错则标记失败。
-- `beforeRemove(file, files)`：可异步返回 false 或抛错阻止移除。
-- `httpRequest(options): Promise<unknown>`：替换请求。options 包含 `file, action, method, filename, headers, data, withCredentials, signal, onProgress`；进度为 0–100，取消由 AbortSignal 通知。返回值作为成功响应。
-- 文案可通过 `label`、`listLabel`、`dragText`、`readyText`、`successText`、`errorText`、`cancelText`、`removeText` 自定义。
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `fileList` | `UploadFile[]` | — | 支持 `v-model:file-list`；不传时内部管理。初始文件需唯一 uid 和 name。 |
+| `action` | `string` | `''` | 上传地址，使用默认请求时必填。 |
+| `method / name` | `string` | `POST / file` | 请求方法 / 文件字段名。 |
+| `headers` | `Record<string, string>` | `{}` | 请求头，multipart Content-Type 与 boundary 由浏览器设置。 |
+| `data` | `Record<string, string \| Blob>` | `{}` | 附加表单数据。 |
+| `withCredentials` | `boolean` | `false` | 是否携带跨域凭据。 |
+| `multiple / drag / disabled` | `boolean` | `false` | 多选 / 拖拽 / 禁用。 |
+| `accept` | `string` | `''` | 扩展名或 MIME，例如 `.pdf,image/*`；选择与拖拽均过滤，服务端仍需校验。 |
+| `limit` | `number` | `0` | 文件总数上限，0 不限；超出时整批拒绝。 |
+| `maxSize` | `number` | `0` | 单文件字节上限，0 不限；超过时触发 `reject(file, 'size')`。 |
+| `concurrency` | `number` | `3` | 并发任务数，最小 1；包含异步校验，其余文件排队。 |
+| `listType` | `text / picture / picture-card` | `text` | 图片模式自动创建缩略图，点击触发 preview。 |
+| `showSize / autoUpload / showFileList` | `boolean` | `true` | 显示大小 / 自动上传 / 显示列表。 |
+| `beforeUpload` | `(file: File) => boolean \| void \| Promise<boolean \| void>` | — | 返回 false 保持待上传；抛错标记失败。 |
+| `beforeRemove` | `(file: UploadFile, files: UploadFile[]) => boolean \| void \| Promise<boolean \| void>` | — | 返回 false 或抛错可阻止移除。 |
+| `httpRequest` | `UploadRequest` | — | 替换默认请求，返回 Promise；参数详见下方。 |
+| `label / listLabel / dragText` | `string` | `选择文件 / 上传文件 / 或将文件拖到此处` | 选择按钮、列表与拖拽提示文案。 |
+| `readyText / successText / errorText` | `string` | `待上传 / 上传成功 / 上传失败` | 状态文案。 |
+| `cancelText / removeText / retryText` | `string` | `取消 / 移除 / 重试` | 操作文案。 |
 
-## 事件、插槽与方法
+失败文件支持逐项重试。取消、清空或外部移除会撤销对应排队任务；禁用后不启动新任务，已开始的任务继续执行。取消自定义请求会释放并发名额；实际网络取消仍需请求实现响应 AbortSignal。
 
-- `change(file, files)`：加入、成功或失败；`progress(percentage, file, files)`：上传进度。
-- `success(response, file, files)` / `error(error, file, files)`：请求结果。
-- `remove(file, files)` / `preview(file)`：移除与文件名点击；预览由业务方处理。
-- `exceed(rawFiles, files)`：超限；`reject(rawFile, reason)`：类型不符或钩子拒绝，reason 为 `accept` 或 `before-upload`。
-- `trigger`：触发区内容，已包在可操作元素内，请勿嵌套按钮；`tip`：提示；`file({ file })`：替换整行；默认插槽：额外操作。
-- `submit()`：上传待处理及失败文件，返回 Promise；重复调用不会重复发送正在处理的文件。
-- `abort(file?)`：取消指定或全部请求，恢复待上传；`clearFiles()`：取消并清空。
-- `handleStart(rawFile)`：加入文件并遵循 autoUpload；`handleRemove(file)`：遵循移除钩子。
+## Upload Events
 
-`UploadFile` 包含 `uid, name, size?, raw?, status?, percentage?, response?`；status 为 `ready | uploading | success | fail`。已有文件无 raw 时只展示，不会重新上传。移除、取消或卸载后会忽略过期响应。支持 `LuUpload` / `EpxUpload` 及相关类型导出。
+| 事件 | 参数 | 说明 |
+| --- | --- | --- |
+| `update:fileList` | `files` | 同步文件列表。 |
+| `change` | `file, files` | 文件加入、成功或失败。 |
+| `progress` | `percentage, file, files` | 进度 0–100。 |
+| `success / error` | `response / error, file, files` | 请求结果。 |
+| `remove` | `file, files` | 文件移除。 |
+| `preview` | `file` | 点击文件或缩略图，由业务处理预览。 |
+| `exceed` | `rawFiles, files` | 超出数量限制。 |
+| `reject` | `rawFile, reason` | reason 为 `accept`、`before-upload` 或 `size`。 |
+
+## Upload Slots
+
+| 插槽 | 说明 |
+| --- | --- |
+| `trigger` | 选择区内容，已包在可操作元素内，避免嵌套按钮。 |
+| `tip` | 提示信息。 |
+| `file` | 接收 `{ file }`，替换整行。 |
+| `default` | 额外操作。 |
+
+## Upload Methods
+
+| 方法 | 说明 |
+| --- | --- |
+| `submit()` | 上传待处理及失败文件，返回 Promise；不重复发送处理中任务。 |
+| `abort(file?)` | 取消指定或全部任务，恢复待上传。 |
+| `clearFiles()` | 取消并清空。 |
+| `handleStart(rawFile)` | 加入文件并遵循 autoUpload。 |
+| `handleRemove(file)` | 遵循移除钩子。 |
+
+## 类型与自定义请求
+
+`UploadFile` 包含 `uid, name, url?, size?, raw?, status?, percentage?, response?`；status 为 `ready | uploading | success | fail`。已有文件无 raw 时只展示。组件创建的本地预览 URL 在移除或卸载时释放。
+
+`httpRequest(options)` 接收 `file, action, method, filename, headers, data, withCredentials, signal, onProgress`；进度 0–100，取消通过 AbortSignal 通知，Promise 返回值为成功响应。移除、取消或卸载后忽略过期响应。
+
+导出：`LuUpload`, `EpxUpload`, `UploadFile`, `UploadStatus`, `UploadRequest`, `UploadRequestOptions`。

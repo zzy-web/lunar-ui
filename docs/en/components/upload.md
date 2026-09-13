@@ -48,44 +48,85 @@ const files = ref([])
 </template>
 </DemoBlock>
 
-## Props
+## Pictures and upload scheduling
 
-### Pictures and upload scheduling
-
+<DemoBlock direction="column">
 <lu-upload multiple accept="image/*" list-type="picture-card" :max-size="5 * 1024 * 1024" :concurrency="2" :http-request="mockRequest" label="Choose images" success-text="Uploaded" retry-text="Retry">
   <template #tip>Choose images to preview thumbnails, up to 5 MB each. Uploads are simulated.</template>
 </lu-upload>
+
+<template #source>
 
 ```vue
 <lu-upload action="/api/upload" multiple accept="image/*"
   list-type="picture-card" :max-size="5 * 1024 * 1024" :concurrency="2" />
 ```
 
-- `listType`: `text` (default), `picture`, or `picture-card`. Picture layouts generate local image thumbnails; clicks emit `preview` for your application to handle.
-- `UploadFile.url`: existing image URL. Generated local preview URLs are released on removal and unmount.
-- `maxSize`: maximum bytes per file, 0 means unlimited. Oversized files emit `reject(file, 'size')` and are not added.
-- `concurrency`: maximum simultaneous file tasks, including async validation, defaults to 3, minimum 1. Other tasks queue; cancellation, clearing and external removal cancel queued tasks.
-- `showSize`: display file sizes, default true. `retryText` customizes the per-file retry button.
+</template>
+</DemoBlock>
 
-Failed files can be retried individually. Cancelled custom requests release queue capacity even if they ignore AbortSignal; actual network cancellation requires their cooperation. Disabling pauses new tasks while existing tasks continue.
+## Upload Props
 
-- `fileList: UploadFile[]`: optional `v-model:file-list`; internally managed when omitted. Initial entries require unique `uid` and `name`.
-- `action`: required for the default request. `method` defaults to POST; `name` defaults to file.
-- `headers`, `data` (string or Blob values), `withCredentials` (false): request settings. Let the browser set the multipart Content-Type boundary.
-- `multiple`, `drag`, `disabled`: default false. `autoUpload` and `showFileList`: default true.
-- `accept`: comma-separated extensions or MIME types, such as `.pdf,image/*`. Applies to selection and drop; server validation remains necessary.
-- `limit`: total file limit, 0 means unlimited. An exceeding batch is rejected in full.
-- `beforeUpload(file)`: may asynchronously return false to keep a file ready without uploading. Throwing marks the file failed.
-- `beforeRemove(file, files)`: return false or throw to prevent removal; supports async functions.
-- `httpRequest(options): Promise<unknown>`: custom request receiving `file, action, method, filename, headers, data, withCredentials, signal, onProgress`. Progress uses 0–100; observe the AbortSignal for cancellation. The resolved value is the response.
-- Text props: `label`, `listLabel`, `dragText`, `readyText`, `successText`, `errorText`, `cancelText`, `removeText`.
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| `fileList` | `UploadFile[]` | — | Optional `v-model:file-list`; internally managed when omitted. Initial files require unique uid and name. |
+| `action` | `string` | `''` | Upload URL; required for the default request. |
+| `method / name` | `string` | `POST / file` | Request method / file field name. |
+| `headers` | `Record<string, string>` | `{}` | Request headers; let the browser set multipart Content-Type and boundary. |
+| `data` | `Record<string, string \| Blob>` | `{}` | Additional form fields. |
+| `withCredentials` | `boolean` | `false` | Include cross-origin credentials. |
+| `multiple / drag / disabled` | `boolean` | `false` | Multiple selection / drag and drop / disabled. |
+| `accept` | `string` | `''` | Extensions or MIME types, e.g. `.pdf,image/*`. Filters selection and drop; server validation remains necessary. |
+| `limit` | `number` | `0` | Total file limit; 0 is unlimited. An exceeding batch is rejected in full. |
+| `maxSize` | `number` | `0` | Maximum bytes per file; 0 is unlimited. Oversized files emit `reject(file, 'size')`. |
+| `concurrency` | `number` | `3` | Concurrent tasks including async validation, minimum 1. Remaining files queue. |
+| `listType` | `text / picture / picture-card` | `text` | Picture layouts generate thumbnails; clicks emit preview. |
+| `showSize / autoUpload / showFileList` | `boolean` | `true` | Show sizes / auto upload / show file list. |
+| `beforeUpload` | `(file: File) => boolean \| void \| Promise<boolean \| void>` | — | Return false to keep the file ready; throwing marks it failed. |
+| `beforeRemove` | `(file: UploadFile, files: UploadFile[]) => boolean \| void \| Promise<boolean \| void>` | — | Return false or throw to prevent removal. |
+| `httpRequest` | `UploadRequest` | — | Replace the default request with a Promise-returning function; see below. |
+| `label / listLabel / dragText` | `string` | `选择文件 / 上传文件 / 或将文件拖到此处` | Trigger, list and drop hint labels. |
+| `readyText / successText / errorText` | `string` | `待上传 / 上传成功 / 上传失败` | Status labels. |
+| `cancelText / removeText / retryText` | `string` | `取消 / 移除 / 重试` | Action labels. |
 
-## Events, slots and methods
+Failed files can be retried individually. Cancellation, clearing and external removal cancel queued tasks. Disabling pauses new tasks while existing tasks continue. Cancelling custom requests releases queue capacity; actual network cancellation requires observing AbortSignal.
 
-Events: `change(file, files)` on addition/success/failure, `progress(percentage, file, files)`, `success(response, file, files)`, `error(error, file, files)`, `remove(file, files)`, `preview(file)`, `exceed(rawFiles, files)`, and `reject(rawFile, reason)` with reason `accept` or `before-upload`. Handle previews in your application.
+## Upload Events
 
-Slots: `trigger` supplies content inside the existing trigger (avoid nested buttons); `tip` supplies hints; `file({ file })` replaces a list row; the default slot supplies additional actions.
+| Event | Arguments | Description |
+| --- | --- | --- |
+| `update:fileList` | `files` | Synchronize the file list. |
+| `change` | `file, files` | File added, succeeded or failed. |
+| `progress` | `percentage, file, files` | Progress from 0–100. |
+| `success / error` | `response / error, file, files` | Request result. |
+| `remove` | `file, files` | File removed. |
+| `preview` | `file` | File or thumbnail clicked; handle previews in your application. |
+| `exceed` | `rawFiles, files` | File count exceeded. |
+| `reject` | `rawFile, reason` | Reason is `accept`, `before-upload` or `size`. |
 
-Methods: `submit()` uploads ready/failed files and returns a Promise, without duplicating pending requests. `abort(file?)` cancels one/all requests and resets them to ready. `clearFiles()` cancels and clears. `handleStart(rawFile)` adds a file and follows autoUpload. `handleRemove(file)` follows the removal hook.
+## Upload Slots
 
-`UploadFile`: `uid, name, size?, raw?, status?, percentage?, response?`; status is `ready | uploading | success | fail`. Entries without raw files are display-only. Late responses after cancellation, removal or unmount are ignored. Exports: `LuUpload`, `EpxUpload`, `UploadFile`, `UploadStatus`, `UploadRequest`, `UploadRequestOptions`.
+| Slot | Description |
+| --- | --- |
+| `trigger` | Content inside the existing trigger; avoid nested buttons. |
+| `tip` | Hint text. |
+| `file` | Receives `{ file }` and replaces a list row. |
+| `default` | Additional actions. |
+
+## Upload Methods
+
+| Method | Description |
+| --- | --- |
+| `submit()` | Upload ready/failed files; returns a Promise and deduplicates pending tasks. |
+| `abort(file?)` | Cancel one or all tasks and restore ready status. |
+| `clearFiles()` | Cancel and clear all files. |
+| `handleStart(rawFile)` | Add a file and follow autoUpload. |
+| `handleRemove(file)` | Remove a file through the removal hook. |
+
+## Types and custom requests
+
+`UploadFile` contains `uid, name, url?, size?, raw?, status?, percentage?, response?`; status is `ready | uploading | success | fail`. Entries without raw files are display-only. Generated preview URLs are released on removal or unmount.
+
+`httpRequest(options)` receives `file, action, method, filename, headers, data, withCredentials, signal, onProgress`. Progress is 0–100; cancellation uses AbortSignal; the resolved value is the response. Late responses after cancellation, removal or unmount are ignored.
+
+Exports：`LuUpload`, `EpxUpload`, `UploadFile`, `UploadStatus`, `UploadRequest`, `UploadRequestOptions`。

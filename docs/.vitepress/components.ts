@@ -1,5 +1,7 @@
 export const componentGroups = [
   { zh: '基础组件', en: 'Basic', items: [
+    { slug: 'tabs', name: 'Tabs', zh: '标签页', fresh: true, description: ['内容切换与键盘导航', 'Content switching and keyboard navigation'] },
+    { slug: 'breadcrumb', name: 'Breadcrumb', zh: '面包屑', fresh: true, description: ['页面层级与路径导航', 'Page hierarchy and navigation'] },
     { slug: 'dropdown', name: 'Dropdown', zh: '下拉菜单', fresh: true, description: ['操作菜单、禁用项与键盘导航', 'Action menus, disabled items and keyboard navigation'] },
     { slug: 'divider', name: 'Divider', zh: '分割线', fresh: true, description: ['水平、垂直与带文字的内容分隔', 'Horizontal, vertical and labeled separators'] },
     { slug: 'button', name: 'Button', zh: '按钮', description: ['常用操作与动作入口', 'Actions and interactions'] },
@@ -7,6 +9,7 @@ export const componentGroups = [
     { slug: 'tag', name: 'Tag', zh: '标签', description: ['状态与分类标记', 'Status and categories'] }
   ] },
   { zh: '表单组件', en: 'Form', items: [
+    { slug: 'rate', name: 'Rate', zh: '评分', fresh: true, description: ['星级评分、只读与键盘操作', 'Star ratings, read-only and keyboard controls'] },
     { slug: 'upload', name: 'Upload', zh: '上传', fresh: true, description: ['文件选择、拖拽上传与进度管理', 'File selection, drag and drop, upload progress'] },
     { slug: 'input', name: 'Input', zh: '输入框', updated: true, description: ['文本、密码与多行输入', 'Text, passwords and textareas'] },
     { slug: 'select', name: 'Select', zh: '选择器', fresh: true, description: ['单选、多选与禁用选项', 'Single and multiple selection'] },
