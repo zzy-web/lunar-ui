@@ -15,6 +15,8 @@ export const componentGroups = [
     { slug: 'form', name: 'Form', zh: '表单', description: ['表单布局与字段校验', 'Layout and field validation'] }
   ] },
   { zh: '数据展示', en: 'Data display', items: [
+    { slug: 'badge', name: 'Badge', zh: '徽标', fresh: true, description: ['数量提示、小红点与自定义内容', 'Counts, notification dots and custom content'] },
+    { slug: 'avatar', name: 'Avatar', zh: '头像', fresh: true, description: ['图片头像、尺寸与失败回退', 'Profile images, sizes and error fallback'] },
     { slug: 'tree', name: 'Tree', zh: '树形控件', fresh: true, description: ['层级数据、节点展开与复选联动', 'Hierarchical data, expansion and linked checkboxes'] },
     { slug: 'pagination', name: 'Pagination', zh: '分页', fresh: true, description: ['页码切换与大数据量分页', 'Page navigation for large datasets'] },
     { slug: 'table', name: 'Table', zh: '表格', description: ['结构化数据与自定义列', 'Structured data and columns'] },
@@ -22,6 +24,7 @@ export const componentGroups = [
     { slug: 'empty', name: 'Empty', zh: '空状态', fresh: true, description: ['无数据说明与后续操作', 'Empty states and next actions'] }
   ] },
   { zh: '反馈组件', en: 'Feedback', items: [
+    { slug: 'skeleton', name: 'Skeleton', zh: '骨架屏', fresh: true, description: ['加载占位、动画与自定义布局', 'Loading placeholders, animation and custom layouts'] },
     { slug: 'tooltip', name: 'Tooltip', zh: '文字提示', fresh: true, description: ['悬停提示、焦点提示与自动定位', 'Hover and focus hints with automatic positioning'] },
     { slug: 'progress', name: 'Progress', zh: '进度条', fresh: true, description: ['任务进度、状态与不确定进度', 'Task progress, status and indeterminate loading'] },
     { slug: 'alert', name: 'Alert', zh: '提示', fresh: true, description: ['行内提示与状态反馈', 'Inline messages and feedback'] },

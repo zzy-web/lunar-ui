@@ -46,6 +46,9 @@ createApp(App).use(LunarUI).mount('#app')
 - `LuPagination`
 - `LuProgress`
 - `LuDivider`
+- `LuBadge`
+- `LuAvatar`
+- `LuSkeleton` / `LuSkeletonItem`
 
 ## Validation
 

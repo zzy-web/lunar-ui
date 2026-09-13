@@ -20,10 +20,13 @@ import { LuDivider } from './components/divider'
 import { LuTree } from './components/tree'
 import { LuTooltip } from './components/tooltip'
 import { LuDropdown } from './components/dropdown'
+import { LuBadge } from './components/badge'
+import { LuAvatar } from './components/avatar'
+import { LuSkeleton, LuSkeletonItem } from './components/skeleton'
 import './styles/index.css'
 import './styles/extended.css'
 
-const components = [LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, LuPagination, LuProgress, LuDivider, LuTree, LuTooltip, LuDropdown]
+const components = [LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, LuPagination, LuProgress, LuDivider, LuTree, LuTooltip, LuDropdown, LuBadge, LuAvatar, LuSkeleton, LuSkeletonItem]
 
 export { EpxButton, EpxInput, EpxCard, EpxDialog, EpxForm, EpxFormItem, EpxTable, EpxTableColumn, EpxTour, LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour }
 export * from './components/button'
@@ -55,3 +58,7 @@ export default {
   }
 }
 export type { TableRow, TableColumnProps, TableSortOrder } from './components/table'
+
+export * from './components/badge'
+export * from './components/avatar'
+export * from './components/skeleton'
