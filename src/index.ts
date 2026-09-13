@@ -1,3 +1,4 @@
+import { LuUpload } from './components/upload'
 import type { App } from 'vue'
 import { EpxButton, LuButton } from './components/button'
 import { EpxCard, LuCard } from './components/card'
@@ -26,7 +27,7 @@ import { LuSkeleton, LuSkeletonItem } from './components/skeleton'
 import './styles/index.css'
 import './styles/extended.css'
 
-const components = [LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, LuPagination, LuProgress, LuDivider, LuTree, LuTooltip, LuDropdown, LuBadge, LuAvatar, LuSkeleton, LuSkeletonItem]
+const components = [LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, LuPagination, LuProgress, LuDivider, LuTree, LuTooltip, LuDropdown, LuBadge, LuAvatar, LuSkeleton, LuSkeletonItem, LuUpload]
 
 export { EpxButton, EpxInput, EpxCard, EpxDialog, EpxForm, EpxFormItem, EpxTable, EpxTableColumn, EpxTour, LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour }
 export * from './components/button'
@@ -62,3 +63,5 @@ export type { TableRow, TableColumnProps, TableSortOrder } from './components/ta
 export * from './components/badge'
 export * from './components/avatar'
 export * from './components/skeleton'
+
+export * from './components/upload'

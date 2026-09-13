@@ -7,6 +7,7 @@ export const componentGroups = [
     { slug: 'tag', name: 'Tag', zh: '标签', description: ['状态与分类标记', 'Status and categories'] }
   ] },
   { zh: '表单组件', en: 'Form', items: [
+    { slug: 'upload', name: 'Upload', zh: '上传', fresh: true, description: ['文件选择、拖拽上传与进度管理', 'File selection, drag and drop, upload progress'] },
     { slug: 'input', name: 'Input', zh: '输入框', updated: true, description: ['文本、密码与多行输入', 'Text, passwords and textareas'] },
     { slug: 'select', name: 'Select', zh: '选择器', fresh: true, description: ['单选、多选与禁用选项', 'Single and multiple selection'] },
     { slug: 'radio', name: 'Radio', zh: '单选框', fresh: true, description: ['互斥选项与单选框组', 'Exclusive options and groups'] },

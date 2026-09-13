@@ -181,3 +181,21 @@
 .epx-skeleton__status { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 @keyframes epx-skeleton-wave { from { background-position: 100% 0; } to { background-position: 0 0; } }
 @media (prefers-reduced-motion: reduce) { .epx-skeleton.is-animated .epx-skeleton__item { animation: none; } }
+.epx-upload__input { display: none; }
+.epx-upload__trigger { padding: 8px 15px; border: 1px solid var(--epx-color-primary); border-radius: var(--epx-border-radius-base); background: var(--epx-color-primary); color: var(--epx-color-white); font: inherit; cursor: pointer; }
+.epx-upload__trigger:disabled { opacity: .5; cursor: not-allowed; }
+.epx-upload__drop { padding: 32px 20px; border: 1px dashed var(--epx-border-color); border-radius: 6px; background: var(--epx-bg-color); text-align: center; cursor: pointer; }
+.epx-upload__drop.is-over, .epx-upload:not(.is-disabled) .epx-upload__drop:hover { border-color: var(--epx-color-primary); background: var(--epx-color-primary-light-9); }
+.epx-upload.is-disabled .epx-upload__drop { color: var(--epx-text-color-disabled); cursor: not-allowed; }
+.epx-upload__hint { display: block; margin-top: 8px; color: var(--epx-text-color-secondary); }
+.epx-upload__tip { margin-top: 8px; font-size: 12px; color: var(--epx-text-color-secondary); }
+.epx-upload__list { list-style: none; padding: 0; margin: 12px 0; }
+.epx-upload__file { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 8px; margin-top: 4px; border-radius: 4px; background: var(--epx-fill-color-light); }
+.epx-upload__name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: start; }
+.epx-upload__name, .epx-upload__action { border: 0; background: transparent; color: var(--epx-text-color-regular); font: inherit; cursor: pointer; }
+.epx-upload__action:disabled { color: var(--epx-text-color-disabled); cursor: not-allowed; }
+.epx-upload__status { font-size: 12px; color: var(--epx-text-color-secondary); }
+.epx-upload__file.is-success .epx-upload__status { color: var(--epx-color-success); }
+.epx-upload__file.is-fail .epx-upload__status { color: var(--epx-color-danger); }
+.epx-upload__file progress { width: 100%; order: 1; height: 6px; accent-color: var(--epx-color-primary); }
+.epx-upload button:focus-visible, .epx-upload__drop:focus-visible { outline: 2px solid var(--epx-color-primary); outline-offset: 2px; }

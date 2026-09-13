@@ -27,6 +27,7 @@ createApp(App).use(LunarUI).mount('#app')
 
 - `LuButton`
 - `LuInput`
+- `LuUpload`
 - `LuCard`
 - `LuForm`
 - `LuFormItem`
