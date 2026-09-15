@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
-import { createRenderer, h, nextTick, ref } from 'vue'
+import { LuImage, EpxImage, LuVirtualList, EpxVirtualList } from '../dist/index.js'
+import { createRenderer, h, nextTick, ref, toRaw } from 'vue'
 import LunarUI, { LuCheckbox, LuSwitch, LuTag, LuCalendar, LuInput, LuButton, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, EpxCheckbox, EpxSwitch, EpxTag, EpxCalendar, EpxSelect, EpxRadio, EpxRadioGroup, EpxAlert, EpxEmpty } from '../dist/index.js'
 import { LuPagination, EpxPagination, LuProgress, EpxProgress, LuDivider, EpxDivider } from '../dist/index.js'
 
@@ -1355,3 +1356,124 @@ await findAll(verticalSegment.root, n => n.props?.role === 'radio')[0].props.onK
 assert.equal(findAll(verticalSegment.root, n => n.props?.role === 'radio')[1].props['aria-checked'], true)
 verticalSegment.app.unmount()
 console.log('Passed: segmented typed/false/zero values, slots, native form value, keyboard/disabled navigation and dynamic options.')
+
+assert.equal(LuImage, EpxImage)
+assert.equal(LuVirtualList, EpxVirtualList)
+for (const name of ['LuImage', 'LuVirtualList']) assert.ok(registered.includes(name))
+const imageSource = ref('first.png'), imageRoot = { children: [] }, imageApi = ref(), imageEvents = []
+const imageApp = renderer.createApp({ render: () => h(LuImage, {
+  ref: imageApi, src: imageSource.value, alt: 'Landscape', lazy: true, width: 200, height: 100,
+  onLoad: () => imageEvents.push('load'), onError: () => imageEvents.push('error')
+}, { placeholder: () => 'Loading', error: ({ retry }) => h('button', { onClick: retry }, 'Retry') }) })
+imageApp.mount(imageRoot)
+const images = () => findAll(imageRoot, n => n.type === 'img')
+const staleImage = images()[0]
+assert.equal(staleImage.props.loading, 'lazy')
+assert.equal(staleImage.props.alt, 'Landscape')
+imageSource.value = 'second.png'; await nextTick()
+staleImage.props.onError({}); await nextTick()
+assert.equal(images().length, 1)
+assert.deepEqual(imageEvents, [])
+images()[0].props.onError({}); await nextTick()
+assert.equal(images().length, 0)
+findAll(imageRoot, n => n.type === 'button')[0].props.onClick(); await nextTick()
+assert.equal(images().length, 1)
+images()[0].props.onLoad({}); await nextTick()
+assert.equal(imageRoot.children[0].props['aria-busy'], false)
+assert.equal(findAll(imageRoot, n => n.props?.class === 'epx-image__placeholder').length, 0)
+assert.deepEqual(imageEvents, ['error', 'load'])
+imageSource.value = ''; await nextTick()
+assert.equal(images().length, 0)
+imageApp.unmount()
+
+const virtualItems = ref(Array.from({ length: 10000 }, (_, id) => ({ id }))), virtualRoot = { children: [] }, virtualApi = ref(), virtualRanges = [], virtualScrolls = []
+const virtualApp = renderer.createApp({ render: () => h(LuVirtualList, {
+  ref: virtualApi, items: virtualItems.value, height: 200, itemHeight: 40, overscan: 2, itemKey: 'id',
+  onRangeChange: range => virtualRanges.push(range), onScroll: offset => virtualScrolls.push(offset)
+}, { default: ({ item, index }) => h('span', `${index}:${item.id}`), empty: () => 'Nothing here' }) })
+virtualApp.mount(virtualRoot)
+const virtualRows = () => findAll(virtualRoot, n => n.props?.role === 'listitem')
+assert.equal(virtualRows().length, 7)
+assert.equal(virtualRows()[0].props['aria-setsize'], 10000)
+virtualApi.value.scrollToIndex(5000, 'center'); await nextTick()
+assert.equal(virtualRoot.children[0].scrollTop, 199920)
+assert.equal(virtualRows().length, 9)
+assert.deepEqual(virtualRanges.at(-1), { start: 4996, end: 5005 })
+virtualApi.value.scrollToIndex(5000, 'auto'); await nextTick()
+assert.equal(virtualRoot.children[0].scrollTop, 199920)
+virtualApi.value.scrollToIndex(99999, 'end'); await nextTick()
+assert.equal(virtualRoot.children[0].scrollTop, 399800)
+assert.equal(virtualRows().at(-1).props['aria-posinset'], 10000)
+virtualItems.value = virtualItems.value.slice(0, 3); await nextTick()
+assert.equal(virtualRoot.children[0].scrollTop, 0)
+assert.equal(virtualRows().length, 3)
+virtualItems.value = Array.from({ length: 100 }, (_, id) => ({ id })); await nextTick()
+virtualRoot.children[0].props.onScroll({ target: { scrollTop: 85 } }); await nextTick()
+assert.deepEqual(virtualScrolls, [85])
+assert.equal(virtualRows().length, 10)
+virtualApi.value.scrollTo(-100); await nextTick()
+assert.equal(virtualRoot.children[0].scrollTop, 0)
+virtualItems.value = []; await nextTick()
+assert.equal(virtualRows().length, 0)
+assert.deepEqual(virtualRanges.at(-1), { start: 0, end: 0 })
+virtualApp.unmount()
+const invalidVirtual = mount(LuVirtualList, { items: [1, 2], height: NaN, itemHeight: 0, overscan: -2 })
+assert.equal(invalidVirtual.root.children[0].props.style.height, '300px')
+assert.equal(findAll(invalidVirtual.root, n => n.props?.role === 'listitem').length, 2)
+invalidVirtual.app.unmount()
+console.log('Passed: image lazy attributes, stale events, error/retry/load; virtual list bounded rendering, positioning, shrinkage, scrolling, empty and invalid dimensions.')
+
+const savedResizeObserver = globalThis.ResizeObserver
+const resizeObservers = new Set()
+globalThis.ResizeObserver = class {
+  constructor(callback) { this.callback = callback; resizeObservers.add(this) }
+  observe(element) { this.element = toRaw(element) }
+  disconnect() { resizeObservers.delete(this) }
+}
+try {
+  const dynamicItems = ref(Array.from({ length: 100 }, (_, id) => ({ id })))
+  const dynamicRoot = { children: [] }, dynamicApi = ref()
+  const dynamicApp = renderer.createApp({ render: () => h(LuVirtualList, {
+    ref: dynamicApi, items: dynamicItems.value, dynamic: true, height: 120, itemHeight: 40, overscan: 2, itemKey: 'id'
+  }, { default: ({ item }) => h('span', String(item.id)) }) })
+  dynamicApp.mount(dynamicRoot)
+  const rows = () => findAll(dynamicRoot, n => n.props?.role === 'listitem')
+  const total = () => findAll(dynamicRoot, n => n.props?.class === 'epx-virtual-list__spacer')[0].props.style.height
+  const resize = (row, height) => {
+    row.getBoundingClientRect = () => ({ height })
+    const observer = [...resizeObservers].find(observer => observer.element === row)
+    assert.ok(observer)
+    observer.callback([])
+  }
+  resize(rows()[0], 100); await nextTick()
+  assert.equal(total(), '4060px')
+  assert.equal(rows()[0].props.style, undefined)
+  dynamicApi.value.scrollTo(110); await nextTick()
+  resize(rows()[0], 160); await nextTick()
+  assert.equal(dynamicRoot.children[0].scrollTop, 170, 'growing a row above the viewport preserves the anchor')
+  resize(rows()[0], 80); await nextTick()
+  assert.equal(dynamicRoot.children[0].scrollTop, 90, 'shrinking a row above the viewport preserves the anchor')
+  dynamicItems.value = [{ id: -1 }, ...dynamicItems.value]; await nextTick()
+  assert.equal(dynamicRoot.children[0].scrollTop, 130, 'prepending keeps the same stable-key item in view')
+  assert.equal(total(), '4080px', 'height follows its stable key')
+  dynamicItems.value = dynamicItems.value.filter(item => item.id !== -1); await nextTick()
+  assert.equal(dynamicRoot.children[0].scrollTop, 90)
+  dynamicApi.value.scrollToIndex(50, 'center'); await nextTick()
+  const targetRow = rows().find(row => row.props['aria-posinset'] === 51)
+  resize(targetRow, 120); await nextTick()
+  assert.equal(dynamicRoot.children[0].scrollTop, 2040, 'center alignment corrects after target measurement')
+  assert.ok(rows().length <= 8)
+  const viewportObserver = [...resizeObservers].find(observer => observer.element === dynamicRoot.children[0])
+  dynamicRoot.children[0].clientWidth = 240
+  viewportObserver.callback([]); await nextTick()
+  assert.equal(total(), '4080px', 'width changes discard offscreen measurements and remeasure mounted rows')
+  dynamicItems.value = []; await nextTick()
+  assert.equal(rows().length, 0)
+  assert.equal(dynamicRoot.children[0].scrollTop, 0)
+  dynamicApp.unmount()
+  assert.equal(resizeObservers.size, 0, 'all observers disconnect on unmount')
+} finally {
+  if (savedResizeObserver === undefined) delete globalThis.ResizeObserver
+  else globalThis.ResizeObserver = savedResizeObserver
+}
+console.log('Passed: dynamic measurements, height changes, scroll anchors, stable-key prepend/removal, estimated positioning, width invalidation and observer cleanup.')

@@ -2,9 +2,10 @@
 
 按阅读顺序展示活动记录。使用原生列表语义，可通过 `aria-label` 为时间线命名。
 
+
 ## 基础用法
 
-<DemoBlock>
+<DemoBlock direction="column">
 <lu-timeline aria-label="项目记录">
   <lu-timeline-item timestamp="2026-09-15" datetime="2026-09-15" type="success" placement="top"><lu-card>项目已创建</lu-card></lu-timeline-item>
   <lu-timeline-item timestamp="10:00" type="warning" size="large" hollow>审核中</lu-timeline-item>
@@ -27,17 +28,37 @@
 
 ## TimelineItem Props
 
-- `timestamp`：时间文本。
-- `datetime`：HTML `time` 元素的机器可读日期时间。
-- `hideTimestamp`：隐藏时间及时间插槽，默认 `false`。
-- `placement`：`top | bottom`，默认 `bottom`。
-- `type`：`primary | success | warning | danger | info`，默认 `primary`。
-- `color`：自定义节点颜色，优先于 `type`。
-- `size`：`normal | large`，默认 `normal`。
-- `hollow`：空心节点，默认 `false`。
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `timestamp` | `string` | `—` | 时间文本 |
+| `datetime` | `string` | `—` | 传给 time 元素的机器可读时间 |
+| `hideTimestamp` | `boolean` | `false` | 隐藏时间及时间插槽 |
+| `placement` | `top / bottom` | `bottom` | 时间相对内容的位置 |
+| `type` | `primary / success / warning / danger / info` | `primary` | 节点类型 |
+| `color` | `string` | `—` | 自定义节点颜色，优先于 type |
+| `size` | `normal / large` | `normal` | 节点尺寸 |
+| `hollow` | `boolean` | `false` | 是否为空心节点 |
 
-## 插槽
 
-`LuTimeline` 默认插槽放置 `LuTimelineItem`。子项支持 `default`（内容）、`timestamp`（时间内容）和 `dot`（装饰节点）。自定义节点不应包含交互控件。
 
-组件不发出事件。请同时使用内容文字表达状态，避免仅依靠颜色。
+## Timeline 插槽
+
+| 插槽名 | 插槽参数 | 说明 |
+| --- | --- | --- |
+| `default` | `—` | 时间线子项 |
+
+
+
+## TimelineItem 插槽
+
+| 插槽名 | 插槽参数 | 说明 |
+| --- | --- | --- |
+| `default` | `—` | 节点内容 |
+| `timestamp` | `—` | 自定义时间 |
+| `dot` | `—` | 自定义装饰节点 |
+
+
+
+## 使用说明
+
+按照阅读顺序放置 LuTimelineItem。组件使用原生列表语义，可通过 aria-label 命名。hideTimestamp 也会隐藏时间插槽。dot 仅用于装饰，不应包含交互控件。请同时使用文字表达状态。组件不发出事件。

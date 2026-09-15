@@ -1,3 +1,7 @@
+import { LuImage } from './components/image'
+import { LuVirtualList } from './components/virtual-list'
+export * from './components/image'
+export * from './components/virtual-list'
 import { LuResult } from './components/result'
 import { LuTimeline, LuTimelineItem } from './components/timeline'
 import './styles/display.css'
@@ -41,7 +45,7 @@ import './styles/index.css'
 import './styles/extended.css'
 import './styles/controls.css'
 
-const components = [LuResult, LuTimeline, LuTimelineItem, LuInputNumber, LuSlider, LuCollapse, LuCollapseItem, LuSteps, LuSegmented, LuTabs, LuBreadcrumb, LuRate, LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, LuPagination, LuProgress, LuDivider, LuTree, LuTooltip, LuDropdown, LuBadge, LuAvatar, LuSkeleton, LuSkeletonItem, LuUpload]
+const components = [LuImage, LuVirtualList, LuResult, LuTimeline, LuTimelineItem, LuInputNumber, LuSlider, LuCollapse, LuCollapseItem, LuSteps, LuSegmented, LuTabs, LuBreadcrumb, LuRate, LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, LuPagination, LuProgress, LuDivider, LuTree, LuTooltip, LuDropdown, LuBadge, LuAvatar, LuSkeleton, LuSkeletonItem, LuUpload]
 
 export { EpxButton, EpxInput, EpxCard, EpxDialog, EpxForm, EpxFormItem, EpxTable, EpxTableColumn, EpxTour, LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour }
 export * from './components/button'

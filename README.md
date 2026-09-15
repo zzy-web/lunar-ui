@@ -25,6 +25,9 @@ createApp(App).use(LunarUI).mount('#app')
 
 ## Components
 
+- `LuImage`: fit modes, native lazy loading, placeholders, error slots and retry.
+- `LuVirtualList`: fixed or dynamic row heights, automatic measurement, scroll anchoring, overscan and scroll methods.
+
 - `LuResult`: status icons, custom content and follow-up actions.
 - `LuTimeline` / `LuTimelineItem`: timestamps, status colors and custom nodes.
 
