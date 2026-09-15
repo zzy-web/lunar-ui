@@ -23,6 +23,7 @@ export const componentGroups = [
     { slug: 'form', name: 'Form', zh: '表单', description: ['表单布局与字段校验', 'Layout and field validation'] }
   ] },
   { zh: '数据展示', en: 'Data display', items: [
+    { slug: 'timeline', name: 'Timeline', zh: '时间线', fresh: true, description: ['时间戳、状态与自定义节点', 'Timestamps, status and custom nodes'] },
     { slug: 'collapse', name: 'Collapse', zh: '折叠面板', fresh: true, description: ['手风琴、异步拦截与延迟渲染', 'Accordion, async guards and lazy rendering'] },
     { slug: 'badge', name: 'Badge', zh: '徽标', fresh: true, description: ['数量提示、小红点与自定义内容', 'Counts, notification dots and custom content'] },
     { slug: 'avatar', name: 'Avatar', zh: '头像', fresh: true, description: ['图片头像、尺寸与失败回退', 'Profile images, sizes and error fallback'] },
@@ -33,6 +34,7 @@ export const componentGroups = [
     { slug: 'empty', name: 'Empty', zh: '空状态', fresh: true, description: ['无数据说明与后续操作', 'Empty states and next actions'] }
   ] },
   { zh: '反馈组件', en: 'Feedback', items: [
+    { slug: 'result', name: 'Result', zh: '结果', fresh: true, description: ['操作结果与后续操作', 'Operation outcomes and next actions'] },
     { slug: 'skeleton', name: 'Skeleton', zh: '骨架屏', fresh: true, description: ['加载占位、动画与自定义布局', 'Loading placeholders, animation and custom layouts'] },
     { slug: 'tooltip', name: 'Tooltip', zh: '文字提示', fresh: true, description: ['悬停提示、焦点提示与自动定位', 'Hover and focus hints with automatic positioning'] },
     { slug: 'progress', name: 'Progress', zh: '进度条', fresh: true, description: ['任务进度、状态与不确定进度', 'Task progress, status and indeterminate loading'] },

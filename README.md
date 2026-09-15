@@ -25,6 +25,9 @@ createApp(App).use(LunarUI).mount('#app')
 
 ## Components
 
+- `LuResult`: status icons, custom content and follow-up actions.
+- `LuTimeline` / `LuTimelineItem`: timestamps, status colors and custom nodes.
+
 - `LuInputNumber`: bounds, decimal steps, precision, strict stepping, formatting and parsing.
 - `LuSlider`: single/range selection, pointer dragging, keyboard controls, marks and vertical mode.
 - `LuCollapse` / `LuCollapseItem`: accordion, async guards, lazy content and custom headers.
