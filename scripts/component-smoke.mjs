@@ -1107,3 +1107,43 @@ assert.equal(invalidRate.root.children[0].props['aria-valuenow'], 0)
 assert.equal(invalidRate.root.children[0].props['aria-valuemax'], 5)
 invalidRate.app.unmount()
 console.log('Passed: tabs keyboard/disabled/dynamic/uncontrolled state, breadcrumb current-page semantics, rate keyboard/clear/guards and invalid values.')
+
+// Manual activation moves focus without mounting an unvisited panel.
+const manualItems = ref([{ name: 'a', label: 'A' }, { name: 'locked', label: 'Locked', disabled: true }, { name: 'b', label: 'B' }])
+const manualRoot = { children: [] }, manualChanges = []
+let panelMounts = 0
+const StatefulPanel = { setup() { panelMounts++; return () => h('input', { value: 'preserved' }) } }
+const manualApp = renderer.createApp({ render: () => h(LuTabs, {
+  items: manualItems.value, orientation: 'vertical', activation: 'manual', lazy: true,
+  onChange: name => manualChanges.push(name)
+}, { a: () => h('p', 'First'), b: () => h(StatefulPanel) }) })
+manualApp.mount(manualRoot)
+const manualButtons = () => findAll(manualRoot, n => n.props?.role === 'tab')
+assert.equal(findAll(manualRoot, n => n.props?.role === 'tablist')[0].props['aria-orientation'], 'vertical')
+assert.equal(panelMounts, 0)
+await manualButtons()[0].props.onKeydown({ key: 'ArrowRight', preventDefault() { assert.fail('horizontal key must not be consumed') } })
+await manualButtons()[0].props.onKeydown({ key: 'ArrowDown', preventDefault() {} })
+assert.equal(manualButtons()[2].focused, true)
+assert.equal(manualButtons()[2].props.tabindex, 0)
+assert.equal(manualButtons()[0].props['aria-selected'], true)
+assert.equal(panelMounts, 0)
+assert.deepEqual(manualChanges, [])
+// Native buttons dispatch click for Enter and Space as well as pointer activation.
+manualButtons()[2].props.onClick(); await nextTick()
+assert.deepEqual(manualChanges, ['b'])
+assert.equal(panelMounts, 1)
+manualButtons()[0].props.onClick(); await nextTick()
+manualButtons()[2].props.onClick(); await nextTick()
+assert.equal(panelMounts, 1)
+await manualButtons()[2].props.onKeydown({ key: 'ArrowDown', preventDefault() {} })
+assert.equal(manualButtons()[0].props.tabindex, 0)
+await manualButtons()[0].props.onKeydown({ key: 'End', preventDefault() {} })
+assert.equal(manualButtons()[2].props.tabindex, 0)
+manualItems.value = [{ name: 'a', label: 'A' }]; await nextTick()
+assert.equal(manualButtons()[0].props.tabindex, 0)
+manualItems.value = [{ name: 'a', label: 'A' }, { name: 'b', label: 'B' }]; await nextTick()
+assert.equal(panelMounts, 2) // The internally selected name becomes available again.
+manualItems.value = []; await nextTick()
+assert.equal(manualButtons().length, 0)
+manualApp.unmount()
+console.log('Passed: vertical/manual tab navigation, lazy mounting, state retention and dynamic removal.')
