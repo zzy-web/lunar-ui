@@ -1,4 +1,9 @@
 import { LuTabs } from './components/tabs'
+import { LuInputNumber } from './components/input-number'
+import { LuSlider } from './components/slider'
+import { LuCollapse, LuCollapseItem } from './components/collapse'
+import { LuSteps } from './components/steps'
+import { LuSegmented } from './components/segmented'
 import { LuBreadcrumb } from './components/breadcrumb'
 import { LuRate } from './components/rate'
 import { LuUpload } from './components/upload'
@@ -29,8 +34,9 @@ import { LuAvatar } from './components/avatar'
 import { LuSkeleton, LuSkeletonItem } from './components/skeleton'
 import './styles/index.css'
 import './styles/extended.css'
+import './styles/controls.css'
 
-const components = [LuTabs, LuBreadcrumb, LuRate, LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, LuPagination, LuProgress, LuDivider, LuTree, LuTooltip, LuDropdown, LuBadge, LuAvatar, LuSkeleton, LuSkeletonItem, LuUpload]
+const components = [LuInputNumber, LuSlider, LuCollapse, LuCollapseItem, LuSteps, LuSegmented, LuTabs, LuBreadcrumb, LuRate, LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour, LuCheckbox, LuSwitch, LuTag, LuCalendar, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, LuPagination, LuProgress, LuDivider, LuTree, LuTooltip, LuDropdown, LuBadge, LuAvatar, LuSkeleton, LuSkeletonItem, LuUpload]
 
 export { EpxButton, EpxInput, EpxCard, EpxDialog, EpxForm, EpxFormItem, EpxTable, EpxTableColumn, EpxTour, LuButton, LuInput, LuCard, LuDialog, LuForm, LuFormItem, LuTable, LuTableColumn, LuTour }
 export * from './components/button'
@@ -72,3 +78,8 @@ export * from './components/upload'
 export * from './components/tabs'
 export * from './components/breadcrumb'
 export * from './components/rate'
+export * from './components/input-number'
+export * from './components/slider'
+export * from './components/collapse'
+export * from './components/steps'
+export * from './components/segmented'

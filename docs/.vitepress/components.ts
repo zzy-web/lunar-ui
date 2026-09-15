@@ -1,5 +1,6 @@
 export const componentGroups = [
   { zh: '基础组件', en: 'Basic', items: [
+    { slug: 'steps', name: 'Steps', zh: '步骤条', fresh: true, description: ['流程状态、纵向布局与可交互步骤', 'Workflow states, vertical layouts and interactive steps'] },
     { slug: 'tabs', name: 'Tabs', zh: '标签页', fresh: true, description: ['内容切换与键盘导航', 'Content switching and keyboard navigation'] },
     { slug: 'breadcrumb', name: 'Breadcrumb', zh: '面包屑', fresh: true, description: ['页面层级与路径导航', 'Page hierarchy and navigation'] },
     { slug: 'dropdown', name: 'Dropdown', zh: '下拉菜单', fresh: true, description: ['操作菜单、禁用项与键盘导航', 'Action menus, disabled items and keyboard navigation'] },
@@ -9,6 +10,9 @@ export const componentGroups = [
     { slug: 'tag', name: 'Tag', zh: '标签', description: ['状态与分类标记', 'Status and categories'] }
   ] },
   { zh: '表单组件', en: 'Form', items: [
+    { slug: 'input-number', name: 'InputNumber', zh: '计数器', fresh: true, description: ['精度、步长、范围与格式化数值输入', 'Precision, steps, limits and formatted numeric input'] },
+    { slug: 'slider', name: 'Slider', zh: '滑块', fresh: true, description: ['区间拖动、刻度、标记与键盘操作', 'Range dragging, stops, marks and keyboard controls'] },
+    { slug: 'segmented', name: 'Segmented', zh: '分段控制器', fresh: true, description: ['分段选择、自定义内容与键盘导航', 'Segmented selection, custom content and keyboard navigation'] },
     { slug: 'rate', name: 'Rate', zh: '评分', fresh: true, description: ['星级评分、只读与键盘操作', 'Star ratings, read-only and keyboard controls'] },
     { slug: 'upload', name: 'Upload', zh: '上传', fresh: true, description: ['文件选择、拖拽上传与进度管理', 'File selection, drag and drop, upload progress'] },
     { slug: 'input', name: 'Input', zh: '输入框', updated: true, description: ['文本、密码与多行输入', 'Text, passwords and textareas'] },
@@ -19,6 +23,7 @@ export const componentGroups = [
     { slug: 'form', name: 'Form', zh: '表单', description: ['表单布局与字段校验', 'Layout and field validation'] }
   ] },
   { zh: '数据展示', en: 'Data display', items: [
+    { slug: 'collapse', name: 'Collapse', zh: '折叠面板', fresh: true, description: ['手风琴、异步拦截与延迟渲染', 'Accordion, async guards and lazy rendering'] },
     { slug: 'badge', name: 'Badge', zh: '徽标', fresh: true, description: ['数量提示、小红点与自定义内容', 'Counts, notification dots and custom content'] },
     { slug: 'avatar', name: 'Avatar', zh: '头像', fresh: true, description: ['图片头像、尺寸与失败回退', 'Profile images, sizes and error fallback'] },
     { slug: 'tree', name: 'Tree', zh: '树形控件', fresh: true, description: ['层级数据、节点展开与复选联动', 'Hierarchical data, expansion and linked checkboxes'] },
