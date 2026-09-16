@@ -1477,3 +1477,105 @@ try {
   else globalThis.ResizeObserver = savedResizeObserver
 }
 console.log('Passed: dynamic measurements, height changes, scroll anchors, stable-key prepend/removal, estimated positioning, width invalidation and observer cleanup.')
+
+const previewApi = ref(), previewRoot = { children: [] }, previewSources = ref(['one.png', 'two.png']), previewEvents = []
+const previewApp = renderer.createApp({ render: () => h(LuImage, {
+  ref: previewApi, src: 'thumb.png', previewSrcList: previewSources.value, infinite: false,
+  minScale: 0.5, maxScale: 2, zoomRate: 2,
+  onShow: () => previewEvents.push('show'), onClose: () => previewEvents.push('close'), onSwitch: index => previewEvents.push(index)
+}) })
+previewApp.mount(previewRoot)
+const viewerButton = label => findAll(teleportHost, n => n.props?.['aria-label'] === label)[0]
+const previewImage = () => findAll(teleportHost, n => n.type === 'img')[0]
+findAll(previewRoot, n => n.type === 'img')[0].props.onLoad({})
+await nextTick()
+findAll(previewRoot, n => n.props?.['aria-haspopup'] === 'dialog')[0].props.onClick()
+await nextTick()
+assert.equal(findAll(teleportHost, n => n.props?.role === 'dialog').length, 1)
+assert.equal(previewImage().props.src, 'one.png')
+assert.equal(viewerButton('Previous image').props.disabled, true)
+previewImage().props.onLoad({}); await nextTick()
+viewerButton('Zoom in').props.onClick(); await nextTick()
+assert.ok(previewImage().props.style.transform.includes('scale(2)'))
+assert.equal(viewerButton('Zoom in').props.disabled, true)
+viewerButton('Rotate right').props.onClick(); await nextTick()
+assert.ok(previewImage().props.style.transform.includes('rotate(90deg)'))
+previewImage().props.onPointerdown({ button: 0, pointerId: 1, clientX: 10, clientY: 20, currentTarget: previewImage(), preventDefault() {} })
+previewImage().props.onPointermove({ pointerId: 1, clientX: 60, clientY: 80 }); await nextTick()
+assert.ok(previewImage().props.style.transform.includes('translate(50px, 60px)'))
+previewImage().props.onPointerup({ pointerId: 1 })
+viewerButton('Reset image').props.onClick(); await nextTick()
+assert.equal(previewImage().props.style.transform, 'translate(0px, 0px) rotate(0deg) scale(1)')
+const oldPreview = previewImage()
+viewerButton('Next image').props.onClick(); await nextTick()
+assert.equal(previewImage().props.src, 'two.png')
+assert.equal(viewerButton('Next image').props.disabled, true)
+oldPreview.props.onError({}); await nextTick()
+assert.ok(previewImage())
+previewImage().props.onError({}); await nextTick()
+assert.equal(previewImage(), undefined)
+findAll(teleportHost, n => n.type === 'button' && n.text === 'Retry')[0].props.onClick(); await nextTick()
+assert.equal(previewImage().props.src, 'two.png')
+viewerButton('Close preview').props.onClick(); await nextTick()
+assert.equal(findAll(teleportHost, n => n.props?.role === 'dialog').length, 0)
+assert.deepEqual(previewEvents, ['show', 1, 'close'])
+previewApi.value.showPreview(999); await nextTick()
+assert.equal(previewImage().props.src, 'two.png')
+previewSources.value = []; await nextTick()
+assert.equal(findAll(teleportHost, n => n.props?.role === 'dialog').length, 0)
+previewApp.unmount()
+console.log('Passed: image preview opening, navigation boundaries, zoom bounds, rotation, dragging, reset, stale events, retry, close and source removal.')
+
+const originalPreviewDocument = globalThis.document
+const previewKeyHandlers = new Set()
+let restoredPreviewFocus = 0
+const previewOrigin = { isConnected: true, focus() { restoredPreviewFocus++ } }
+globalThis.document = {
+  activeElement: previewOrigin,
+  body: { style: { overflow: 'auto' } },
+  addEventListener(name, callback) { if (name === 'keydown') previewKeyHandlers.add(callback) },
+  removeEventListener(name, callback) { if (name === 'keydown') previewKeyHandlers.delete(callback) }
+}
+try {
+  const keyboardApi = ref(), keyboardRoot = { children: [] }
+  const keyboardApp = renderer.createApp({ render: () => h(LuImage, { ref: keyboardApi, previewSrcList: ['a.png', 'b.png'] }) })
+  keyboardApp.mount(keyboardRoot)
+  keyboardApi.value.showPreview(); await nextTick(); await nextTick()
+  assert.equal(document.body.style.overflow, 'hidden')
+  assert.equal(viewerButton('Close preview').focused, true)
+  const key = (key, extras = {}) => {
+    let prevented = false
+    for (const callback of previewKeyHandlers) callback({ key, preventDefault() { prevented = true }, stopPropagation() {}, ...extras })
+    return prevented
+  }
+  assert.equal(key('ArrowLeft'), true)
+  await nextTick()
+  assert.equal(previewImage().props.src, 'b.png', 'infinite mode wraps from first to last')
+  key('ArrowRight'); await nextTick()
+  assert.equal(previewImage().props.src, 'a.png')
+  previewImage().props.onLoad({}); await nextTick()
+  key('+'); key('r'); await nextTick()
+  assert.ok(previewImage().props.style.transform.includes('scale(1.2)'))
+  assert.ok(previewImage().props.style.transform.includes('rotate(90deg)'))
+  key('0'); await nextTick()
+  assert.ok(previewImage().props.style.transform.includes('scale(1)'))
+  const keyboardPanel = findAll(teleportHost, node => node.props?.role === 'dialog')[0]
+  const keyboardButtons = findAll(keyboardPanel, node => node.type === 'button' && !node.props.disabled)
+  keyboardPanel.querySelectorAll = () => keyboardButtons
+  document.activeElement = keyboardButtons[0]
+  assert.equal(key('Tab', { shiftKey: true }), true)
+  assert.equal(keyboardButtons.at(-1).focused, true)
+  document.activeElement = keyboardButtons.at(-1)
+  assert.equal(key('Tab'), true)
+  assert.equal(keyboardButtons[0].focused, true)
+  key('Escape'); await nextTick()
+  assert.equal(findAll(teleportHost, node => node.props?.role === 'dialog').length, 0)
+  assert.equal(document.body.style.overflow, 'auto')
+  assert.equal(restoredPreviewFocus, 1)
+  assert.equal(previewKeyHandlers.size, 0)
+  keyboardApp.unmount()
+} finally {
+  if (originalPreviewDocument === undefined) delete globalThis.document
+  else globalThis.document = originalPreviewDocument
+}
+console.log('Passed: preview keyboard navigation/zoom/rotation/reset, focus cycling/return, Escape and scroll-lock cleanup.')
