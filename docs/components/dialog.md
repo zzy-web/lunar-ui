@@ -100,6 +100,8 @@ const visible = ref(false)
 | `center` | `boolean` | `false` | 是否让正文和底部操作居中显示。 |
 | `destroyOnClose` | `boolean` | `false` | 关闭后是否从 DOM 中移除对话框内容。 |
 
+多个 Dialog 同时打开时，只有最后一个需要锁定滚动的实例关闭或卸载后，页面才会恢复原来的滚动样式。打开期间修改 `lockScroll` 也会立即生效；初始隐藏的实例不会修改页面滚动。
+
 ## 事件
 
 | 事件名 | 说明 |

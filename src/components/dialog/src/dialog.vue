@@ -38,6 +38,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { acquireBodyScrollLock } from '../../../utils/body-scroll-lock'
 
 defineOptions({ name: 'LuDialog' })
 
@@ -45,7 +46,7 @@ const titleId = `epx-dialog-title-${Math.random().toString(36).slice(2, 9)}`
 const closeButtonRef = ref<HTMLButtonElement>()
 const shouldRender = ref(false)
 const isClient = typeof document !== 'undefined'
-let previousBodyOverflow = ''
+let releaseBodyScroll: (() => void) | undefined
 
 const props = withDefaults(defineProps<{
   modelValue: boolean
@@ -99,23 +100,20 @@ watch(() => props.modelValue, (visible) => {
     shouldRender.value = true
     emit('open')
     if (isClient) document.addEventListener('keydown', handleKeydown)
-    lockBodyScroll()
     nextTick(() => closeButtonRef.value?.focus())
     return
   }
   if (isClient) document.removeEventListener('keydown', handleKeydown)
-  unlockBodyScroll()
 }, { immediate: true })
 
-function lockBodyScroll() {
-  if (!props.lockScroll || !isClient) return
-  previousBodyOverflow = document.body.style.overflow
-  document.body.style.overflow = 'hidden'
-}
+watch(() => props.modelValue && props.lockScroll, (locked) => {
+  if (locked) releaseBodyScroll ??= acquireBodyScrollLock()
+  else unlockBodyScroll()
+}, { immediate: true })
 
 function unlockBodyScroll() {
-  if (!props.lockScroll || !isClient) return
-  document.body.style.overflow = previousBodyOverflow
+  releaseBodyScroll?.()
+  releaseBodyScroll = undefined
 }
 
 function handleAfterLeave() {

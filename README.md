@@ -25,6 +25,7 @@ createApp(App).use(LunarUI).mount('#app')
 
 ## Components
 
+- `LuStatistic`: dashboard metrics, precision, grouping, prefixes, suffixes and custom formatting.
 - `LuImage`: lazy loading, placeholders, retry and gallery preview with zoom, rotation, dragging and keyboard controls.
 - `LuVirtualList`: fixed or dynamic row heights, automatic measurement, scroll anchoring, overscan and scroll methods.
 

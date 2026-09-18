@@ -100,6 +100,8 @@ Add `center` to center the body text and footer actions.
 | `center` | `boolean` | `false` | Centers dialog text and footer actions. |
 | `destroyOnClose` | `boolean` | `false` | Removes dialog content from the DOM after close. |
 
+When multiple Dialog instances are open, the original body overflow is restored only after the last locking instance closes or unmounts. Changes to `lockScroll` apply while open; initially hidden instances do not change body scrolling.
+
 ## Events
 
 | Event | Description |

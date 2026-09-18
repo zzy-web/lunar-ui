@@ -23,6 +23,7 @@ export const componentGroups = [
     { slug: 'form', name: 'Form', zh: '表单', description: ['表单布局与字段校验', 'Layout and field validation'] }
   ] },
   { zh: '数据展示', en: 'Data display', items: [
+    { slug: 'statistic', name: 'Statistic', zh: '数值统计', fresh: true, description: ['数值分组、精度与自定义格式', 'Numeric grouping, precision and custom formatting'] },
     { slug: 'image', name: 'Image', zh: '图片', fresh: true, description: ['懒加载、图片组预览、缩放与旋转', 'Lazy loading, gallery preview, zoom and rotation'] },
     { slug: 'virtual-list', name: 'VirtualList', zh: '虚拟列表', fresh: true, description: ['动态行高、自动测量与滚动定位', 'Dynamic heights, automatic measurement and scroll positioning'] },
     { slug: 'timeline', name: 'Timeline', zh: '时间线', fresh: true, description: ['时间戳、状态与自定义节点', 'Timestamps, status and custom nodes'] },

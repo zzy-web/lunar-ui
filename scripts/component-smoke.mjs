@@ -3,6 +3,7 @@ import { LuImage, EpxImage, LuVirtualList, EpxVirtualList } from '../dist/index.
 import { createRenderer, h, nextTick, ref, toRaw } from 'vue'
 import LunarUI, { LuCheckbox, LuSwitch, LuTag, LuCalendar, LuInput, LuButton, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, EpxCheckbox, EpxSwitch, EpxTag, EpxCalendar, EpxSelect, EpxRadio, EpxRadioGroup, EpxAlert, EpxEmpty } from '../dist/index.js'
 import { LuPagination, EpxPagination, LuProgress, EpxProgress, LuDivider, EpxDivider } from '../dist/index.js'
+import { LuStatistic, EpxStatistic, LuDialog } from '../dist/index.js'
 
 const teleportHost = { children: [] }
 const renderer = createRenderer({
@@ -1579,3 +1580,82 @@ try {
   else globalThis.document = originalPreviewDocument
 }
 console.log('Passed: preview keyboard navigation/zoom/rotation/reset, focus cycling/return, Escape and scroll-lock cleanup.')
+
+assert.equal(LuStatistic, EpxStatistic)
+assert.ok(registered.includes('LuStatistic'))
+for (const [props, expected] of [
+  [{}, '0'],
+  [{ value: 12345.678, precision: 2 }, '12,345.68'],
+  [{ value: -12345.6, precision: 2, groupSeparator: ' ', decimalSeparator: ',' }, '-12 345,60'],
+  [{ value: 12345, groupSeparator: '' }, '12345'],
+  [{ value: 1.2, precision: 3.9 }, '1.200'],
+  [{ value: 12.6, precision: -1 }, '13'],
+  [{ value: 12.6, precision: Infinity }, '13'],
+  [{ value: 1, precision: 99 }, '1.00000000000000000000'],
+  [{ value: NaN }, '—'],
+  [{ value: Infinity }, '—'],
+  [{ value: 1e21 }, '1,000,000,000,000,000,000,000'],
+  [{ value: 12345, precision: 2, formatter: value => `${value / 1000}K` }, '12.345K'],
+  [{ value: NaN, formatter: value => Number.isNaN(value) ? 'Unavailable' : value }, 'Unavailable']
+]) {
+  const statistic = mount(LuStatistic, props)
+  assert.equal(findAll(statistic.root, node => node.props?.class === 'epx-statistic__value')[0].text, expected)
+  statistic.app.unmount()
+}
+const metric = ref(12), metricRoot = { children: [] }
+const metricApp = renderer.createApp({ render: () => h(LuStatistic, { value: metric.value, title: 'Fallback', prefix: '$', suffix: '%' }, {
+  title: () => h('strong', {}, 'Revenue'),
+  prefix: () => h('i', {}, 'USD'),
+  suffix: () => h('small', {}, 'per month')
+}) })
+metricApp.mount(metricRoot)
+assert.equal(findAll(metricRoot, node => node.type === 'strong')[0].text, 'Revenue')
+assert.equal(findAll(metricRoot, node => node.type === 'i')[0].text, 'USD')
+assert.equal(findAll(metricRoot, node => node.type === 'small')[0].text, 'per month')
+metric.value = 54321; await nextTick()
+assert.equal(findAll(metricRoot, node => node.props?.class === 'epx-statistic__value')[0].text, '54,321')
+metricApp.unmount()
+console.log('Passed: Statistic registration, rounding, grouping, precision bounds, non-finite/large values, formatter, slots and reactive updates.')
+
+const originalDialogDocument = globalThis.document
+const dialogHandlers = new Set()
+globalThis.document = {
+  body: { style: { overflow: 'scroll' } },
+  addEventListener(name, callback) { dialogHandlers.add(callback) },
+  removeEventListener(name, callback) { dialogHandlers.delete(callback) }
+}
+try {
+  const hiddenDialog = mount(LuDialog, { modelValue: false })
+  assert.equal(document.body.style.overflow, 'scroll', 'hidden mount preserves overflow')
+  hiddenDialog.app.unmount()
+  assert.equal(document.body.style.overflow, 'scroll', 'hidden unmount preserves overflow')
+  for (const reverse of [false, true]) {
+    const dialogs = [mount(LuDialog, { modelValue: true }), mount(LuDialog, { modelValue: true })]
+    await nextTick()
+    assert.equal(document.body.style.overflow, 'hidden')
+    const nonlocking = mount(LuDialog, { modelValue: true, lockScroll: false })
+    nonlocking.app.unmount()
+    const hidden = mount(LuDialog, { modelValue: false })
+    hidden.app.unmount()
+    assert.equal(document.body.style.overflow, 'hidden')
+    if (reverse) dialogs.reverse()
+    dialogs[0].app.unmount()
+    assert.equal(document.body.style.overflow, 'hidden', 'remaining dialog retains lock')
+    dialogs[1].app.unmount()
+    assert.equal(document.body.style.overflow, 'scroll', 'last dialog restores original overflow')
+  }
+  const locking = ref(true), lockRoot = { children: [] }
+  const lockApp = renderer.createApp({ render: () => h(LuDialog, { modelValue: true, lockScroll: locking.value }) })
+  lockApp.mount(lockRoot); await nextTick()
+  locking.value = false; await nextTick()
+  assert.equal(document.body.style.overflow, 'scroll')
+  locking.value = true; await nextTick()
+  assert.equal(document.body.style.overflow, 'hidden')
+  lockApp.unmount()
+  assert.equal(document.body.style.overflow, 'scroll')
+  assert.equal(dialogHandlers.size, 0)
+} finally {
+  if (originalDialogDocument === undefined) delete globalThis.document
+  else globalThis.document = originalDialogDocument
+}
+console.log('Passed: Dialog hidden/nonlocking instances, overlapping locks, either unmount order, reactive lockScroll and listener cleanup.')

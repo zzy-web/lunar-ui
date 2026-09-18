@@ -1,3 +1,8 @@
+.epx-statistic { min-width: 0; color: var(--epx-text-color-primary); }
+.epx-statistic__title { margin-bottom: 6px; font-size: 14px; line-height: 1.5; color: var(--epx-text-color-regular); overflow-wrap: anywhere; }
+.epx-statistic__content { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px; font-size: 24px; line-height: 1.5; font-variant-numeric: tabular-nums; }
+.epx-statistic__value { min-width: 0; overflow-wrap: anywhere; }
+.epx-statistic__prefix, .epx-statistic__suffix { font-size: .65em; overflow-wrap: anywhere; }
 .epx-result { padding: 40px 24px; text-align: center; color: var(--epx-text-color-primary); }
 .epx-result__icon { display: flex; justify-content: center; color: var(--epx-color-info); }
 .epx-result__icon > span { display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border: 3px solid currentColor; border-radius: 50%; font-size: 40px; line-height: 1; }
