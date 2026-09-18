@@ -5,6 +5,7 @@ Choose an integer star rating with pointer or keyboard.
 <script setup>
 import { ref } from 'vue'
 const score = ref(3)
+const halfScore = ref(2.5)
 </script>
 
 ## Basic usage
@@ -66,3 +67,26 @@ const score = ref(3)
 ## Events and keyboard
 
 `update:modelValue` and `change` emit the new score. Arrow keys change it by one; Home clears and End selects the maximum. Non-finite values display as zero; fractional values are rounded.
+
+## Half-star rating
+
+<DemoBlock>
+<lu-rate v-model="halfScore" allow-half clearable show-score label="Half-star rating" />
+<template #source>
+
+```vue
+<script setup>
+import { ref } from 'vue'
+const halfScore = ref(2.5)
+</script>
+<template>
+  <lu-rate v-model="halfScore" allow-half clearable show-score label="Half-star rating" />
+</template>
+```
+
+</template>
+</DemoBlock>
+
+`allowHalf` defaults to false. When enabled, the left/right half of each star selects a half/full value and arrow keys move by 0.5. Clicking the current half-star clears it when `clearable` is enabled.
+
+Inside `LuForm`, this component inherits its disabled state and default size; an explicit component/group size takes precedence. See [Form](./form).

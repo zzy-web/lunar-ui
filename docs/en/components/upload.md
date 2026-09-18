@@ -130,3 +130,5 @@ Failed files can be retried individually. Cancellation, clearing and external re
 `httpRequest(options)` receives `file, action, method, filename, headers, data, withCredentials, signal, onProgress`. Progress is 0–100; cancellation uses AbortSignal; the resolved value is the response. Late responses after cancellation, removal or unmount are ignored.
 
 Exports：`LuUpload`, `EpxUpload`, `UploadFile`, `UploadStatus`, `UploadRequest`, `UploadRequestOptions`。
+
+Inside `LuForm`, this component inherits its disabled state. See [Form](./form).

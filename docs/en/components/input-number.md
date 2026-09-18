@@ -166,3 +166,5 @@ Typing preserves a draft; blur, Enter or native change commits it. Arrow Up/Down
 Component refs expose `focus()`, `blur()`, `select()`. Native attributes such as `id`, `name`, `aria-label` are forwarded to the input.
 
 Feature reference：[Element Plus InputNumber](https://element-plus.org/en-US/component/input-number.html)。This page documents Lunar UI's supported API; it is not a drop-in replacement.
+
+Inside `LuForm`, this component inherits its disabled state and default size; an explicit component/group size takes precedence. See [Form](./form).

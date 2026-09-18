@@ -221,3 +221,5 @@ async function remoteMethod(query) {
 ## 使用说明
 
 清空单选值为 `undefined`，多选值为 `[]`。方向键跳过禁用项，Enter 选择，Escape / Tab 关闭；下拉面板展开时 Home / End 定位首末可用项。多选后面板保持展开。选项值应唯一，保留字符串或数字类型。可从入口导入 `SelectOption` 和 `SelectValue`。暂不提供虚拟滚动。
+
+置于 `LuForm` 内时，此组件继承表单禁用状态和默认尺寸，组件/分组显式尺寸优先。详见 [Form 表单](./form)。

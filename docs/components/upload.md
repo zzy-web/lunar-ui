@@ -133,3 +133,5 @@ const files = ref([])
 `httpRequest(options)` 接收 `file, action, method, filename, headers, data, withCredentials, signal, onProgress`；进度 0–100，取消通过 AbortSignal 通知，Promise 返回值为成功响应。移除、取消或卸载后忽略过期响应。
 
 导出：`LuUpload`, `EpxUpload`, `UploadFile`, `UploadStatus`, `UploadRequest`, `UploadRequestOptions`。
+
+置于 `LuForm` 内时，此组件继承表单禁用状态。详见 [Form 表单](./form)。

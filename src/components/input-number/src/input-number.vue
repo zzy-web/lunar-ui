@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useFormControl } from '../../../composables/use-form-control'
 import { computed, nextTick, ref, useAttrs, watch } from 'vue'
 import type { StyleValue } from 'vue'
 import { clamp, decimalPlaces, finite, round } from '../../../utils/number'
@@ -24,9 +25,10 @@ const props = withDefaults(defineProps<{
   formatter?: (value: number) => string
   parser?: (value: string) => string | number
 }>(), {
-  step: 1, controls: true, controlsPosition: 'both', size: 'default',
+  step: 1, controls: true, controlsPosition: 'both',
   label: 'Input number', decreaseLabel: 'Decrease', increaseLabel: 'Increase', valueOnClear: null
 })
+const { formDisabled, formSize } = useFormControl(props)
 const emit = defineEmits<{
   'update:modelValue': [value: number | null]
   change: [value: number | null, previous: number | null]
@@ -61,7 +63,7 @@ const value = computed(() => {
 const display = computed(() => value.value === null ? '' : props.formatter
   ? props.formatter(value.value) : digits.value === undefined ? String(value.value) : value.value.toFixed(digits.value))
 watch(value, () => { editing.value = false })
-const blocked = computed(() => props.disabled || props.readonly)
+const blocked = computed(() => formDisabled.value || props.readonly)
 function publish(next: number | null) {
   if (blocked.value) return
   const normalized = next === null || !Number.isFinite(next) ? null : normalize(next)
@@ -118,10 +120,10 @@ defineExpose({ focus: () => control.value?.focus(), blur: () => control.value?.b
 </script>
 
 <template>
-  <div class="epx-input-number" :style="attrs.style as StyleValue" :class="[attrs.class, `epx-input-number--${size}`, `epx-input-number--${controlsPosition}`, { 'is-disabled': disabled, 'is-readonly': readonly, 'has-controls': controls }]">
+  <div class="epx-input-number" :style="attrs.style as StyleValue" :class="[attrs.class, `epx-input-number--${formSize}`, `epx-input-number--${controlsPosition}`, { 'is-disabled': formDisabled, 'is-readonly': readonly, 'has-controls': controls }]">
     <button v-if="controls" type="button" class="epx-input-number__decrease" :aria-label="decreaseLabel" :disabled="blocked || (value !== null && value <= minimum)" tabindex="-1" @mousedown.prevent @click="adjust(-1)"><slot name="decrease-icon">−</slot></button>
     <span v-if="$slots.prefix" class="epx-input-number__affix"><slot name="prefix" /></span>
-    <input v-bind="inputAttrs()" ref="control" class="epx-input-number__input" type="text" inputmode="decimal" role="spinbutton" :aria-label="String($attrs['aria-label'] ?? label)" :aria-valuemin="minimum" :aria-valuemax="maximum" :aria-valuenow="value ?? undefined" :aria-valuetext="display || undefined" :value="editing ? draft : display" :disabled="disabled" :readonly="readonly" :placeholder="placeholder" @input="input" @change="commit" @keydown="keydown" @focus="emit('focus', $event)" @blur="blur" @compositionstart="composing = true" @compositionend="composing = false; input($event)" />
+    <input v-bind="inputAttrs()" ref="control" class="epx-input-number__input" type="text" inputmode="decimal" role="spinbutton" :aria-label="String($attrs['aria-label'] ?? label)" :aria-valuemin="minimum" :aria-valuemax="maximum" :aria-valuenow="value ?? undefined" :aria-valuetext="display || undefined" :value="editing ? draft : display" :disabled="formDisabled" :readonly="readonly" :placeholder="placeholder" @input="input" @change="commit" @keydown="keydown" @focus="emit('focus', $event)" @blur="blur" @compositionstart="composing = true" @compositionend="composing = false; input($event)" />
     <span v-if="$slots.suffix" class="epx-input-number__affix"><slot name="suffix" /></span>
     <button v-if="controls" type="button" class="epx-input-number__increase" :aria-label="increaseLabel" :disabled="blocked || (value !== null && value >= maximum)" tabindex="-1" @mousedown.prevent @click="adjust(1)"><slot name="increase-icon">+</slot></button>
   </div>

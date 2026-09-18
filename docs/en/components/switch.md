@@ -5,6 +5,8 @@ Toggle a boolean value. Disabled or loading switches do not emit updates. Supply
 <script setup>
 import { ref } from 'vue'
 const enabled = ref(false)
+const savedState = ref('off')
+const confirmToggle = () => new Promise(resolve => setTimeout(() => resolve(true), 600))
 </script>
 
 ## Examples
@@ -40,7 +42,7 @@ const enabled = ref(false)
 
 | Attribute | Type | Default | Description |
 | --- | --- | --- | --- |
-| `modelValue` | `boolean` | `false` | Bound value. |
+| `modelValue` | `boolean \| string \| number` | `false` | Bound value. |
 | `disabled` | `boolean` | `false` | Whether the control is disabled. |
 | `loading` | `boolean` | `false` | Loading state; also prevents toggling. |
 | `activeText` | `string` | — | Text to the right of the switch. |
@@ -51,5 +53,30 @@ const enabled = ref(false)
 
 | Event | Signature | Description |
 | --- | --- | --- |
-| `update:modelValue` | `(value: boolean)` | Update the bound value. |
-| `change` | `(value: boolean)` | Emitted when the user changes the value. |
+| `update:modelValue` | `(value: boolean \| string \| number)` | Update the bound value. |
+| `change` | `(value: boolean \| string \| number)` | Emitted when the user changes the value. |
+
+## Async confirmation and custom values
+
+<DemoBlock>
+<lu-switch v-model="savedState" active-value="on" inactive-value="off" :before-change="confirmToggle" active-text="Save preference" />
+<span>{{ savedState }}</span>
+<template #source>
+
+```vue
+<script setup>
+import { ref } from 'vue'
+const savedState = ref('off')
+const confirmToggle = () => new Promise(resolve => setTimeout(() => resolve(true), 600))
+</script>
+<template>
+  <lu-switch v-model="savedState" active-value="on" inactive-value="off" :before-change="confirmToggle" active-text="Save preference" />
+</template>
+```
+
+</template>
+</DemoBlock>
+
+`activeValue` and `inactiveValue` accept boolean, string or number and default to true/false. `beforeChange(): boolean | Promise<boolean>` can veto a change. Pending checks show loading and ignore repeated clicks; external value/disabled changes invalidate old results. Thrown/rejected errors emit `change-error(error)` without changing the value. The instance exposes `focus()` and `blur()`. The demo simulates a 600 ms save.
+
+Inside `LuForm`, this component inherits its disabled state and default size; an explicit component/group size takes precedence. See [Form](./form).

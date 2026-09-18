@@ -4,6 +4,7 @@ import { createRenderer, h, nextTick, ref, toRaw } from 'vue'
 import LunarUI, { LuCheckbox, LuSwitch, LuTag, LuCalendar, LuInput, LuButton, LuSelect, LuRadio, LuRadioGroup, LuAlert, LuEmpty, EpxCheckbox, EpxSwitch, EpxTag, EpxCalendar, EpxSelect, EpxRadio, EpxRadioGroup, EpxAlert, EpxEmpty } from '../dist/index.js'
 import { LuPagination, EpxPagination, LuProgress, EpxProgress, LuDivider, EpxDivider } from '../dist/index.js'
 import { LuStatistic, EpxStatistic, LuDialog } from '../dist/index.js'
+import { LuCheckboxGroup, EpxCheckboxGroup, LuForm, LuFormItem } from '../dist/index.js'
 
 const teleportHost = { children: [] }
 const renderer = createRenderer({
@@ -1659,3 +1660,265 @@ try {
   else globalThis.document = originalDialogDocument
 }
 console.log('Passed: Dialog hidden/nonlocking instances, overlapping locks, either unmount order, reactive lockScroll and listener cleanup.')
+
+{
+assert.equal(LuCheckboxGroup, EpxCheckboxGroup)
+assert.ok(registered.includes('LuCheckboxGroup'))
+const groupValue = ref([0]), groupDisabled = ref(false), groupMin = ref(1), groupMax = ref(2)
+const groupRoot = { children: [] }, groupUpdates = [], groupChanges = [], itemChanges = []
+const groupApp = renderer.createApp({ render: () => h(LuCheckboxGroup, {
+  modelValue: groupValue.value, min: groupMin.value, max: groupMax.value, disabled: groupDisabled.value,
+  name: 'channels', size: 'large', 'aria-label': 'Channels',
+  'onUpdate:modelValue': value => { groupUpdates.push(value); groupValue.value = value },
+  onChange: value => groupChanges.push(value)
+}, { default: () => [
+  h(LuCheckbox, { value: 0, label: 'Zero' }),
+  h(LuCheckbox, { value: false, label: 'False', size: 'small', onChange: value => itemChanges.push(value),
+    'onUpdate:modelValue': () => assert.fail('group child must not emit standalone model updates') }),
+  h(LuCheckbox, { value: '0', label: 'String zero' }),
+  h(LuCheckbox, { value: 'disabled', disabled: true }),
+  h(LuCheckbox, { label: 'Missing value' })
+] }) })
+groupApp.mount(groupRoot)
+const groupInputs = () => findAll(groupRoot, node => node.type === 'input')
+const changeGroup = async (index, checked) => {
+  const target = { checked }
+  groupInputs()[index].props.onChange({ target })
+  await nextTick()
+  return target
+}
+assert.equal(groupRoot.children[0].props.role, 'group')
+assert.equal(groupRoot.children[0].props['aria-label'], 'Channels')
+assert.equal(groupInputs()[0].props.name, 'channels')
+assert.equal(groupInputs()[0].props.checked, true)
+assert.equal(groupInputs()[0].props.disabled, true, 'minimum prevents removing last item')
+assert.equal(groupInputs()[4].props.disabled, true, 'missing value differs from false')
+const groupLabels = findAll(groupRoot, node => node.type === 'label')
+assert.ok(groupLabels[0].props.class.includes('epx-checkbox--large'))
+assert.ok(groupLabels[1].props.class.includes('epx-checkbox--small'))
+assert.equal((await changeGroup(0, false)).checked, true, 'blocked native input state is restored')
+assert.equal(groupUpdates.length, 0)
+const originalGroupArray = groupValue.value
+await changeGroup(1, true)
+assert.deepEqual(groupValue.value, [0, false])
+assert.deepEqual(originalGroupArray, [0], 'never mutate parent array')
+assert.deepEqual(itemChanges, [true])
+assert.equal(groupInputs()[2].props.disabled, true, 'maximum prevents new selection')
+assert.equal((await changeGroup(2, true)).checked, false)
+assert.equal(groupChanges.length, 1)
+await changeGroup(1, false)
+assert.deepEqual(groupValue.value, [0])
+await changeGroup(2, true)
+assert.deepEqual(groupValue.value, [0, '0'], 'string and numeric values stay distinct')
+await changeGroup(3, true)
+assert.deepEqual(groupValue.value, [0, '0'])
+groupDisabled.value = true; await nextTick()
+assert.equal(groupRoot.children[0].props['aria-disabled'], true)
+assert.ok(groupInputs().every(node => node.props.disabled))
+await changeGroup(0, false)
+assert.deepEqual(groupValue.value, [0, '0'])
+groupDisabled.value = false; groupValue.value = [false]; await nextTick()
+assert.equal(groupInputs()[0].props.checked, false)
+assert.equal(groupInputs()[1].props.checked, true)
+groupMin.value = 0; groupMax.value = 0; groupValue.value = []; await nextTick()
+assert.ok(groupInputs().every(node => node.props.disabled), 'max zero blocks additions')
+groupMin.value = 1.9; groupMax.value = -1; await nextTick()
+await changeGroup(0, true)
+assert.deepEqual(groupValue.value, [0])
+assert.ok(groupInputs().every(node => node.props.disabled), 'conflicting limits normalize to min')
+groupMin.value = NaN; groupMax.value = Infinity; groupValue.value = [0, 0]; await nextTick()
+await changeGroup(1, true)
+assert.deepEqual(groupValue.value, [0, false], 'updates deduplicate selections')
+groupValue.value = [0, 0]; await nextTick()
+await changeGroup(0, false)
+assert.deepEqual(groupValue.value, [], 'deselect removes every occurrence')
+assert.equal(groupUpdates.length, groupChanges.length)
+groupApp.unmount()
+
+// Nested groups use their nearest provider and remain independent.
+const nestedValue = ref([]), outerValue = ref(['outer']), nestedRoot = { children: [] }
+const nestedApp = renderer.createApp({ render: () => h(LuCheckboxGroup, { modelValue: outerValue.value, disabled: true }, {
+  default: () => [h(LuCheckbox, { value: 'outer' }), h(LuCheckboxGroup, {
+    modelValue: nestedValue.value, 'onUpdate:modelValue': value => { nestedValue.value = value }
+  }, { default: () => h(LuCheckbox, { value: 'inner' }) })]
+}) })
+nestedApp.mount(nestedRoot)
+const nestedInputs = findAll(nestedRoot, node => node.type === 'input')
+assert.equal(nestedInputs[0].props.disabled, true)
+assert.equal(nestedInputs[1].props.disabled, false)
+nestedInputs[1].props.onChange({ target: { checked: true } }); await nextTick()
+assert.deepEqual(nestedValue.value, ['inner'])
+assert.deepEqual(outerValue.value, ['outer'])
+nestedApp.unmount()
+console.log('Passed: CheckboxGroup typed values, min/max, disabled states, immutable updates, reactive props, names, sizes, events and nested providers.')
+
+const requiredModel = ref({ choices: [] }), requiredForm = ref(), requiredRoot = { children: [] }
+const requiredApp = renderer.createApp({ render: () => h(LuForm, {
+  ref: requiredForm, model: requiredModel.value, rules: { choices: { required: true, message: 'Choose at least one' } }
+}, { default: () => h(LuFormItem, { prop: 'choices', label: 'Choices' }, {
+  default: () => h(LuCheckboxGroup, {
+    modelValue: Array.isArray(requiredModel.value.choices) ? requiredModel.value.choices : [],
+    'onUpdate:modelValue': value => { requiredModel.value.choices = value }
+  }, { default: () => h(LuCheckbox, { value: false, label: 'False is a valid selection' }) })
+}) }) })
+requiredApp.mount(requiredRoot)
+assert.equal(await requiredForm.value.validate(), false)
+await nextTick()
+assert.equal(findAll(requiredRoot, node => node.props?.role === 'alert')[0].text, 'Choose at least one')
+findAll(requiredRoot, node => node.type === 'input')[0].props.onChange({ target: { checked: true } }); await nextTick()
+assert.equal(await requiredForm.value.validate(), true)
+await nextTick()
+assert.equal(findAll(requiredRoot, node => node.props?.role === 'alert').length, 0)
+for (const [value, valid] of [[[], false], ['', false], [null, false], [undefined, false], [0, true], [false, true], [[0], true]]) {
+  requiredModel.value = { choices: value }; await nextTick()
+  assert.equal(await requiredForm.value.validate(), valid)
+}
+requiredApp.unmount()
+console.log('Passed: Form required array validation, CheckboxGroup integration, error clearing and valid zero/false values.')
+}
+
+// Cross-component form behavior must remain reactive after mounting.
+const inheritedDisabled = ref(true), inheritedSize = ref('large'), inheritedRoot = { children: [] }
+const inheritedApp = renderer.createApp({ render: () => h(LuForm, { disabled: inheritedDisabled.value, size: inheritedSize.value }, {
+  default: () => [
+    h(LuInput), h(LuInputNumber), h(LuSelect), h(LuCheckbox), h(LuRadio, { value: 'a' }),
+    h(LuSwitch), h(LuRate), h(LuSlider), h(LuUpload), h(LuSegmented, { options: ['a'] }), h(LuButton),
+    h(LuCheckboxGroup, { size: 'small' }, { default: () => h(LuCheckbox, { value: 'a' }) }),
+    h(LuRadioGroup, { size: 'small' }, { default: () => h(LuRadio, { value: 'a' }) }),
+    h(LuInput, { size: 'small', disabled: true })
+  ]
+}) })
+inheritedApp.mount(inheritedRoot)
+for (const node of findAll(inheritedRoot, n => ['input', 'select', 'button'].includes(n.type))) assert.equal(node.props.disabled, true, node.props.class)
+assert.equal(findAll(inheritedRoot, n => n.props?.['aria-label'] === 'Rating')[0].props['aria-disabled'], true)
+for (const name of ['input', 'input-number', 'select', 'checkbox', 'radio', 'switch', 'rate', 'slider', 'segmented', 'button']) {
+  assert.ok(findAll(inheritedRoot, n => typeof n.props?.class === 'string' && n.props.class.includes(`epx-${name}--large`)).length, name)
+}
+for (const name of ['checkbox', 'radio']) assert.ok(findAll(inheritedRoot, n => n.props?.class?.includes(`epx-${name}--small`)).length)
+inheritedDisabled.value = false; inheritedSize.value = 'small'; await nextTick()
+assert.equal(findAll(inheritedRoot, n => n.type === 'input')[0].props.disabled, false)
+assert.equal(findAll(inheritedRoot, n => n.type === 'input').at(-1).props.disabled, true)
+inheritedApp.unmount()
+
+const nestedData = ref({ user: { name: 'Ada' }, rows: [{ tags: ['a'] }], age: 0 })
+const nestedForm = ref(), nestedField = ref(), nestedRoot = { children: [] }
+let submitEvents = 0
+const nestedRules = ref({ 'user.name': { required: true, min: 2, pattern: /^[A-Z]/g, message: 'Invalid name' }, age: { min: 0, max: 10 } })
+const nestedApp = renderer.createApp({ render: () => h(LuForm, { ref: nestedForm, model: nestedData.value, rules: nestedRules.value, onSubmit: () => submitEvents++ }, {
+  default: () => [
+    h(LuFormItem, { ref: nestedField, prop: 'user.name', label: 'Name', for: 'person-name' }, { default: () => h(LuInput, { id: 'person-name', modelValue: nestedData.value.user.name }) }),
+    h(LuFormItem, { prop: 'rows[0].tags', required: true }), h(LuFormItem, { prop: 'age' })
+  ]
+}) })
+nestedApp.mount(nestedRoot)
+assert.equal(await nestedForm.value.validate(), true)
+assert.equal(await nestedForm.value.validate(), true, 'global regex must not retain lastIndex')
+assert.equal(findAll(nestedRoot, n => n.type === 'label')[0].props.for, 'person-name')
+nestedData.value.user.name = ''; nestedData.value.rows[0].tags.push('b'); nestedData.value.age = 20
+await nextTick()
+assert.equal(nestedField.value.errorMessage, 'Invalid name')
+assert.equal(await nestedForm.value.validateField('age'), false)
+await nestedForm.value.resetFields('user.name')
+assert.equal(nestedData.value.user.name, 'Ada')
+assert.equal(nestedData.value.age, 20)
+assert.equal(nestedField.value.errorMessage, '')
+await nestedForm.value.resetFields()
+assert.deepEqual(nestedData.value.rows[0].tags, ['a'])
+nestedData.value.rows[0].tags.push('c'); await nestedForm.value.resetFields()
+assert.deepEqual(nestedData.value.rows[0].tags, ['a'], 'reset snapshot is not mutated')
+assert.equal(nestedData.value.age, 0)
+nestedRoot.children[0].props.onSubmit({ preventDefault() {} }); assert.equal(submitEvents, 1)
+nestedData.value.age = 7; nestedRoot.children[0].props.onReset({ preventDefault() {} }); await nextTick()
+assert.equal(nestedData.value.age, 0)
+nestedRules.value = { 'user.name': { validator: async () => { throw new Error('Server validation failed') } } }
+await nextTick()
+assert.equal(await nestedForm.value.validateField('user.name'), false)
+assert.equal(nestedField.value.errorMessage, 'Server validation failed')
+nestedForm.value.clearValidate('user.name'); assert.equal(nestedField.value.errorMessage, '')
+nestedApp.unmount()
+
+const validationJobs = [], raceField = ref(), raceModel = ref({ value: 'first' }), raceRoot = { children: [] }
+const raceRules = ref({ trigger: 'blur', validator: value => new Promise(resolve => validationJobs.push({ value, resolve })) })
+const raceApp = renderer.createApp({ render: () => h(LuForm, { model: raceModel.value }, {
+  default: () => h(LuFormItem, { ref: raceField, prop: 'value', rules: raceRules.value })
+}) })
+raceApp.mount(raceRoot)
+raceModel.value.value = 'second'; await nextTick(); assert.equal(validationJobs.length, 0)
+const olderValidation = raceField.value.validate()
+const newerValidation = raceField.value.validate()
+validationJobs[1].resolve(true); assert.equal(await newerValidation, true)
+validationJobs[0].resolve('Stale failure'); assert.equal(await olderValidation, false)
+assert.equal(raceField.value.errorMessage, '')
+const clearedValidation = raceField.value.validate(); raceField.value.clearValidate()
+validationJobs[2].resolve('Must stay cleared'); await clearedValidation
+assert.equal(raceField.value.errorMessage, '')
+const blurGroup = findAll(raceRoot, n => n.props?.onFocusout)[0]
+blurGroup.props.onFocusout({ currentTarget: { contains: () => true }, relatedTarget: {} }); assert.equal(validationJobs.length, 3)
+blurGroup.props.onFocusout({ currentTarget: { contains: () => false }, relatedTarget: null }); assert.equal(validationJobs.length, 4)
+validationJobs[3].resolve('Blur failure'); await nextTick(); await nextTick()
+assert.equal(raceField.value.errorMessage, 'Blur failure')
+raceApp.unmount()
+console.log('Passed: inherited form disabled/size, nested validation, array snapshots, selective/native reset, triggers, rejected and stale validators, labels and submit.')
+
+let switchGuardResolve, switchGuardCalls = 0
+const guardSwitchValue = ref('off'), guardSwitchDisabled = ref(false), guardSwitchUpdates = [], guardSwitchRoot = { children: [] }
+const switchGuard = () => { switchGuardCalls++; return new Promise(resolve => { switchGuardResolve = resolve }) }
+const guardSwitchApp = renderer.createApp({ render: () => h(LuSwitch, {
+  modelValue: guardSwitchValue.value, activeValue: 'on', inactiveValue: 'off', disabled: guardSwitchDisabled.value,
+  beforeChange: switchGuard, 'onUpdate:modelValue': value => { guardSwitchUpdates.push(value); guardSwitchValue.value = value }
+}) })
+guardSwitchApp.mount(guardSwitchRoot)
+guardSwitchRoot.children[0].props.onClick(); guardSwitchRoot.children[0].props.onClick(); await nextTick()
+assert.equal(switchGuardCalls, 1); assert.equal(guardSwitchRoot.children[0].props['aria-busy'], true)
+switchGuardResolve(false); await nextTick(); await nextTick(); assert.deepEqual(guardSwitchUpdates, [])
+guardSwitchRoot.children[0].props.onClick(); switchGuardResolve(true); await nextTick(); await nextTick()
+assert.deepEqual(guardSwitchUpdates, ['on']); assert.equal(guardSwitchRoot.children[0].props['aria-checked'], true)
+guardSwitchRoot.children[0].props.onClick(); guardSwitchDisabled.value = true; await nextTick()
+switchGuardResolve(true); await nextTick(); assert.deepEqual(guardSwitchUpdates, ['on'])
+guardSwitchApp.unmount()
+const switchErrors = []
+const rejectedSwitch = mount(LuSwitch, { beforeChange: () => Promise.reject(new Error('Offline')), onChangeError: error => switchErrors.push(error.message) })
+rejectedSwitch.root.children[0].props.onClick(); await nextTick(); await nextTick()
+assert.deepEqual(switchErrors, ['Offline']); assert.equal(rejectedSwitch.root.children[0].props.disabled, false)
+rejectedSwitch.app.unmount()
+const halfUpdates = [], halfRating = mount(LuRate, { modelValue: 2.5, allowHalf: true, clearable: true, 'onUpdate:modelValue': value => halfUpdates.push(value) })
+assert.equal(halfRating.root.children[0].props['aria-valuenow'], 2.5)
+halfRating.root.children[0].props.onKeydown({ key: 'ArrowRight', preventDefault() {} })
+assert.equal(halfUpdates.at(-1), 3)
+const halfStar = findAll(halfRating.root, n => n.props?.class?.split(' ').includes('epx-rate__star'))[2]
+halfStar.props.onClick({ clientX: 2, currentTarget: { getBoundingClientRect: () => ({ left: 0, width: 24 }) } })
+assert.equal(halfUpdates.at(-1), 0, 'clicking selected half-star clears rating')
+halfRating.app.unmount()
+
+const selectAria = ref('First label'), selectAttrsRoot = { children: [] }
+const selectAttrsApp = renderer.createApp({ render: () => h(LuSelect, { 'aria-label': selectAria.value }) })
+selectAttrsApp.mount(selectAttrsRoot); selectAria.value = 'Updated label'; await nextTick()
+assert.equal(findAll(selectAttrsRoot, n => n.props?.role === 'combobox')[0].props['aria-label'], 'Updated label')
+selectAttrsApp.unmount()
+const coincidentValues = [], coincidentSlider = mount(LuSlider, { modelValue: [50, 50], range: true, 'onUpdate:modelValue': value => coincidentValues.push(value) })
+const coincidentTrack = findAll(coincidentSlider.root, n => n.props?.class === 'epx-slider__runway')[0]
+coincidentTrack.getBoundingClientRect = () => ({ left: 0, width: 100, height: 100, bottom: 100 })
+coincidentTrack.setPointerCapture = () => {}; coincidentTrack.hasPointerCapture = () => false
+coincidentTrack.props.onPointerdown(pointer(80)); coincidentTrack.props.onPointerup(pointer(80))
+assert.deepEqual(coincidentValues.at(-1), [50, 80])
+coincidentSlider.app.unmount()
+console.log('Passed: asynchronous/typed switch guards, half-star rating, reactive select attributes and coincident range slider handles.')
+
+const dynamicProp = ref('first'), dynamicModel = ref({ first: 'one', second: 'two' }), dynamicForm = ref(), dynamicItem = ref(), dynamicRoot = { children: [] }
+const dynamicApp = renderer.createApp({ render: () => h(LuForm, { ref: dynamicForm, model: dynamicModel.value }, {
+  default: () => h(LuFormItem, { ref: dynamicItem, prop: dynamicProp.value, required: true, validateOnChange: false })
+}) })
+dynamicApp.mount(dynamicRoot)
+dynamicModel.value.first = ''; await nextTick()
+assert.equal(dynamicItem.value.errorMessage, '', 'automatic validation can be disabled')
+assert.equal(await dynamicForm.value.validateField('first'), false)
+dynamicProp.value = 'second'; await nextTick()
+assert.equal(dynamicItem.value.errorMessage, '')
+dynamicModel.value.second = ''; await nextTick()
+assert.equal(await dynamicForm.value.validateField('second'), false)
+await dynamicForm.value.resetFields('second')
+assert.equal(dynamicModel.value.second, 'two')
+assert.equal(dynamicModel.value.first, '')
+assert.equal(await dynamicForm.value.validateField('first'), true, 'old field path is no longer registered')
+dynamicApp.unmount()
+console.log('Passed: dynamic form item paths, new reset snapshots and disabled automatic validation.')

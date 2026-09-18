@@ -1,10 +1,11 @@
 # Rate 评分
 
-使用星级表达整数评分。支持鼠标预览、键盘操作及只读展示。
+使用星级表达整数或半星评分。支持鼠标预览、键盘操作及只读展示。
 
 <script setup>
 import { ref } from 'vue'
 const score = ref(3)
+const halfScore = ref(2.5)
 </script>
 
 ## 基础用法
@@ -66,3 +67,26 @@ const score = ref(3)
 ## 事件与键盘
 
 `update:modelValue` 和 `change` 返回新评分。方向键增减一分，Home 清零，End 设为满分。非有限值按零分展示，小数四舍五入。
+
+## 半星评分
+
+<DemoBlock>
+<lu-rate v-model="halfScore" allow-half clearable show-score label="Half-star rating" />
+<template #source>
+
+```vue
+<script setup>
+import { ref } from 'vue'
+const halfScore = ref(2.5)
+</script>
+<template>
+  <lu-rate v-model="halfScore" allow-half clearable show-score label="Half-star rating" />
+</template>
+```
+
+</template>
+</DemoBlock>
+
+`allowHalf` 默认为 false；开启后星星左右半区分别选择半星/整星，方向键步长变为 0.5。启用 clearable 后，再次点击当前半星可清空评分。
+
+置于 `LuForm` 内时，此组件继承表单禁用状态和默认尺寸，组件/分组显式尺寸优先。详见 [Form 表单](./form)。

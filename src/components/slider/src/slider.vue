@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useFormControl } from '../../../composables/use-form-control'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { LuInputNumber } from '../../input-number'
 import { clamp, decimalPlaces, finite, round } from '../../../utils/number'
@@ -25,9 +26,10 @@ const props = withDefaults(defineProps<{
   rangeStartLabel?: string
   rangeEndLabel?: string
 }>(), {
-  min: 0, max: 100, step: 1, height: '200px', size: 'default', showTooltip: true,
+  min: 0, max: 100, step: 1, height: '200px', showTooltip: true,
   showInputControls: true, label: 'Slider', rangeStartLabel: 'Range start', rangeEndLabel: 'Range end'
 })
+const { formDisabled, formSize } = useFormControl(props)
 const emit = defineEmits<{
   'update:modelValue': [value: SliderValue]
   input: [value: SliderValue]
@@ -41,7 +43,7 @@ const draft = ref<number[] | null>(null)
 const minimum = computed(() => finite(props.min, 0))
 const maximum = computed(() => Math.max(minimum.value, finite(props.max, 100)))
 const increment = computed(() => props.step > 0 && Number.isFinite(props.step) ? props.step : 1)
-const disabled = computed(() => props.disabled || maximum.value === minimum.value)
+const disabled = computed(() => formDisabled.value || maximum.value === minimum.value)
 function normalize(value: number) {
   const raw = clamp(finite(value, minimum.value), minimum.value, maximum.value)
   if (raw === maximum.value) return raw
@@ -116,7 +118,7 @@ function start(event: PointerEvent) {
   const target = event.target as HTMLElement
   const explicit = target.closest<HTMLElement>('[data-slider-handle]')?.dataset.sliderHandle
   const raw = pointerValue(event)
-  const index = explicit !== undefined ? Number(explicit) : props.range && Math.abs(raw - values.value[1]) < Math.abs(raw - values.value[0]) ? 1 : 0
+  const index = explicit !== undefined ? Number(explicit) : props.range && (Math.abs(raw - values.value[1]) < Math.abs(raw - values.value[0]) || (values.value[0] === values.value[1] && raw > values.value[1])) ? 1 : 0
   event.preventDefault()
   initial = [...values.value]
   draft.value = [...values.value]
@@ -149,12 +151,12 @@ function cancel(event: PointerEvent) {
   release()
   if (changed) publish(initial)
 }
-watch(() => [props.disabled, props.min, props.max, props.step, props.range], release)
+watch(() => [formDisabled.value, props.min, props.max, props.step, props.range], release)
 onBeforeUnmount(release)
 </script>
 
 <template>
-  <div class="epx-slider" :class="[`epx-slider--${size}`, { 'is-vertical': vertical, 'is-disabled': disabled, 'has-marks': marks.length }]">
+  <div class="epx-slider" :class="[`epx-slider--${formSize}`, { 'is-vertical': vertical, 'is-disabled': disabled, 'has-marks': marks.length }]">
     <div ref="track" class="epx-slider__runway" :style="vertical ? { height } : undefined" @pointerdown="start" @pointermove="move" @pointerup="finish" @pointercancel="cancel" @lostpointercapture="cancel">
       <div class="epx-slider__bar" :style="barStyle" />
       <span v-for="stop in stops" :key="stop" class="epx-slider__stop" :style="position(stop)" aria-hidden="true" />
@@ -163,6 +165,6 @@ onBeforeUnmount(release)
         <span v-if="showTooltip" class="epx-slider__tooltip" aria-hidden="true">{{ format(value) }}</span>
       </button>
     </div>
-    <LuInputNumber v-if="showInput && !range && !vertical" class="epx-slider__input" :model-value="values[0]" :min="minimum" :max="maximum" :step="increment" :disabled="disabled" :controls="showInputControls" :size="size" :label="label" @update:model-value="update(0, $event ?? minimum, true)" />
+    <LuInputNumber v-if="showInput && !range && !vertical" class="epx-slider__input" :model-value="values[0]" :min="minimum" :max="maximum" :step="increment" :disabled="disabled" :controls="showInputControls" :size="formSize" :label="label" @update:model-value="update(0, $event ?? minimum, true)" />
   </div>
 </template>

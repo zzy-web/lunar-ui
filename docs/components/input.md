@@ -186,3 +186,5 @@ const value = ref('')
 ## 使用说明
 
 原有 `input` 与 `update:modelValue` 事件保留。输入法组词期间不更新绑定值。原生属性传给 input 或 textarea，包括 `id`、`name` 与 ARIA 属性。字数按原生 UTF-16 长度统计。前后缀插槽适用于单行输入。
+
+置于 `LuForm` 内时，此组件继承表单禁用状态和默认尺寸，组件/分组显式尺寸优先。详见 [Form 表单](./form)。

@@ -151,3 +151,5 @@ None. Customize display with `marks` and `formatTooltip`.
 Pass [start, end] in range mode. Unsorted external pairs are sorted for display without emitting events. showInput is available only in horizontal single mode.
 
 Feature reference：[Element Plus Slider](https://element-plus.org/en-US/component/slider.html)。This page documents Lunar UI's supported API; it is not a drop-in replacement.
+
+Inside `LuForm`, this component inherits its disabled state and default size; an explicit component/group size takes precedence. See [Form](./form).

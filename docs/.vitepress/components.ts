@@ -18,7 +18,7 @@ export const componentGroups = [
     { slug: 'input', name: 'Input', zh: '输入框', updated: true, description: ['文本、密码与多行输入', 'Text, passwords and textareas'] },
     { slug: 'select', name: 'Select', zh: '选择器', fresh: true, description: ['单选、多选与禁用选项', 'Single and multiple selection'] },
     { slug: 'radio', name: 'Radio', zh: '单选框', fresh: true, description: ['互斥选项与单选框组', 'Exclusive options and groups'] },
-    { slug: 'checkbox', name: 'Checkbox', zh: '复选框', description: ['布尔选择与半选状态', 'Boolean and mixed states'] },
+    { slug: 'checkbox', name: 'Checkbox', zh: '复选框', updated: true, description: ['复选框组、数量限制与半选状态', 'Checkbox groups, selection limits and mixed states'] },
     { slug: 'switch', name: 'Switch', zh: '开关', description: ['状态切换与加载反馈', 'Toggle states and loading'] },
     { slug: 'form', name: 'Form', zh: '表单', description: ['表单布局与字段校验', 'Layout and field validation'] }
   ] },

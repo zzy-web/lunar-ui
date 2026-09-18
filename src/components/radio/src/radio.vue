@@ -1,10 +1,11 @@
 <template>
-  <label class="epx-radio" :class="[`epx-radio--${size ?? group?.size ?? 'default'}`, { 'is-disabled': isDisabled, 'is-bordered': border, 'is-checked': checked }]">
+  <label class="epx-radio" :class="[`epx-radio--${size ?? group?.size ?? formSize}`, { 'is-disabled': isDisabled, 'is-bordered': border, 'is-checked': checked }]">
     <input v-bind="$attrs" class="epx-radio__input" type="radio" :name="group?.name ?? name" :value="String(value)" :checked="checked" :disabled="isDisabled" @change="change" />
     <span><slot>{{ label ?? String(value) }}</slot></span>
   </label>
 </template>
 <script setup lang="ts">
+import { useFormControl } from '../../../composables/use-form-control'
 import { computed, inject } from 'vue'
 import { radioGroupKey } from './tokens'
 import type { RadioValue } from './tokens'
@@ -18,9 +19,10 @@ const props = defineProps<{
   border?: boolean
   size?: 'large' | 'default' | 'small'
 }>()
+const { formDisabled, formSize } = useFormControl(props)
 const emit = defineEmits<{ 'update:modelValue': [value: RadioValue]; change: [value: RadioValue] }>()
 const group = inject(radioGroupKey, undefined)
-const isDisabled = computed(() => props.disabled || group?.disabled)
+const isDisabled = computed(() => formDisabled.value || group?.disabled)
 const checked = computed(() => (group ? group.modelValue : props.modelValue) === props.value)
 function change() {
   if (isDisabled.value || checked.value) return

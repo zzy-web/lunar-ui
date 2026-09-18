@@ -1,5 +1,5 @@
 <template>
-  <div ref="anchor" class="epx-select" :style="($attrs.style as any)" :class="[$attrs.class, `epx-select--${size}`, { 'is-disabled': blocked, 'is-open': visible }]">
+  <div ref="anchor" class="epx-select" :style="($attrs.style as any)" :class="[$attrs.class, `epx-select--${formSize}`, { 'is-disabled': blocked, 'is-open': visible }]">
     <div class="epx-select__wrapper" @click="toggle">
       <slot name="prefix" />
       <div class="epx-select__content">
@@ -10,7 +10,7 @@
         </span>
         <span v-if="hiddenValues.length" class="epx-select__tag" :tabindex="collapseTagsTooltip ? 0 : undefined" :title="collapseTagsTooltip ? hiddenValues.map(labelFor).join(', ') : undefined" :aria-label="hiddenValues.map(labelFor).join(', ')">+ {{ hiddenValues.length }}</span>
       </span>
-      <input v-bind="inputAttrs" ref="control" class="epx-select__input" :class="{ 'is-collapsed': multiple && hasValue && !searchable }" role="combobox" aria-haspopup="listbox" type="text" autocomplete="off" :name="undefined"
+      <input v-bind="inputAttrs()" ref="control" class="epx-select__input" :class="{ 'is-collapsed': multiple && hasValue && !searchable }" role="combobox" aria-haspopup="listbox" type="text" autocomplete="off" :name="undefined"
         :readonly="!searchable" :disabled="blocked" :aria-expanded="visible" :aria-controls="visible ? listId : undefined"
         :aria-activedescendant="visible && active >= 0 ? `${listId}-${active}` : undefined" :aria-autocomplete="searchable ? 'list' : 'none'"
         :aria-busy="busy || undefined" :value="searchable && visible ? query : !multiple && hasValue ? labelFor(values[0]) : ''"
@@ -50,6 +50,7 @@
 </template>
 
 <script setup lang="ts">
+import { useFormControl } from '../../../composables/use-form-control'
 import { computed, ref, nextTick, useId, watch, useAttrs } from 'vue'
 import { useFloating, type FloatingPlacement } from '../../../composables/use-floating'
 import type { SelectOption, SelectValue } from './types'
@@ -88,7 +89,8 @@ const props = withDefaults(defineProps<{
   loadingText?: string
   emptyText?: string
   clearLabel?: string
-}>(), { defaultFirstOption: true, reserveKeyword: true, maxCollapseTags: 1, teleported: true, appendTo: 'body', placement: 'bottom-start', offset: 6, height: 280, debounce: 300, multipleLimit: 0, remoteErrorText: '加载失败，请重新搜索', noMatchText: '无匹配选项', options: () => [], size: 'default', placeholder: '请选择', loadingText: '加载中…', emptyText: '暂无选项', clearLabel: 'Clear selection' })
+}>(), { defaultFirstOption: true, reserveKeyword: true, maxCollapseTags: 1, teleported: true, appendTo: 'body', placement: 'bottom-start', offset: 6, height: 280, debounce: 300, multipleLimit: 0, remoteErrorText: '加载失败，请重新搜索', noMatchText: '无匹配选项', options: () => [], placeholder: '请选择', loadingText: '加载中…', emptyText: '暂无选项', clearLabel: 'Clear selection' })
+const { formDisabled, formSize } = useFormControl(props)
 const emit = defineEmits<{
   'update:modelValue': [value: SelectValue | SelectValue[] | undefined]
   change: [value: SelectValue | SelectValue[] | undefined]
@@ -100,7 +102,7 @@ const emit = defineEmits<{
   blur: [event: FocusEvent]
 }>()
 const attrs = useAttrs()
-const inputAttrs = computed(() => Object.fromEntries(Object.entries(attrs).filter(([key]) => key !== 'class' && key !== 'style')))
+const inputAttrs = () => Object.fromEntries(Object.entries(attrs).filter(([key]) => key !== 'class' && key !== 'style'))
 const composing = ref(false)
 const createdOptions = ref<SelectOption[]>([])
 const control = ref<HTMLInputElement>()
@@ -114,10 +116,10 @@ const sourceOptions = computed(() => {
 })
 const busy = computed(() => props.loading || remoteLoading.value)
 const searchable = computed(() => props.filterable || !!props.remoteMethod)
-const blocked = computed(() => props.disabled || (props.loading && !props.remoteMethod))
+const blocked = computed(() => formDisabled.value || (props.loading && !props.remoteMethod))
 const labelCache = new Map<SelectValue, string>()
 watch(sourceOptions, options => options.forEach(option => labelCache.set(option.value, option.label)), { immediate: true })
-watch([query, opened, () => props.remoteMethod, () => props.disabled], ([text, isOpen, method, disabled], _, onCleanup) => {
+watch([query, opened, () => props.remoteMethod, () => formDisabled.value], ([text, isOpen, method, disabled], _, onCleanup) => {
   if (!method || !isOpen || disabled) { remoteLoading.value = false; return }
   let cancelled = false
   remoteLoading.value = true; remoteFailed.value = false; remoteOptions.value = []
@@ -174,7 +176,7 @@ function remove(value: SelectValue) {
   update(values.value.filter(item => item !== value)); emit('remove-tag', value); focus()
 }
 function compositionEnd(event: CompositionEvent) { composing.value = false; search(event) }
-function search(event: Event) { if (composing.value) return; query.value = (event.target as HTMLInputElement).value; if (!visible.value) open() }
+function search(event: Event) { if (blocked.value || composing.value) return; query.value = (event.target as HTMLInputElement).value; if (!visible.value) open() }
 function keydown(event: KeyboardEvent) {
   if (blocked.value || composing.value || event.isComposing) return
   if (event.key === 'Backspace' && props.multiple && !query.value) {
@@ -222,7 +224,7 @@ const selectedValue = computed({
     return props.multiple ? values.value : values.value[0]
   },
   set(value: SelectValue | SelectValue[] | undefined) {
-    if (props.disabled || props.loading) return
+    if (formDisabled.value || props.loading) return
     const selected = (Array.isArray(value) ? value : [value])
       .map(value => sourceOptions.value.find(option => option.value === value))
       .filter((option): option is SelectOption => !!option && (!option.disabled || values.value.includes(option.value)))
@@ -240,7 +242,7 @@ function update(value: SelectValue | SelectValue[] | undefined) {
 function focus() { control.value?.focus() }
 function blur() { close(); control.value?.blur() }
 function clear() {
-  if (props.disabled || props.loading) return
+  if (formDisabled.value || props.loading) return
   update(props.multiple ? [] : undefined)
   query.value = ''
   emit('clear')

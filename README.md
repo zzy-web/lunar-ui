@@ -52,7 +52,7 @@ createApp(App).use(LunarUI).mount('#app')
 - `LuTableColumn`
 - `LuTour`
 - `LuDialog`
-- `LuCheckbox`
+- `LuCheckbox` / `LuCheckboxGroup`: boolean controls and typed multi-selection with minimum/maximum limits.
 - `LuSwitch`
 - `LuTag`
 - `LuCalendar`

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useFormControl } from '../../../composables/use-form-control'
 import { computed, nextTick, ref } from 'vue'
 import type { SegmentedOption, SegmentedValue } from './types'
 
@@ -12,7 +13,8 @@ const props = withDefaults(defineProps<{
   direction?: 'horizontal' | 'vertical'
   label?: string
   name?: string
-}>(), { modelValue: undefined, options: () => [], size: 'default', direction: 'horizontal', label: 'Options' })
+}>(), { modelValue: undefined, options: () => [], direction: 'horizontal', label: 'Options' })
+const { formDisabled, formSize } = useFormControl(props)
 const emit = defineEmits<{ 'update:modelValue': [value: SegmentedValue]; change: [value: SegmentedValue] }>()
 const internal = ref<SegmentedValue>()
 const buttons = ref<HTMLButtonElement[]>([])
@@ -23,13 +25,13 @@ const tabIndex = computed(() => {
   return selected < 0 ? options.value.findIndex(option => !option.disabled) : selected
 })
 function select(option: SegmentedOption) {
-  if (props.disabled || option.disabled || option.value === value.value) return
+  if (formDisabled.value || option.disabled || option.value === value.value) return
   if (props.modelValue === undefined) internal.value = option.value
   emit('update:modelValue', option.value)
   emit('change', option.value)
 }
 async function navigate(event: KeyboardEvent, index: number) {
-  if (props.disabled) return
+  if (formDisabled.value) return
   const previous = props.direction === 'vertical' ? 'ArrowUp' : 'ArrowLeft'
   const next = props.direction === 'vertical' ? 'ArrowDown' : 'ArrowRight'
   if (![previous, next, 'Home', 'End'].includes(event.key)) return
@@ -46,9 +48,9 @@ async function navigate(event: KeyboardEvent, index: number) {
 </script>
 
 <template>
-  <div class="epx-segmented" :class="[`epx-segmented--${size}`, `epx-segmented--${direction}`, { 'is-block': block, 'is-disabled': disabled }]" role="radiogroup" :aria-label="label" :aria-orientation="direction" :aria-disabled="disabled">
-    <input v-if="name && value !== undefined" type="hidden" :name="name" :value="String(value)" :disabled="disabled" />
-    <button v-for="(option, index) in options" :key="`${typeof option.value}:${option.value}`" :ref="el => { buttons[index] = el as HTMLButtonElement }" type="button" class="epx-segmented__item" :class="{ 'is-selected': value === option.value }" role="radio" :aria-checked="value === option.value" :disabled="disabled || option.disabled" :tabindex="!disabled && index === tabIndex ? 0 : -1" @click="select(option)" @keydown="navigate($event, index)">
+  <div class="epx-segmented" :class="[`epx-segmented--${formSize}`, `epx-segmented--${direction}`, { 'is-block': block, 'is-disabled': formDisabled }]" role="radiogroup" :aria-label="label" :aria-orientation="direction" :aria-disabled="formDisabled">
+    <input v-if="name && value !== undefined" type="hidden" :name="name" :value="String(value)" :disabled="formDisabled" />
+    <button v-for="(option, index) in options" :key="`${typeof option.value}:${option.value}`" :ref="el => { buttons[index] = el as HTMLButtonElement }" type="button" class="epx-segmented__item" :class="{ 'is-selected': value === option.value }" role="radio" :aria-checked="value === option.value" :disabled="formDisabled || option.disabled" :tabindex="!formDisabled && index === tabIndex ? 0 : -1" @click="select(option)" @keydown="navigate($event, index)">
       <slot :item="option" :selected="value === option.value" :index="index">{{ option.label }}</slot>
     </button>
   </div>

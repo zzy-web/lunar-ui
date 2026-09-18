@@ -166,3 +166,5 @@ const parseMoney = value => value.replace(/[$,\s]/g, '')
 通过组件 ref 调用 `focus()`、`blur()`、`select()`。原生 `id`、`name`、`aria-label` 等属性透传到输入框。
 
 功能参考：[Element Plus InputNumber](https://element-plus.org/en-US/component/input-number.html)。本页 API 以 Lunar UI 实际实现为准，不保证与 Element Plus 完全兼容。
+
+置于 `LuForm` 内时，此组件继承表单禁用状态和默认尺寸，组件/分组显式尺寸优先。详见 [Form 表单](./form)。

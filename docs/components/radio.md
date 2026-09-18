@@ -130,3 +130,5 @@ const standalone = ref(false)
 ## 使用说明
 
 请为组设置 `aria-label` 或 `aria-labelledby`。Tab 进入组，方向键切换同组原生单选框。组禁用时全部子项禁用。
+
+置于 `LuForm` 内时，此组件继承表单禁用状态和默认尺寸，组件/分组显式尺寸优先。详见 [Form 表单](./form)。
