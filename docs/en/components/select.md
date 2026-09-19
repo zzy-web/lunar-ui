@@ -171,7 +171,7 @@ Additional props: `allowCreate` (false), `defaultFirstOption` (true, preserves e
 
 New events: `visible-change(boolean)` and `remove-tag(value)`. Exposed methods: `open()` and `close()`. Slots: `prefix`, `header`, `footer`, `loading`, `empty`, and `label({ value, label })` for multiple tag labels.
 
-Backspace with an empty query removes the last enabled tag. IME composition does not trigger intermediate searches. Selecting the same value no longer emits change. Values remain string/number with the existing options array API; this is not a fully compatible Element Plus replacement.
+Backspace with an empty query removes the last enabled tag. IME composition does not trigger intermediate searches. Selecting the same value no longer emits change. Option values support string/number and are configured through the options array.
 
 | Attribute | Type | Default | Description |
 | --- | --- | --- | --- |

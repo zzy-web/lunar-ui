@@ -179,5 +179,3 @@ Collapse default contains CollapseItem children. CollapseItem default renders co
 ## Types and additional API
 
 CollapseItem props: required name: string | number; title: string = ''; disabled: boolean = false; lazy: boolean = false (mount on first open); destroyOnClose: boolean = false (unmount on close, taking precedence over lazy). Collapse refs expose read-only activeNames; CollapseItem refs expose isActive.
-
-Feature reference：[Element Plus Collapse](https://element-plus.org/en-US/component/collapse.html)。This page documents Lunar UI's supported API; it is not a drop-in replacement.

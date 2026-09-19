@@ -150,6 +150,5 @@ const format = value => `${value}%`
 
 区间模式传 `[起点, 终点]`。外部传入乱序数组会排序显示，不主动触发事件。`showInput` 仅支持水平单值模式。
 
-功能参考：[Element Plus Slider](https://element-plus.org/en-US/component/slider.html)。本页 API 以 Lunar UI 实际实现为准，不保证与 Element Plus 完全兼容。
 
 置于 `LuForm` 内时，此组件继承表单禁用状态和默认尺寸，组件/分组显式尺寸优先。详见 [Form 表单](./form)。

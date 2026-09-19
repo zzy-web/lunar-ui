@@ -153,5 +153,3 @@ title / description receive { item, index }; icon receives { item, index, status
 ## Types and additional API
 
 StepItem: required title: string; optional description: string, icon: string (text icon; use slots for complex icons), status: StepStatus, disabled: boolean. StepStatus is wait, process, finish, success or error.
-
-Feature reference：[Element Plus Steps](https://element-plus.org/en-US/component/steps.html)。This page documents Lunar UI's supported API; it is not a drop-in replacement.

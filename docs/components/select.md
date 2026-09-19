@@ -178,7 +178,7 @@ async function remoteMethod(query) {
 
 新增 `visible-change(boolean)` 和 `remove-tag(value)` 事件，以及 `open()` / `close()` 方法。支持 `prefix`、`header`、`footer`、`loading`、`empty` 插槽；`label({ value, label })` 自定义多选标签文本。
 
-搜索词为空时 Backspace 删除最后一个非禁用标签。输入法组合期间不触发中间搜索。重复选择相同值不再触发 change。当前保留 string/number 值和 options 数组 API，并非 Element Plus 的完全兼容替代。
+搜索词为空时 Backspace 删除最后一个非禁用标签。输入法组合期间不触发中间搜索。重复选择相同值不再触发 change。选项值支持 string/number，通过 options 数组配置。
 
 | 属性 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |

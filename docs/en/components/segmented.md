@@ -166,6 +166,5 @@ default receives { item, selected, index }; item is always a normalized Segmente
 
 SegmentedValue and SegmentedOption types are exported. Native form submission uses String(value); v-model retains the original type.
 
-Feature reference：[Element Plus Segmented](https://element-plus.org/en-US/component/segmented.html)。This page documents Lunar UI's supported API; it is not a drop-in replacement.
 
 Inside `LuForm`, this component inherits its disabled state and default size; an explicit component/group size takes precedence. See [Form](./form).

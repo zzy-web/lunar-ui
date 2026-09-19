@@ -166,6 +166,5 @@ const booleanOptions = [{ label: 'Off', value: false }, { label: 'On', value: tr
 
 导出 SegmentedValue 和 SegmentedOption 类型。name 字段以 String(value) 提交；程序内 v-model 保留原始类型。
 
-功能参考：[Element Plus Segmented](https://element-plus.org/en-US/component/segmented.html)。本页 API 以 Lunar UI 实际实现为准，不保证与 Element Plus 完全兼容。
 
 置于 `LuForm` 内时，此组件继承表单禁用状态和默认尺寸，组件/分组显式尺寸优先。详见 [Form 表单](./form)。

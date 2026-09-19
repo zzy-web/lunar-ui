@@ -179,5 +179,3 @@ Collapse 的 `default` 放置 CollapseItem。CollapseItem 的 `default` 渲染�
 ## 类型与补充 API
 
 CollapseItem Props：`name: string | number` 必填；`title: string = ''`；`disabled: boolean = false`；`lazy: boolean = false`（首次展开才挂载）；`destroyOnClose: boolean = false`（关闭卸载，优先于 lazy）。Collapse ref 暴露只读 `activeNames`；CollapseItem ref 暴露 `isActive`。
-
-功能参考：[Element Plus Collapse](https://element-plus.org/en-US/component/collapse.html)。本页 API 以 Lunar UI 实际实现为准，不保证与 Element Plus 完全兼容。

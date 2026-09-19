@@ -153,5 +153,3 @@ active 从 0 开始；等于步骤数表示全部完成。单项 status 优先�
 ## 类型与补充 API
 
 StepItem：`title: string` 必填；`description?: string`；`icon?: string`（文本图标，复杂图标使用插槽）；`status?: StepStatus`；`disabled?: boolean`。StepStatus：`wait`、`process`、`finish`、`success`、`error`。
-
-功能参考：[Element Plus Steps](https://element-plus.org/en-US/component/steps.html)。本页 API 以 Lunar UI 实际实现为准，不保证与 Element Plus 完全兼容。
