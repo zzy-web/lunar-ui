@@ -13,6 +13,7 @@ const pagedUsers = Array.from({ length: 18 }, (_, index) => ({ id: index + 1, na
 const currentPage = ref(1)
 const pageSize = ref(5)
 const loading = ref(false)
+const showScore = ref(true)
 </script>
 
 ## Basic Usage
@@ -280,6 +281,42 @@ const loading = ref(false)
 
 If the data shrinks, the page clamps to the last valid page and emits the page events. Select-all affects only the current page, while previously selected rows remain selected across pages. For server-fetched pages, turn off `pagination`, compose `LuPagination` separately, and manage total count and selection in your app.
 
+## Column visibility and page summary
+
+Use a column's `visible` prop to show or hide the entire column. With `show-summary`, the first cell shows the summary label and other purely numeric columns are summed over the current page. Without pagination, the summary uses all displayed rows.
+
+<DemoBlock direction="column">
+<lu-button size="small" @click="showScore = !showScore">{{ showScore ? 'Hide score column' : 'Show score column' }}</lu-button>
+<lu-table :data="pagedUsers" pagination :page-size="4" show-summary summary-text="Page total" pagination-prev-text="Previous" pagination-next-text="Next" pagination-page-label="Page" border>
+  <lu-table-column prop="name" label="Name" />
+  <lu-table-column prop="score" label="Score" :visible="showScore" />
+</lu-table>
+<template #source>
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+const showScore = ref(true)
+const users = Array.from({ length: 18 }, (_, index) => ({
+  id: index + 1, name: `User ${index + 1}`, score: (index * 17) % 100
+}))
+</script>
+
+<template>
+  <lu-button @click="showScore = !showScore">Toggle score column</lu-button>
+  <lu-table :data="users" pagination :page-size="4" show-summary summary-text="Page total"
+    pagination-prev-text="Previous" pagination-next-text="Next" pagination-page-label="Page" border>
+    <lu-table-column prop="name" label="Name" />
+    <lu-table-column prop="score" label="Score" :visible="showScore" />
+  </lu-table>
+</template>
+```
+
+</template>
+</DemoBlock>
+
+For averages, formatted amounts, or other calculations, provide `summary-method`. It receives `{ columns, data }` and returns one text or number value per visible column. `data` contains the displayed page.
+
 ## Table Props
 
 | Prop | Type | Default | Description |
@@ -307,6 +344,9 @@ If the data shrinks, the page clamps to the last valid page and emits the page e
 | `hidePaginationOnSinglePage` | `boolean` | `false` | Hide pagination when there is only one page. |
 | `loading` | `boolean` | `false` | Show an overlay and disable interactions. |
 | `loadingText` | `string` | `'Loading…'` | Loading message. |
+| `showSummary` | `boolean` | `false` | Show a summary row for displayed rows. |
+| `summaryText` | `string` | `'Total'` | Label in the first summary cell. |
+| `summaryMethod` | `({ columns, data }) => (string \| number)[]` | — | Custom values in visible-column order. |
 
 ## TableColumn Props
 
@@ -324,6 +364,7 @@ If the data shrinks, the page clamps to the last valid page and emits the page e
 | `selectable` | `(row, index) => boolean` | `undefined` | whether a row can be selected; index refers to the original data. |
 | `formatter` | `(row, column, value, index) => VNodeChild` | `undefined` | formatted content, including VNodes. |
 | `showOverflowTooltip` | `boolean` | `false` | single-line ellipsis with the raw field value in a native title tooltip. |
+| `visible` | `boolean` | `true` | Show or hide this column reactively. |
 
 ## Slots
 

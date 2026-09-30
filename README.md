@@ -49,7 +49,7 @@ createApp(App).use(LunarUI).mount('#app')
 - `LuCard`
 - `LuForm`
 - `LuFormItem`
-- `LuTable`: sortable and selectable rows, client-side pagination and loading feedback.
+- `LuTable`: sortable and selectable rows, client-side pagination, loading feedback, column visibility and page summaries.
 - `LuTableColumn`
 - `LuTour`
 - `LuDialog`

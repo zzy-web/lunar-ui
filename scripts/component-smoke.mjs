@@ -1963,6 +1963,34 @@ assert.equal(findAll(pagedRoot, node => node.type === 'nav').length, 1)
 pagedApp.unmount()
 console.log('Passed: table pagination, page selection, sort reset, loading state and data shrinkage.')
 
+const showScore = ref(true), summaryRoot = { children: [] }
+const summaryApp = renderer.createApp({ render: () => h(LuTable, {
+  data: [{ name: 'A', score: 2 }, { name: 'B', score: 3 }, { name: 'C', score: 5 }],
+  pagination: true, pageSize: 2, showSummary: true, summaryText: 'Subtotal'
+}, { default: () => [
+  h(LuTableColumn, { prop: 'name', label: 'Name' }),
+  h(LuTableColumn, { prop: 'score', label: 'Score', visible: showScore.value })
+] }) })
+summaryApp.mount(summaryRoot)
+const summaryCells = () => findAll(summaryRoot, node => node.type === 'tfoot')[0].children[0].children.filter(node => node.type === 'td')
+assert.equal(summaryCells().length, 2)
+assert.deepEqual(summaryCells().map(textOf), ['Subtotal', '5'])
+showScore.value = false; await nextTick()
+assert.equal(findAll(summaryRoot, node => node.type === 'th').length, 1)
+assert.equal(summaryCells().length, 1)
+showScore.value = true; await nextTick()
+assert.deepEqual(summaryCells().map(textOf), ['Subtotal', '5'])
+summaryApp.unmount()
+const customSummaryRoot = { children: [] }
+const customSummaryApp = renderer.createApp({ render: () => h(LuTable, {
+  data: [{ item: 'A', amount: 4 }, { item: 'B', amount: 6 }], showSummary: true,
+  summaryMethod: ({ columns, data }) => [columns.length === 2 ? 'Average' : 'Wrong columns', data.reduce((sum, row) => sum + row.amount, 0) / data.length]
+}, { default: () => [h(LuTableColumn, { prop: 'item' }), h(LuTableColumn, { prop: 'amount' })] }) })
+customSummaryApp.mount(customSummaryRoot)
+assert.deepEqual(findAll(customSummaryRoot, node => node.type === 'tfoot')[0].children[0].children.filter(node => node.type === 'td').map(textOf), ['Average', '5'])
+customSummaryApp.unmount()
+console.log('Passed: reactive table column visibility and current-page summary.')
+
 const { LuSpin, EpxSpin } = await import('../dist/index.js')
 assert.equal(LuSpin, EpxSpin)
 assert.ok(registered.includes('LuSpin'))

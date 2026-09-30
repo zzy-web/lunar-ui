@@ -24,6 +24,11 @@
           </td>
         </tr>
       </tbody>
+      <tfoot v-if="showSummary && displayData.length">
+        <tr class="epx-table__summary">
+          <td v-for="(column, index) in columns" :key="column.key" :style="getCellStyle(column)">{{ summaryValues[index] ?? '' }}</td>
+        </tr>
+      </tfoot>
     </table>
     <div v-if="!data.length && !loading" class="epx-table__empty"><slot name="empty">{{ emptyText }}</slot></div>
     <div v-if="loading" class="epx-table__loading"><LuSpin :text="loadingText" /></div>
@@ -38,7 +43,7 @@ import { LuPagination } from '../../pagination'
 import { LuSpin } from '../../spin'
 import TableColumnComponent from './table-column.vue'
 import { getTableValue } from './types'
-import type { TableColumnProps, TableRow, TableSortOrder, TableRowClassName, TableRowStyle } from './types'
+import type { TableColumnProps, TableRow, TableSortOrder, TableRowClassName, TableRowStyle, TableSummaryScope } from './types'
 
 defineOptions({ name: 'LuTable' })
 type Column = TableColumnProps & { key: string; slots?: Slots }
@@ -67,7 +72,10 @@ const props = withDefaults(defineProps<{
   hidePaginationOnSinglePage?: boolean
   loading?: boolean
   loadingText?: string
-}>(), { data: () => [], emptyText: 'No Data', showHeader: true, size: 'default', pageSize: 10, paginationAriaLabel: 'Table pages', paginationPrevText: '上一页', paginationNextText: '下一页', paginationPageLabel: '第', loadingText: 'Loading…' })
+  showSummary?: boolean
+  summaryText?: string
+  summaryMethod?: (scope: TableSummaryScope) => Array<string | number>
+}>(), { data: () => [], emptyText: 'No Data', showHeader: true, size: 'default', pageSize: 10, paginationAriaLabel: 'Table pages', paginationPrevText: '上一页', paginationNextText: '下一页', paginationPageLabel: '第', loadingText: 'Loading…', summaryText: 'Total' })
 const emit = defineEmits<{
   'sort-change': [value: { prop: string | undefined; order: TableSortOrder }]
   'selection-change': [selection: TableRow[]]
@@ -109,6 +117,7 @@ function readColumns(nodes: VNode[], prefix = ''): Column[] {
     if (node.type !== TableColumnComponent) return []
     const raw = node.props || {}
     const column = Object.fromEntries(Object.entries(raw).map(([name, value]) => [name.replace(/-([a-z])/g, (_, letter: string) => letter.toUpperCase()), value])) as Column
+    if (column.visible === false) return []
     return [{ ...column, sortable: raw.sortable === '' ? true : column.sortable, showOverflowTooltip: (raw.showOverflowTooltip ?? raw['show-overflow-tooltip']) === '' ? true : column.showOverflowTooltip, key, slots: node.children as Slots | undefined }]
   })
 }
@@ -203,6 +212,16 @@ function sortedData(): TableRow[] {
 const displayData = computed(() => {
   const rows = sortedData()
   return props.pagination ? rows.slice(displayOffset.value, displayOffset.value + safePageSize.value) : rows
+})
+const summaryValues = computed(() => {
+  if (props.summaryMethod) return props.summaryMethod({ columns: columns.value, data: displayData.value })
+  return columns.value.map((column, index) => {
+    if (index === 0) return props.summaryText
+    if (!column.prop || column.type === 'selection' || column.type === 'index') return ''
+    const values = displayData.value.map(row => getTableValue(row, column.prop))
+    return values.length && values.every(value => typeof value === 'number' && Number.isFinite(value))
+      ? (values as number[]).reduce((sum, value) => sum + value, 0) : ''
+  })
 })
 function toSize(value?: string | number) { return typeof value === 'number' || (typeof value === 'string' && /^\d+(\.\d+)?$/.test(value)) ? `${value}px` : value }
 function getCellStyle(column: Column, header = false): CSSProperties { return { textAlign: header ? column.headerAlign ?? column.align : column.align } }

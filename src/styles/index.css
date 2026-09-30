@@ -235,9 +235,11 @@ html.dark,
   font-weight: 600;
 }
 .epx-table__inner > tbody > tr > td { background: inherit; transition: background-color var(--epx-transition-duration); }
+.epx-table__inner > tfoot > tr > td { padding: var(--epx-table-cell-padding); border-top: 1px solid var(--epx-border-color-light); background: var(--epx-table-header-bg); color: var(--epx-text-color-primary); font-weight: 600; }
 .epx-table--border { border: 1px solid var(--epx-border-color-light); }
 .epx-table--border > .epx-table__inner > thead > tr > th:not(:last-child),
 .epx-table--border > .epx-table__inner > tbody > tr > td:not(:last-child) { border-right: 1px solid var(--epx-border-color-light); }
+.epx-table--border > .epx-table__inner > tfoot > tr > td:not(:last-child) { border-right: 1px solid var(--epx-border-color-light); }
 .epx-table--border > .epx-table__inner > tbody > tr:last-child > td { border-bottom: 0; }
 .epx-table--stripe > .epx-table__inner > tbody > tr:nth-child(even) > td { background: var(--epx-table-stripe-bg); }
 .epx-table > .epx-table__inner > tbody > tr:hover > td,

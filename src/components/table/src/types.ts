@@ -5,6 +5,7 @@ export type TableSortOrder = 'ascending' | 'descending' | null
 export interface TableRowScope { row: TableRow; rowIndex: number }
 export type TableRowClassName = string | ((scope: TableRowScope) => string)
 export type TableRowStyle = CSSProperties | ((scope: TableRowScope) => CSSProperties)
+export interface TableSummaryScope { columns: TableColumnProps[]; data: TableRow[] }
 export interface TableColumnProps {
   prop?: string
   label?: string
@@ -18,6 +19,7 @@ export interface TableColumnProps {
   formatter?: (row: TableRow, column: TableColumnProps, value: unknown, index: number) => VNodeChild
   selectable?: (row: TableRow, index: number) => boolean
   showOverflowTooltip?: boolean
+  visible?: boolean
 }
 
 export function getTableValue(row: TableRow, prop?: string): unknown {

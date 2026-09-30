@@ -13,6 +13,7 @@ const pagedUsers = Array.from({ length: 18 }, (_, index) => ({ id: index + 1, na
 const currentPage = ref(1)
 const pageSize = ref(5)
 const loading = ref(false)
+const showScore = ref(true)
 </script>
 
 ## 基础用法
@@ -286,6 +287,41 @@ const loading = ref(false)
 
 页码超出数据范围时会自动回到最后一个有效页，并触发页码事件。表头全选仅作用于当前页；翻页后仍保留其他页已选中的行。若数据由服务端逐页获取，请将 `pagination` 关闭，单独组合 `LuPagination`，并在应用层管理总数与选择状态。
 
+## 列显示与页内合计
+
+使用列的 `visible` 属性控制整列。开启 `show-summary` 后，第一列显示合计标签，其余纯数字列按当前页求和；未分页时对所有展示行求和。
+
+<DemoBlock direction="column">
+<lu-button size="small" @click="showScore = !showScore">{{ showScore ? '隐藏得分列' : '显示得分列' }}</lu-button>
+<lu-table :data="pagedUsers" pagination :page-size="4" show-summary summary-text="本页合计" border>
+  <lu-table-column prop="name" label="姓名" />
+  <lu-table-column prop="score" label="得分" :visible="showScore" />
+</lu-table>
+<template #source>
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+const showScore = ref(true)
+const users = Array.from({ length: 18 }, (_, index) => ({
+  id: index + 1, name: `用户 ${index + 1}`, score: (index * 17) % 100
+}))
+</script>
+
+<template>
+  <lu-button @click="showScore = !showScore">切换得分列</lu-button>
+  <lu-table :data="users" pagination :page-size="4" show-summary summary-text="本页合计" border>
+    <lu-table-column prop="name" label="姓名" />
+    <lu-table-column prop="score" label="得分" :visible="showScore" />
+  </lu-table>
+</template>
+```
+
+</template>
+</DemoBlock>
+
+需要平均值、格式化金额或特殊合计时，传入 `summary-method`，接收 `{ columns, data }` 并返回与可见列一一对应的文本或数字数组。`data` 是当前展示页的行。
+
 ## Table Props
 
 | 属性 | 类型 | 默认值 | 说明 |
@@ -313,6 +349,9 @@ const loading = ref(false)
 | `hidePaginationOnSinglePage` | `boolean` | `false` | 只有一页时隐藏分页导航。 |
 | `loading` | `boolean` | `false` | 显示加载遮罩并禁用交互。 |
 | `loadingText` | `string` | `'Loading…'` | 加载提示。 |
+| `showSummary` | `boolean` | `false` | 显示当前展示行的合计行。 |
+| `summaryText` | `string` | `'Total'` | 默认合计行首列文字。 |
+| `summaryMethod` | `({ columns, data }) => (string \| number)[]` | — | 自定义合计，返回值按可见列顺序展示。 |
 
 ## TableColumn Props
 
@@ -330,6 +369,7 @@ const loading = ref(false)
 | `selectable` | `(row, index) => boolean` | `undefined` | 是否允许选中，默认允许；index 为原始数据索引。 |
 | `formatter` | `(row, column, value, index) => VNodeChild` | `undefined` | 格式化内容，可返回 VNode。 |
 | `showOverflowTooltip` | `boolean` | `false` | 单行省略，鼠标悬停通过原生 title 显示原始字段值。 |
+| `visible` | `boolean` | `true` | 是否显示该列，可响应式切换。 |
 
 ## 插槽
 
