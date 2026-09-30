@@ -37,6 +37,7 @@ export const componentGroups = [
     { slug: 'empty', name: 'Empty', zh: '空状态', fresh: true, description: ['无数据说明与后续操作', 'Empty states and next actions'] }
   ] },
   { zh: '反馈组件', en: 'Feedback', items: [
+    { slug: 'spin', name: 'Spin', zh: '加载中', fresh: true, description: ['独立加载指示器与内容遮罩', 'Standalone spinner and content overlay'] },
     { slug: 'result', name: 'Result', zh: '结果', fresh: true, description: ['操作结果与后续操作', 'Operation outcomes and next actions'] },
     { slug: 'skeleton', name: 'Skeleton', zh: '骨架屏', fresh: true, description: ['加载占位、动画与自定义布局', 'Loading placeholders, animation and custom layouts'] },
     { slug: 'tooltip', name: 'Tooltip', zh: '文字提示', fresh: true, description: ['悬停提示、焦点提示与自动定位', 'Hover and focus hints with automatic positioning'] },

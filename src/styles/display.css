@@ -1,3 +1,11 @@
+.epx-spin { display: inline-flex; align-items: center; justify-content: center; color: var(--epx-color-primary); vertical-align: middle; }
+.epx-spin--wrapper { position: relative; display: block; }
+.epx-spin__content { color: var(--epx-text-color-primary); }
+.epx-spin__indicator { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 8px; box-sizing: border-box; }
+.epx-spin__indicator--overlay { position: absolute; inset: 0; z-index: 1; background: color-mix(in srgb, var(--epx-bg-color) 82%, transparent); }
+.epx-spin__spinner { display: block; box-sizing: border-box; border: 3px solid var(--epx-color-primary-light-7); border-top-color: currentColor; border-radius: 50%; animation: epx-spin .8s linear infinite; }
+.epx-spin__text { font-size: 14px; line-height: 1.4; text-align: center; }
+@media (prefers-reduced-motion: reduce) { .epx-spin__spinner { animation-duration: 2s; } }
 .epx-statistic { min-width: 0; color: var(--epx-text-color-primary); }
 .epx-statistic__title { margin-bottom: 6px; font-size: 14px; line-height: 1.5; color: var(--epx-text-color-regular); overflow-wrap: anywhere; }
 .epx-statistic__content { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px; font-size: 24px; line-height: 1.5; font-variant-numeric: tabular-nums; }
