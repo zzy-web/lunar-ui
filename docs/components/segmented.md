@@ -168,3 +168,8 @@ const booleanOptions = [{ label: 'Off', value: false }, { label: 'On', value: tr
 
 
 置于 `LuForm` 内时，此组件继承表单禁用状态和默认尺寸，组件/分组显式尺寸优先。详见 [Form 表单](./form)。
+
+## 使用建议
+
+- 适合少量、同级且可快速切换的选项；选项过多时考虑选择器。
+- 每个选项使用简短标签，自定义内容也应保留清晰的选中状态。

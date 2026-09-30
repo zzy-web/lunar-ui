@@ -153,3 +153,8 @@ title / description receive { item, index }; icon receives { item, index, status
 ## Types and additional API
 
 StepItem: required title: string; optional description: string, icon: string (text icon; use slots for complex icons), status: StepStatus, disabled: boolean. StepStatus is wait, process, finish, success or error.
+
+## Usage tips
+
+- Name steps after the user goal rather than an internal system state.
+- If steps are clickable, preserve entered data when navigating backward.

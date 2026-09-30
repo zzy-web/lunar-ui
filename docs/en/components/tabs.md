@@ -108,3 +108,8 @@ const items = [
 ## Events and slots
 
 `update:modelValue` and `change` receive the selected name. Slots matching item names render panels; the default slot receives `{ item }` as fallback. The `label` slot receives `{ item }`. Reserve `label` and `default` for these slots. Panels remain mounted. Missing or disabled values display the first enabled tab without emitting a change.
+
+## Usage tips
+
+- Use tabs for peer content views rather than a sequence of steps.
+- Choose lazy mounting and retention settings to preserve form state when switching tabs.

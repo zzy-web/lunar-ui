@@ -327,3 +327,8 @@ Required rules reject `undefined`, `null`, empty strings and empty arrays, inclu
 ## Validation rules
 
 `FormRule` supports `trigger: 'blur' | 'change' | ('blur' | 'change')[]`, `min`, `max`, `len`, and `pattern: RegExp`, in addition to `required`, `message` and `validator`. Numeric bounds apply to numbers; string/array bounds apply to length. Empty optional values skip bounds and pattern checks; custom validators still run. A validator returns `true`, `false`, an error string, or a Promise of these values. Thrown/rejected errors become field errors. An obsolete async validation resolves `false` and cannot overwrite a newer result or a reset.
+
+## Usage tips
+
+- Place validation guidance near the field and validate the full form again on submission.
+- Decide whether reset restores initial data or clears fields, and make that behavior clear to users.

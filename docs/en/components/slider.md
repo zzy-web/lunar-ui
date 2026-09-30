@@ -152,3 +152,8 @@ Pass [start, end] in range mode. Unsorted external pairs are sorted for display 
 
 
 Inside `LuForm`, this component inherits its disabled state and default size; an explicit component/group size takes precedence. See [Form](./form).
+
+## Usage tips
+
+- Pair a slider with numeric input when exact values matter; sliders work well for exploring a range.
+- Explain what each range handle represents and any required minimum gap.

@@ -148,3 +148,8 @@ Loading and disabled buttons do not emit click events.
 ## Usage notes
 
 `text`, `link` and `circle` are optional booleans, default `false`. The `icon` slot places an icon before the label; loading replaces that icon with a spinner and sets `aria-busy`. Icon-only buttons need `aria-label`. Link mode styles a button; use an anchor for navigation.
+
+## Usage tips
+
+- Usually keep one primary button per action area so the next action is clear.
+- Use loading or disabled state during an asynchronous submission to prevent duplicate actions.

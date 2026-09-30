@@ -156,3 +156,8 @@ The item slot receives `option`. With `hide-on-click=false`, selection keeps the
 Enter/Space activate the trigger. Down opens at the first enabled item; Up opens at the last. In the menu, Up/Down wrap around and skip disabled items, Home/End jump to the first/last item, and Enter/Space activate an action. Escape returns focus to the trigger. Tab closes and continues normal page navigation. Clicking or focusing outside closes the menu.
 
 The panel uses menu/menuitem roles and references its trigger. Position updates on scrolling, resizing and content changes. Tall menus scroll internally. Panels mount on body; define theme variables on `:root` or `html.dark`. For SSR, enable initially visible controlled panels after client mounting.
+
+## Usage tips
+
+- Name menu commands with verbs and distinguish destructive actions from routine ones.
+- Explain why an unavailable command is disabled in nearby interface text when it may be unclear.

@@ -38,3 +38,8 @@ const picture = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://w
 - `fit`：`fill | contain | cover | none | scale-down`，默认 cover。
 
 `error(event)` 和 `load(event)` 分别在图片失败和加载完成时触发。默认插槽展示回退内容，未提供时显示 `?`。支持 `LuAvatar` 和 `EpxAvatar` 导入。
+
+## 使用建议
+
+- 图片头像应提供可辨认的姓名或替代文字，便于图片加载失败时识别用户。
+- 列表中统一尺寸和形状，避免不同头像改变行高。

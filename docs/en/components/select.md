@@ -216,3 +216,8 @@ Backspace with an empty query removes the last enabled tag. IME composition does
 Clearing returns `undefined` in single mode or `[]` in multiple mode. Arrow keys navigate enabled options; Enter selects; Escape and Tab close the popup. Multiple selection stays open and needs no modifier key. Values retain their string or number types. Virtualization is not supported.
 
 Inside `LuForm`, this component inherits its disabled state and default size; an explicit component/group size takes precedence. See [Form](./form).
+
+## Usage tips
+
+- Enable search for longer option lists; display a small set directly when comparison matters.
+- Keep remote results tied to the current query so slower responses do not replace newer ones.

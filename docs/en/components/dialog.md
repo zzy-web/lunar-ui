@@ -118,3 +118,8 @@ When multiple Dialog instances are open, the original body overflow is restored 
 | `default` | Main dialog content. |
 | `header` | Custom header content. |
 | `footer` | Footer actions. |
+
+## Usage tips
+
+- Name the task in the dialog title and use a specific action label on the confirmation button.
+- Consider disabling overlay-click closing for long forms or flows where a stray click could discard work.

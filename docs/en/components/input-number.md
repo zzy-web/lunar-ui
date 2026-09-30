@@ -167,3 +167,8 @@ Component refs expose `focus()`, `blur()`, `select()`. Native attributes such as
 
 
 Inside `LuForm`, this component inherits its disabled state and default size; an explicit component/group size takes precedence. See [Form](./form).
+
+## Usage tips
+
+- Set precision and bounds together for decimal inputs such as amounts.
+- When formatting values, make sure parsing can recover the typed value so editing stays predictable.

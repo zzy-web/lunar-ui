@@ -168,3 +168,8 @@ SegmentedValue and SegmentedOption types are exported. Native form submission us
 
 
 Inside `LuForm`, this component inherits its disabled state and default size; an explicit component/group size takes precedence. See [Form](./form).
+
+## Usage tips
+
+- Use segmented controls for a small set of peer options that users switch between quickly.
+- Keep labels short and retain a clear selected state with custom option content.

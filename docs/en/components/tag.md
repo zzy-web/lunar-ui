@@ -66,3 +66,8 @@ const visible = ref(true)
 | Slot | Slot props | Description |
 | --- | --- | --- |
 | `default` | — | Tag content. |
+
+## Usage tips
+
+- Keep tags to short states or categories rather than full sentences.
+- Make the effect of closing a tag clear: removing a filter, deleting an item, or hiding a label.

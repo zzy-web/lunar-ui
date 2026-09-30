@@ -132,3 +132,8 @@ const standalone = ref(false)
 Label the group using `aria-label` or `aria-labelledby`. Tab enters the group; arrow keys move between native radio buttons. Disabling the group disables all children.
 
 Inside `LuForm`, this component inherits its disabled state and default size; an explicit component/group size takes precedence. See [Form](./form).
+
+## Usage tips
+
+- Use radio buttons for mutually exclusive choices and checkboxes for independent choices.
+- Choose defaults from actual application state rather than preselecting an arbitrary answer.

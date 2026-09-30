@@ -327,3 +327,8 @@ async function resetEnhanced() {
 ## 校验规则
 
 `FormRule` 在原有 required、message、validator 之外，支持 `trigger: 'blur' | 'change' | ('blur' | 'change')[]`、`min`、`max`、`len` 和 `pattern: RegExp`。数值字段检查数值范围，字符串和数组检查长度；非必填空值跳过范围与正则检查，自定义 validator 仍会执行。validator 返回 true、false、错误字符串或相应 Promise，抛出异常或 Promise 拒绝会转换为字段错误。已过期的异步校验返回 false，不会覆盖新结果或重置后的状态。
+
+## 使用建议
+
+- 把校验规则写在对应字段附近，并在提交时再次校验整个表单。
+- 重置行为应与用户预期一致：恢复初始数据还是清空字段，需要在业务中明确。

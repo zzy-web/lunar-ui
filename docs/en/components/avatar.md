@@ -38,3 +38,8 @@ const picture = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://w
 - `fit`: `fill | contain | cover | none | scale-down`, default cover.
 
 `error(event)` and `load(event)` report image failure and completion. The default slot supplies fallback content; without it the fallback is `?`. Exports: `LuAvatar`, `EpxAvatar`.
+
+## Usage tips
+
+- Provide a recognizable name or alternative text so a person can still be identified when an image fails.
+- Keep size and shape consistent in lists to prevent changing row heights.

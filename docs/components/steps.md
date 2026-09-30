@@ -153,3 +153,8 @@ active 从 0 开始；等于步骤数表示全部完成。单项 status 优先�
 ## 类型与补充 API
 
 StepItem：`title: string` 必填；`description?: string`；`icon?: string`（文本图标，复杂图标使用插槽）；`status?: StepStatus`；`disabled?: boolean`。StepStatus：`wait`、`process`、`finish`、`success`、`error`。
+
+## 使用建议
+
+- 步骤名称应描述用户目标，而不是内部系统状态。
+- 允许点击切换步骤时，确认返回前一步不会丢失已输入数据。

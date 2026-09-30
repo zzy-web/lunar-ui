@@ -80,3 +80,8 @@ const confirmToggle = () => new Promise(resolve => setTimeout(() => resolve(true
 `activeValue` and `inactiveValue` accept boolean, string or number and default to true/false. `beforeChange(): boolean | Promise<boolean>` can veto a change. Pending checks show loading and ignore repeated clicks; external value/disabled changes invalidate old results. Thrown/rejected errors emit `change-error(error)` without changing the value. The instance exposes `focus()` and `blur()`. The demo simulates a 600 ms save.
 
 Inside `LuForm`, this component inherits its disabled state and default size; an explicit component/group size takes precedence. See [Form](./form).
+
+## Usage tips
+
+- Use a switch for an immediately applied binary setting.
+- Show loading during asynchronous updates and restore the actual value on failure.

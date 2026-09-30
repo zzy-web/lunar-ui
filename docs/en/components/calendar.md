@@ -88,3 +88,8 @@ const isWeekend = (date: Date) => [0, 6].includes(date.getDay())
 `CalendarCell` describes the slot data: `date: Date`, `day: string`, `type: string`, `isSelected: boolean`, `isToday: boolean`, `disabled: boolean`. `day` uses `YYYY-MM-DD`; `type` is `prev-month`, `current-month` or `next-month`. Use noninteractive content inside date buttons.
 
 Month navigation preserves selection. Today returns to the current month without selecting a date; selecting a neighboring date changes the month. Replace the Date object for external updates. Tab focuses date buttons, Enter or Space selects. Six weeks are always displayed.
+
+## Usage tips
+
+- Match disabled dates to the same business rules used on submission.
+- Keep the date number and selected state visible when customizing day content.

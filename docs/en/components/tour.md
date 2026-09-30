@@ -116,3 +116,8 @@ const steps = [
 | `update:current` | Emitted when the active step changes. |
 | `close` | Emitted when the tour closes. |
 | `finish` | Emitted when the finish button is clicked. |
+
+## Usage tips
+
+- Explain one interface goal per step rather than repeating full documentation.
+- Ensure target elements have rendered before starting a tour.

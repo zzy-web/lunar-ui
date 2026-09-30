@@ -64,3 +64,8 @@ const percentage = ref(40)
 ## Accessibility
 
 Provide a meaningful `aria-label` for each task. Indeterminate animations respect reduced motion preferences. This component emits no events.
+
+## Usage tips
+
+- Use a determinate value when the total is known and indeterminate progress when it cannot be estimated.
+- Pair status color with text or a task name so color is not the only signal.

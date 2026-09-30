@@ -179,3 +179,8 @@ Collapse default contains CollapseItem children. CollapseItem default renders co
 ## Types and additional API
 
 CollapseItem props: required name: string | number; title: string = ''; disabled: boolean = false; lazy: boolean = false (mount on first open); destroyOnClose: boolean = false (unmount on close, taking precedence over lazy). Collapse refs expose read-only activeNames; CollapseItem refs expose isActive.
+
+## Usage tips
+
+- Open the most useful panel initially so key information is visible.
+- Use lazy rendering for expensive content; keep mounted content when entered state must survive collapsing.

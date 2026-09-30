@@ -150,3 +150,8 @@ Inside a group, CheckboxGroup controls selection. Checkbox ignores its own `mode
 | `default` | — | Label content. |
 
 Inside `LuForm`, this component inherits its disabled state and default size; an explicit component/group size takes precedence. See [Form](./form).
+
+## Usage tips
+
+- Use a checkbox group for multiple choices and a radio group for mutually exclusive choices.
+- Explain minimum or maximum selection limits near the control so blocked choices are understandable.

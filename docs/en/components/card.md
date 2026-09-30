@@ -119,3 +119,8 @@ Use `body-style` to adjust the card body.
 | `default` | Card body content. |
 | `header` | Custom header content. Overrides the rendered `header` prop content. |
 | `footer` | Footer content. |
+
+## Usage tips
+
+- Use cards to group related content; place actions in the header or footer to keep the body readable.
+- Use a consistent shadow mode across a page to keep its visual hierarchy clear.

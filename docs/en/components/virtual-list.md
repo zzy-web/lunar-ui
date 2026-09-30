@@ -133,3 +133,8 @@ Unrendered rows use estimates; distant scroll targets are corrected after measur
 ## Usage notes
 
 Nonpositive or nonfinite height and itemHeight values use defaults; negative overscan becomes zero. Data shrinkage and dimension changes correct the offset. The container supports native keyboard scrolling. Rows unmount outside the rendered range; keep persistent state in your data.
+
+## Usage tips
+
+- Give each row a stable unique key so scroll position survives insertions and removals.
+- Measure rows with changing height and use an estimate close to their actual size.

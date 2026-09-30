@@ -37,3 +37,8 @@ const count = ref(12)
 - `label` supplies an accessible name, especially useful for dots.
 
 The default slot is the target; without it the badge appears inline. The `content` slot receives `{ value, displayValue }` and customizes non-dot content. Exports: `LuBadge`, `EpxBadge`.
+
+## Usage tips
+
+- Keep the count tied to the actual number of pending items; use the maximum display for large counts.
+- Use a dot when only the presence of new content matters, not its exact count.

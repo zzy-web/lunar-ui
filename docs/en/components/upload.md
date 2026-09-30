@@ -132,3 +132,8 @@ Failed files can be retried individually. Cancellation, clearing and external re
 Exports：`LuUpload`, `EpxUpload`, `UploadFile`, `UploadStatus`, `UploadRequest`, `UploadRequestOptions`。
 
 Inside `LuForm`, this component inherits its disabled state. See [Form](./form).
+
+## Usage tips
+
+- Explain accepted formats, size, and count limits before file selection.
+- Keep a clear error and retry path after failure so users need not select files again.

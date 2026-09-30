@@ -307,3 +307,8 @@ Click a row to make it current. Enable `highlight-current-row` to show its backg
 | `setCurrentRow` | `(row?)` | Set the current row, matching rowKey; omit to clear. |
 
 Use a unique, stable `row-key` to preserve selection when row objects are replaced. Rows removed from `data` are deselected; selection is not retained across pages. Without a row key, selection uses object identity. Select-all applies only to selectable rows.
+
+## Usage tips
+
+- Give columns clear headings and widths that fit their content.
+- Keep row identity stable through sorting and filtering so selection stays attached to the right data.

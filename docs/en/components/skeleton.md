@@ -52,3 +52,8 @@ const loading = ref(true)
 The `template` slot receives zero-based `{ index }`. Placeholders are hidden from screen readers, while the container exposes `aria-busy`.
 
 `LuSkeletonItem` accepts `variant`: `text` (default), `p`, `h1`, `h3`, `caption`, `button`, `circle`, `rect`, `image`. Override dimensions with style. Exports: `LuSkeleton`, `LuSkeletonItem` and their `Epx` aliases.
+
+## Usage tips
+
+- Match placeholder structure to the final content to reduce layout movement.
+- For very short requests, consider delaying the placeholder in application code to avoid flashing.

@@ -90,3 +90,8 @@ const halfScore = ref(2.5)
 `allowHalf` defaults to false. When enabled, the left/right half of each star selects a half/full value and arrow keys move by 0.5. Clicking the current half-star clears it when `clearable` is enabled.
 
 Inside `LuForm`, this component inherits its disabled state and default size; an explicit component/group size takes precedence. See [Form](./form).
+
+## Usage tips
+
+- Explain the scale before asking for a rating, especially when half values or clearing are enabled.
+- Give read-only ratings a readable numeric or text equivalent for assistive technology.

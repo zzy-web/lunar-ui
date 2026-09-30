@@ -160,3 +160,8 @@ const sample = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://ww
 Set dimensions to reserve space and use alt for meaningful images. The browser determines lazy-load timing. Source changes reset state; late events from earlier images are ignored.
 
 The viewer is teleported to the document body and locks page scrolling while open. Tab stays inside the viewer and closing restores focus. Escape closes, Left/Right switches images, +/− or the mouse wheel zooms, R/Shift+R rotates, and 0 resets. Switching or retrying resets the view. Invalid zoom settings use defaults. Preview load failures have their own retry action; load/error events describe the thumbnail. The preview source list takes precedence over preview; disable both to remove preview. The preview-icon slot is decorative.
+
+## Usage tips
+
+- Use meaningful alternative text for informative images and empty alternative text for decorative ones.
+- Keep gallery preview order aligned with the order shown on the page.

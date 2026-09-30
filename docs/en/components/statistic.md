@@ -62,3 +62,8 @@ Display dashboard metrics, amounts and counts with theme and dark-mode support.
 `title`, `prefix` and `suffix` override the corresponding props. This read-only component emits no events.
 
 The default uses fixed three-digit grouping to keep server and client formatting consistent across system languages. Perform monetary calculations in application code; this component handles display and rounding.
+
+## Usage tips
+
+- Include a time period and unit in the title so the metric has context.
+- Use custom formatting for display; let application data define calculation and rounding rules.

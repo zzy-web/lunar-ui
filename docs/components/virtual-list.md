@@ -133,3 +133,8 @@ const picture = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://w
 ## 使用说明
 
 非正数和非有限的 height、itemHeight 使用默认值；overscan 负数归零。数据减少或尺寸变化会修正滚动位置。容器支持原生键盘滚动；离开渲染区的行会卸载，请将需保留的状态存放在数据中。
+
+## 使用建议
+
+- 每行使用稳定的唯一标识，插入或删除数据时才能保持正确滚动位置。
+- 行高会变化的内容启用动态测量，并提供接近实际高度的估算值。

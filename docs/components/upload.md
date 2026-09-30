@@ -135,3 +135,8 @@ const files = ref([])
 导出：`LuUpload`, `EpxUpload`, `UploadFile`, `UploadStatus`, `UploadRequest`, `UploadRequestOptions`。
 
 置于 `LuForm` 内时，此组件继承表单禁用状态。详见 [Form 表单](./form)。
+
+## 使用建议
+
+- 在选择文件前说明支持的格式、大小和数量限制。
+- 上传失败后保留明确的错误反馈与重试入口，避免用户重新选择文件。

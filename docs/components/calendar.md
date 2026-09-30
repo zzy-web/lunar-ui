@@ -88,3 +88,8 @@ const isWeekend = (date: Date) => [0, 6].includes(date.getDay())
 `CalendarCell` 说明插槽数据结构：`date: Date`、`day: string`、`type: string`、`isSelected: boolean`、`isToday: boolean`、`disabled: boolean`。`day` 格式为 `YYYY-MM-DD`，`type` 为 `prev-month`、`current-month` 或 `next-month`。日期按钮内请使用非交互内容。
 
 月份导航保留选择，“今天”返回本月而不选择日期；点击相邻月份日期会切换月份。外部更新请替换 Date 对象。Tab 聚焦日期按钮，Enter 或空格选择。固定显示六周。
+
+## 使用建议
+
+- 禁用日期应与业务规则一致，不能只在提交时拒绝选择。
+- 自定义日期内容时保留日期数字和选中状态，方便用户定位。

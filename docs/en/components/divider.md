@@ -47,3 +47,8 @@ Separate content with horizontal, vertical, dashed or labeled dividers.
 | Slot | Scope | Description |
 | --- | --- | --- |
 | `default` | — | The default slot provides horizontal divider content; vertical mode does not render it. Includes separator semantics and orientation. This component emits no events. |
+
+## Usage tips
+
+- Use a divider when spacing alone does not separate content clearly.
+- Keep labels in a divider short; use a normal heading for longer explanations.

@@ -57,3 +57,8 @@ const page = ref(1)
 ## Usage notes
 
 This component does not fetch or slice data. Empty datasets display page 1 with previous and next disabled. Native buttons support Tab focus and Enter / Space activation. Set `prev-text="Previous"`, `next-text="Next"`, `page-label="Page"` and `aria-label="Pagination"` for English labels.
+
+## Usage tips
+
+- When page size changes, ensure the current page still exists and update the data query.
+- If the total is unknown, avoid presenting a guessed final page.

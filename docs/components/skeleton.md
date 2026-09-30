@@ -52,3 +52,8 @@ const loading = ref(true)
 `template` 插槽接收从 0 开始的 `{ index }`。占位内容对屏幕阅读器隐藏，容器通过 `aria-busy` 表示加载状态。
 
 `LuSkeletonItem` 的 `variant` 支持 `text`（默认）、`p`、`h1`、`h3`、`caption`、`button`、`circle`、`rect`、`image`，可通过 style 调整尺寸。支持 `LuSkeleton` / `LuSkeletonItem` 及对应 `Epx` 别名。
+
+## 使用建议
+
+- 骨架结构应接近最终内容，减少加载完成时的布局移动。
+- 如果加载时间很短，避免频繁闪现占位，可在业务层延迟显示。

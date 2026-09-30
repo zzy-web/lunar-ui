@@ -111,3 +111,8 @@ const version = ref(0)
 ## Usage notes
 
 Remount the component or change its `key` to show it again. Warning and error use `role="alert"`; information and success use `role="status"`.
+
+## Usage tips
+
+- Use an alert for feedback that can remain on the page; use a dialog when a decision is required.
+- Closing removes the current alert. Render it again from application state when needed.

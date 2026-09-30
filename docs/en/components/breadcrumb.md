@@ -43,3 +43,8 @@ Show the current page in a navigation hierarchy.
 ## Slots
 
 The default slot receives `{ item, index }`. The `separator` slot replaces the separator. The last item uses `aria-current="page"` and never renders a link.
+
+## Usage tips
+
+- Make the final item the current page rather than another link to that same page.
+- Keep useful parent locations in deep paths; do not turn a sequence of actions into a page hierarchy.

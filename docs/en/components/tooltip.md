@@ -125,3 +125,8 @@ const visible = ref(false)
 The panel uses `role="tooltip"` and is associated with the trigger through `aria-describedby`. Custom trigger components must forward attributes to a focusable root. Native disabled buttons cannot receive keyboard focus; use a focusable text trigger to explain disabled actions. Disabled state overrides controlled visibility. Empty content does not show a panel.
 
 Panels mount on body by default. Define theme variables on `:root` or `html.dark`. Use `teleported=false` only where ancestors do not clip or transform fixed elements. For SSR, enable initially visible controlled panels after client mounting.
+
+## Usage tips
+
+- Keep tooltip text short and show essential instructions directly on the page.
+- Make the trigger focusable so keyboard users can reach the hint.

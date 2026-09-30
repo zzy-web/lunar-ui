@@ -57,3 +57,8 @@ const saved = ref(false)
 ## Usage notes
 
 Slots override their corresponding props. Built-in icons are decorative; describe the outcome in the title. The component emits no events; bind action handlers to buttons in the extra slot.
+
+## Usage tips
+
+- State what succeeded or failed and provide the most relevant next action.
+- Put longer error details in the body and keep the title short.

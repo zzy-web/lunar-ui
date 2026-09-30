@@ -62,3 +62,8 @@ Present events in reading order using native list semantics. Set `aria-label` to
 ## Usage notes
 
 Place LuTimelineItem children in reading order. Native list semantics support naming with aria-label. hideTimestamp also hides the timestamp slot. The dot slot is decorative and should not contain interactive controls. Describe status in text. These components emit no events.
+
+## Usage tips
+
+- Order events chronologically and use a consistent timestamp format.
+- Use status nodes for emphasis while keeping a readable text description for each event.

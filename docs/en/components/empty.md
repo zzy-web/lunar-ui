@@ -99,3 +99,8 @@ const created = ref(false)
 ## Usage notes
 
 The component emits no events; actions are handled by buttons in the default slot.
+
+## Usage tips
+
+- Explain why content is absent and offer a next action when one is available.
+- Write different messages for an empty search result and a first-use state.

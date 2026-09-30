@@ -188,3 +188,8 @@ Use the `prefix` and `suffix` slots to extend the input.
 The original `input` and `update:modelValue` events remain supported. Input updates wait until IME composition completes. Native attributes are forwarded to the input or textarea, including `id`, `name` and ARIA attributes. The counter follows native UTF-16 length semantics. Prefix and suffix slots apply to single-line inputs.
 
 Inside `LuForm`, this component inherits its disabled state and default size; an explicit component/group size takes precedence. See [Form](./form).
+
+## Usage tips
+
+- Give inputs visible labels; placeholders are examples rather than replacements for labels.
+- For passwords and sensitive values, provide a deliberate reset path beyond the clear control.

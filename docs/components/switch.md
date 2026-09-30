@@ -80,3 +80,8 @@ const confirmToggle = () => new Promise(resolve => setTimeout(() => resolve(true
 `activeValue`、`inactiveValue` 支持 boolean、string、number，默认 true/false。`beforeChange(): boolean | Promise<boolean>` 返回 false 可取消切换；等待期间自动显示加载并阻止重复点击。外部值或禁用状态变化使旧结果失效，异常通过 `change-error(error)` 发出且不会切换。实例提供 `focus()`、`blur()`。示例用 600 毫秒延迟模拟保存。
 
 置于 `LuForm` 内时，此组件继承表单禁用状态和默认尺寸，组件/分组显式尺寸优先。详见 [Form 表单](./form)。
+
+## 使用建议
+
+- 用于立即生效的二元设置；需要提交确认的选择更适合复选框。
+- 异步状态更新期间显示加载状态，并在失败时恢复实际值。
