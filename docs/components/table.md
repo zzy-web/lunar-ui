@@ -3,11 +3,16 @@
 `LuTable` 用于展示结构化数据，`LuTableColumn` 用于声明列，组件标签为 `<lu-table>` 和 `<lu-table-column>`。
 
 <script setup>
+import { ref } from 'vue'
 const users = [
   { id: 1, name: '张三', role: '开发者', status: '在线' },
   { id: 2, name: '李四', role: '设计师', status: '离线' },
   { id: 3, name: '王五', role: '产品经理', status: '在线' }
 ]
+const pagedUsers = Array.from({ length: 18 }, (_, index) => ({ id: index + 1, name: `用户 ${index + 1}`, score: (index * 17) % 100 }))
+const currentPage = ref(1)
+const pageSize = ref(5)
+const loading = ref(false)
 </script>
 
 ## 基础用法
@@ -234,6 +239,53 @@ const users = [
   </template>
 </DemoBlock>
 
+## 内置分页与加载状态
+
+设置 `pagination` 后，表格对传入的完整 `data` 先排序，再按 `pageSize` 分页。`v-model:current-page` 可同步页码；页大小变化或排序时会返回第一页。`loading` 显示局部遮罩，并暂时禁用选择与分页操作。
+
+<DemoBlock direction="column">
+<div style="display:flex; flex-wrap:wrap; gap:8px">
+  <lu-button size="small" @click="pageSize = pageSize === 5 ? 3 : 5">每页 {{ pageSize }} 条（点击切换）</lu-button>
+  <lu-button size="small" @click="loading = !loading">{{ loading ? '结束加载' : '模拟加载' }}</lu-button>
+</div>
+<lu-table v-model:current-page="currentPage" :data="pagedUsers" row-key="id" pagination :page-size="pageSize" :loading="loading" loading-text="正在获取用户…" pagination-aria-label="表格分页" border stripe>
+  <lu-table-column type="selection" />
+  <lu-table-column type="index" label="序号" />
+  <lu-table-column prop="name" label="姓名" sortable />
+  <lu-table-column prop="score" label="得分" sortable />
+</lu-table>
+<template #source>
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+const users = Array.from({ length: 18 }, (_, index) => ({
+  id: index + 1, name: `用户 ${index + 1}`, score: (index * 17) % 100
+}))
+const currentPage = ref(1)
+const pageSize = ref(5)
+const loading = ref(false)
+</script>
+
+<template>
+  <lu-button @click="pageSize = pageSize === 5 ? 3 : 5">每页 {{ pageSize }} 条</lu-button>
+  <lu-button @click="loading = !loading">{{ loading ? '结束加载' : '模拟加载' }}</lu-button>
+  <lu-table v-model:current-page="currentPage" :data="users" row-key="id"
+    pagination :page-size="pageSize" :loading="loading" loading-text="正在获取用户…"
+    pagination-aria-label="表格分页" border stripe>
+    <lu-table-column type="selection" />
+    <lu-table-column type="index" label="序号" />
+    <lu-table-column prop="name" label="姓名" sortable />
+    <lu-table-column prop="score" label="得分" sortable />
+  </lu-table>
+</template>
+```
+
+</template>
+</DemoBlock>
+
+页码超出数据范围时会自动回到最后一个有效页，并触发页码事件。表头全选仅作用于当前页；翻页后仍保留其他页已选中的行。若数据由服务端逐页获取，请将 `pagination` 关闭，单独组合 `LuPagination`，并在应用层管理总数与选择状态。
+
 ## Table Props
 
 | 属性 | 类型 | 默认值 | 说明 |
@@ -252,6 +304,15 @@ const users = [
 | `currentRowKey` | `string \| number \| null` | `undefined` | `string \| number \| null`，需要 `rowKey`。初始化或值变化时定位当前行，传入 `null` 清除；点击仍可切换当前行。 |
 | `rowClassName` | `string \| (({ row, rowIndex }) => string)` | `undefined` | 类名字符串或 `({ row, rowIndex }) => string`。 |
 | `rowStyle` | `CSSProperties \| (({ row, rowIndex }) => CSSProperties)` | `undefined` | 样式对象或 `({ row, rowIndex }) => CSSProperties`。索引为排序后的显示索引；斑马纹、悬停与选中背景优先于行背景。 |
+| `pagination` | `boolean` | `false` | 对完整 `data` 启用客户端分页。 |
+| `currentPage` | `number` | `1` | 当前页；支持 `v-model:current-page`。 |
+| `pageSize` | `number` | `10` | 每页条数；至少为 1。 |
+| `paginationAriaLabel` | `string` | `'Table pages'` | 分页导航的无障碍名称。 |
+| `paginationPrevText` / `paginationNextText` | `string` | `'上一页'` / `'下一页'` | 翻页按钮文字。 |
+| `paginationPageLabel` | `string` | `'第'` | 页码按钮的无障碍标签前缀。 |
+| `hidePaginationOnSinglePage` | `boolean` | `false` | 只有一页时隐藏分页导航。 |
+| `loading` | `boolean` | `false` | 显示加载遮罩并禁用交互。 |
+| `loadingText` | `string` | `'Loading…'` | 加载提示。 |
 
 ## TableColumn Props
 
@@ -299,6 +360,8 @@ const users = [
 | `select-all` | `rows` | 切换全选时触发。 |
 | `row-click` | `row, index, event` | 点击行，索引为显示索引；复选框点击不触发。 |
 | `current-change` | `row, oldRow` | 当前行变化；同 key 数据替换也触发，清空为 null。 |
+| `update:currentPage` | `page` | 页码变化时同步 `v-model:current-page`。 |
+| `page-change` | `page` | 页码变化或数据收缩导致页码修正。 |
 
 ## 方法
 
@@ -312,7 +375,7 @@ const users = [
 | `getSelectionRows` | `() => TableRow[]` | 读取多选结果。 |
 | `setCurrentRow` | `(row?)` | 设置当前行，按 rowKey 匹配；省略参数清空。 |
 
-多选建议设置唯一、稳定的 `row-key`。同 key 数据对象更新后保留选择，移出 `data` 的行自动清除选择；不保留跨分页选择。未设置 row-key 时按对象身份跟踪选择。全选只作用于允许选择的行。
+多选建议设置唯一、稳定的 `row-key`。同 key 数据对象更新后保留选择，移出 `data` 的行自动清除选择。内置分页跨页保留选择；未设置 row-key 时按对象身份跟踪选择。全选只作用于当前页允许选择的行。
 
 ## 使用建议
 

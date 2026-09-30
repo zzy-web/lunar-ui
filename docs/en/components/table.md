@@ -3,11 +3,16 @@
 `LuTable` displays structured data, and `LuTableColumn` declares columns. Use them as `<lu-table>` and `<lu-table-column>`.
 
 <script setup>
+import { ref } from 'vue'
 const users = [
   { id: 1, name: 'Alice', role: 'Developer', status: 'Online' },
   { id: 2, name: 'Bob', role: 'Designer', status: 'Offline' },
   { id: 3, name: 'Carol', role: 'Product Manager', status: 'Online' }
 ]
+const pagedUsers = Array.from({ length: 18 }, (_, index) => ({ id: index + 1, name: `User ${index + 1}`, score: (index * 17) % 100 }))
+const currentPage = ref(1)
+const pageSize = ref(5)
+const loading = ref(false)
 </script>
 
 ## Basic Usage
@@ -228,6 +233,53 @@ Click a row to make it current. Enable `highlight-current-row` to show its backg
   </template>
 </DemoBlock>
 
+## Built-in pagination and loading
+
+Enable `pagination` to sort the complete `data` array before slicing it by `pageSize`. Use `v-model:current-page` to track the page. Changing page size or sorting returns to page one. `loading` adds a local overlay and temporarily disables selection and pagination.
+
+<DemoBlock direction="column">
+<div style="display:flex; flex-wrap:wrap; gap:8px">
+  <lu-button size="small" @click="pageSize = pageSize === 5 ? 3 : 5">{{ pageSize }} rows per page (click to change)</lu-button>
+  <lu-button size="small" @click="loading = !loading">{{ loading ? 'Finish loading' : 'Simulate loading' }}</lu-button>
+</div>
+<lu-table v-model:current-page="currentPage" :data="pagedUsers" row-key="id" pagination :page-size="pageSize" :loading="loading" loading-text="Fetching users…" pagination-prev-text="Previous" pagination-next-text="Next" pagination-page-label="Page" border stripe>
+  <lu-table-column type="selection" />
+  <lu-table-column type="index" label="#" />
+  <lu-table-column prop="name" label="Name" sortable />
+  <lu-table-column prop="score" label="Score" sortable />
+</lu-table>
+<template #source>
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+const users = Array.from({ length: 18 }, (_, index) => ({
+  id: index + 1, name: `User ${index + 1}`, score: (index * 17) % 100
+}))
+const currentPage = ref(1)
+const pageSize = ref(5)
+const loading = ref(false)
+</script>
+
+<template>
+  <lu-button @click="pageSize = pageSize === 5 ? 3 : 5">{{ pageSize }} rows per page</lu-button>
+  <lu-button @click="loading = !loading">{{ loading ? 'Finish loading' : 'Simulate loading' }}</lu-button>
+  <lu-table v-model:current-page="currentPage" :data="users" row-key="id"
+    pagination :page-size="pageSize" :loading="loading" loading-text="Fetching users…"
+    pagination-prev-text="Previous" pagination-next-text="Next" pagination-page-label="Page" border stripe>
+    <lu-table-column type="selection" />
+    <lu-table-column type="index" label="#" />
+    <lu-table-column prop="name" label="Name" sortable />
+    <lu-table-column prop="score" label="Score" sortable />
+  </lu-table>
+</template>
+```
+
+</template>
+</DemoBlock>
+
+If the data shrinks, the page clamps to the last valid page and emits the page events. Select-all affects only the current page, while previously selected rows remain selected across pages. For server-fetched pages, turn off `pagination`, compose `LuPagination` separately, and manage total count and selection in your app.
+
 ## Table Props
 
 | Prop | Type | Default | Description |
@@ -246,6 +298,15 @@ Click a row to make it current. Enable `highlight-current-row` to show its backg
 | `currentRowKey` | `string \| number \| null` | `undefined` | `string \| number \| null`, requires `rowKey`. Applied initially and whenever the key changes; `null` clears the current row. Clicking can still change the current row. |
 | `rowClassName` | `string \| (({ row, rowIndex }) => string)` | `undefined` | a class string or `({ row, rowIndex }) => string`. |
 | `rowStyle` | `CSSProperties \| (({ row, rowIndex }) => CSSProperties)` | `undefined` | a style object or `({ row, rowIndex }) => CSSProperties`. Indices refer to displayed order. Stripe, hover and selection backgrounds take precedence over the row background. |
+| `pagination` | `boolean` | `false` | Paginate the full `data` array on the client. |
+| `currentPage` | `number` | `1` | Current page; supports `v-model:current-page`. |
+| `pageSize` | `number` | `10` | Rows per page, at least 1. |
+| `paginationAriaLabel` | `string` | `'Table pages'` | Accessible name of the pagination navigation. |
+| `paginationPrevText` / `paginationNextText` | `string` | `'上一页'` / `'下一页'` | Previous and next button labels. |
+| `paginationPageLabel` | `string` | `'第'` | Accessible page button label prefix. |
+| `hidePaginationOnSinglePage` | `boolean` | `false` | Hide pagination when there is only one page. |
+| `loading` | `boolean` | `false` | Show an overlay and disable interactions. |
+| `loadingText` | `string` | `'Loading…'` | Loading message. |
 
 ## TableColumn Props
 
@@ -293,6 +354,8 @@ Click a row to make it current. Enable `highlight-current-row` to show its backg
 | `select-all` | `rows` | Select-all was toggled. |
 | `row-click` | `row, index, event` | Row clicked; index is display order. Checkbox clicks do not trigger it. |
 | `current-change` | `row, oldRow` | Current row changed, including same-key replacement; null when cleared. |
+| `update:currentPage` | `page` | Updates `v-model:current-page`. |
+| `page-change` | `page` | Page changed or was corrected after data shrank. |
 
 ## Methods
 
@@ -306,7 +369,7 @@ Click a row to make it current. Enable `highlight-current-row` to show its backg
 | `getSelectionRows` | `() => TableRow[]` | Read selected rows. |
 | `setCurrentRow` | `(row?)` | Set the current row, matching rowKey; omit to clear. |
 
-Use a unique, stable `row-key` to preserve selection when row objects are replaced. Rows removed from `data` are deselected; selection is not retained across pages. Without a row key, selection uses object identity. Select-all applies only to selectable rows.
+Use a unique, stable `row-key` to preserve selection when row objects are replaced. Rows removed from `data` are deselected. Built-in pagination retains selection across pages. Without a row key, selection uses object identity. Select-all applies only to selectable rows on the current page.
 
 ## Usage tips
 

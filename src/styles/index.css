@@ -180,6 +180,7 @@ html.dark,
 .epx-form-item.is-error .epx-input__wrapper { border-color: var(--epx-color-danger); box-shadow: 0 0 0 1px var(--epx-color-danger) inset; }
 
 .epx-table {
+  position: relative;
   --epx-table-cell-padding: 14px 16px;
   --epx-table-header-bg: var(--epx-fill-color-light);
   --epx-table-row-hover-bg: var(--epx-color-primary-light-9);
@@ -254,6 +255,9 @@ html.dark,
   text-align: center;
 }
 .epx-table--border > .epx-table__empty { border-bottom: 0; }
+.epx-table.is-loading:not(.epx-table--scroll) { min-height: 144px; }
+.epx-table__loading { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--epx-bg-color) 82%, transparent); }
+.epx-table__pagination { position: sticky; bottom: 0; z-index: 1; display: flex; justify-content: flex-end; min-width: max-content; padding: 12px 16px; border-top: 1px solid var(--epx-border-color-light); background: var(--epx-bg-color); }
 @media (max-width: 600px) { .epx-table { --epx-table-cell-padding: 12px 10px; } }
 @media (prefers-reduced-motion: reduce) { .epx-table__inner > tbody > tr > td { transition: none; } }
 

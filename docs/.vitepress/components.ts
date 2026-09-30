@@ -32,7 +32,7 @@ export const componentGroups = [
     { slug: 'avatar', name: 'Avatar', zh: '头像', fresh: true, description: ['图片头像、尺寸与失败回退', 'Profile images, sizes and error fallback'] },
     { slug: 'tree', name: 'Tree', zh: '树形控件', fresh: true, description: ['层级数据、节点展开与复选联动', 'Hierarchical data, expansion and linked checkboxes'] },
     { slug: 'pagination', name: 'Pagination', zh: '分页', fresh: true, description: ['页码切换与大数据量分页', 'Page navigation for large datasets'] },
-    { slug: 'table', name: 'Table', zh: '表格', description: ['结构化数据与自定义列', 'Structured data and columns'] },
+    { slug: 'table', name: 'Table', zh: '表格', updated: true, description: ['排序、多选、分页与加载状态', 'Sorting, selection, pagination and loading'] },
     { slug: 'calendar', name: 'Calendar', zh: '日历', description: ['月视图与日期选择', 'Month views and date selection'] },
     { slug: 'empty', name: 'Empty', zh: '空状态', fresh: true, description: ['无数据说明与后续操作', 'Empty states and next actions'] }
   ] },
