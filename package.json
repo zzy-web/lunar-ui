@@ -28,6 +28,7 @@
     "site:build": "vite build --mode site",
     "dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
+    "docs:check-interview": "node scripts/check-interview.mjs",
     "docs:preview": "vitepress preview docs",
     "build:lib": "vite build && vue-tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",
     "build": "npm run build:lib && npm run docs:build",

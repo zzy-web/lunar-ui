@@ -36,6 +36,7 @@ jobs:
 
       - name: Build docs
         run: |
+          npm run docs:check-interview
           npm run typecheck
           npm run test:components
           npm run docs:build

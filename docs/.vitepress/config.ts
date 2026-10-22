@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitepress'
 import { componentGroups } from './components'
+import { interviewSidebar } from './interview'
 
 const socialLinks = [{ icon: 'github', link: 'https://github.com/zzy-web/lunar-ui' }] as const
 function theme(en: boolean) {
@@ -8,21 +9,25 @@ function theme(en: boolean) {
     nav: [
       { text: en ? 'Guide' : '指南', link: `${prefix}/guide/quick-start` },
       { text: en ? 'Components' : '组件', link: `${prefix}/components/` },
+      { text: en ? 'Interview (中文)' : '面试题', link: '/interview/' },
       { text: '0.1.0', link: 'https://github.com/zzy-web/lunar-ui' }
     ],
-    sidebar: [
-      { text: en ? 'Get started' : '开始使用', items: [
-        { text: en ? 'Introduction' : '介绍', link: `${prefix}/` },
-        { text: en ? 'Quick start' : '快速开始', link: `${prefix}/guide/quick-start` },
-        { text: en ? 'Theming' : '主题定制', link: `${prefix}/guide/theming` },
-        { text: en ? 'All components' : '组件总览', link: `${prefix}/components/` }
-      ] },
-      ...componentGroups.map(group => ({
-        text: en ? group.en : group.zh,
-        collapsed: false,
-        items: group.items.map(item => ({ text: en ? item.name : `${item.name} ${item.zh}`, link: `${prefix}/components/${item.slug}` }))
-      }))
-    ],
+    sidebar: {
+      '/interview/': interviewSidebar,
+      [en ? '/en/' : '/']: [
+        { text: en ? 'Get started' : '开始使用', items: [
+          { text: en ? 'Introduction' : '介绍', link: `${prefix}/` },
+          { text: en ? 'Quick start' : '快速开始', link: `${prefix}/guide/quick-start` },
+          { text: en ? 'Theming' : '主题定制', link: `${prefix}/guide/theming` },
+          { text: en ? 'All components' : '组件总览', link: `${prefix}/components/` }
+        ] },
+        ...componentGroups.map(group => ({
+          text: en ? group.en : group.zh,
+          collapsed: false,
+          items: group.items.map(item => ({ text: en ? item.name : `${item.name} ${item.zh}`, link: `${prefix}/components/${item.slug}` }))
+        }))
+      ]
+    },
     outline: { label: en ? 'On this page' : '本页目录', level: [2, 3] as [number, number] },
     docFooter: { prev: en ? 'Previous' : '上一页', next: en ? 'Next' : '下一页' },
     lastUpdated: { text: en ? 'Last updated' : '最后更新' },

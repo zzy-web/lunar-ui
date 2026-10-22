@@ -13,6 +13,7 @@ import { withBase } from 'vitepress'
 <div class="lu-home__links">
 <a class="lu-home__link lu-home__link--primary" :href="withBase('/guide/quick-start')">快速开始 →</a>
 <a class="lu-home__link" :href="withBase('/components/')">浏览组件</a>
+<a class="lu-home__link" :href="withBase('/interview/')">面试题 · 693 题</a>
 </div>
 </div>
 

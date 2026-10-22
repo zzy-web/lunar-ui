@@ -78,6 +78,12 @@ createApp(App).use(LunarUI).mount('#app')
 
 The documentation includes Chinese and English pages, local search, a filterable component overview, and interactive examples with copyable source.
 
+## 面试题
+
+文档新增[面试题模块](docs/interview/index.md)，按原始材料分为 35 类，包含 693 道题与逐题参考答案、实现示例和部分官方参考资料。运行 `npm run dev` 后从顶部“面试题”进入，可按分类浏览或使用站点搜索。
+
+原始文件保存在[面试题整理_完整版.md](面试题整理_完整版.md)，保留来源说明、原始编号及【推导】标记。运行 `npm run docs:check-interview` 检查原题、分类元信息与答案的一致性。
+
 ## Dialog
 
 ```vue
