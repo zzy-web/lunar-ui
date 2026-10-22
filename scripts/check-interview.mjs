@@ -11,6 +11,7 @@ assert.equal(sections.length, 35, '原始分类数变化，请同步更新题库
 assert.equal(metadata.length, sections.length, '分类元信息数量不一致')
 
 const seen = new Set()
+let nextId = 1
 for (const [index, section] of sections.entries()) {
   const category = metadata[index]
   const questions = [...section[2].matchAll(/^(\d+)\. (.+)\r?$/gm)]
@@ -19,14 +20,15 @@ for (const [index, section] of sections.entries()) {
   assert.equal(category.title, section[1].replace(/（\d+.*$/, '').split('——').at(-1))
   assert.equal(entries.length, questions.length, `${category.slug}: 题数不一致`)
   assert.equal(category.count, questions.length, `${category.slug}: 元信息题数不一致`)
-  assert.equal(category.start, Number(questions[0][1]))
-  assert.equal(category.end, Number(questions.at(-1)[1]))
+  assert.equal(category.start, nextId, `${category.slug}: 分类起始题号不连续`)
+  assert.equal(category.end, nextId + questions.length - 1, `${category.slug}: 分类结束题号不一致`)
+  assert(page.includes(`题号 **${category.start}–${category.end}**`), `${category.slug}: 页首题号范围不一致`)
   for (const [i, question] of questions.entries()) {
     const entry = entries[i]
-    const id = Number(question[1])
+    const id = nextId++
     assert(!seen.has(id), `重复题号 ${id}`)
     seen.add(id)
-    assert.equal(Number(entry[1]), id, `题号顺序变化 ${id}`)
+    assert.equal(Number(entry[1]), id, `题号不连续，期望 ${id}（原题号 ${question[1]}）`)
     assert.equal(Number(entry[3]), id, `锚点不一致 ${id}`)
     assert.equal(entry[2].trim(), question[2].trim(), `题目内容变化 ${id}`)
     assert.equal((entry[4].match(/\*\*参考答案：\*\*/g) || []).length, 1, `题目 ${id} 缺少或重复答案`)
@@ -36,12 +38,12 @@ for (const [index, section] of sections.entries()) {
   }
 }
 assert.equal(seen.size, 693)
-const expected = [...Array.from({ length: 79 }, (_, i) => i + 42),
-  ...Array.from({ length: 20 }, (_, i) => i + 123),
-  ...Array.from({ length: 594 }, (_, i) => i + 318)]
-assert.deepEqual([...seen], expected, '原题编号覆盖范围不一致')
+const expected = Array.from({ length: 693 }, (_, i) => i + 1)
+assert.deepEqual([...seen], expected, '展示题号必须从 1 到 693 连续且不重复')
 const pages = (await readdir(new URL('docs/interview/', root))).filter(name => name.endsWith('.md'))
 assert.equal(pages.length, 36, '应包含 35 个分类页和一个总览页')
 const overview = await read('docs/interview/index.md')
-for (const category of metadata) assert(overview.includes(`](./${category.slug})`), `总览缺少 ${category.slug}`)
-console.log(`面试题校验通过：${metadata.length} 个分类，${seen.size} 道原题与独立答案，题号、标题和锚点一致。`)
+for (const category of metadata) {
+  assert(overview.includes(`](./${category.slug})：${category.count} 题，题号 ${category.start}–${category.end}。`), `总览缺少或错配 ${category.slug}`)
+}
+console.log(`面试题校验通过：${metadata.length} 个分类，题号 1–${seen.size} 连续不跳号，原题、独立答案和锚点一一对应。`)
