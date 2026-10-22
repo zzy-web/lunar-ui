@@ -1,4 +1,4 @@
-// 分类与题数对应原始材料；展示题号按分类顺序从 1 连续编至 693。
+// 题目清单、总览和分类页统一使用此分类顺序与连续题号。
 export const interviewCategories = [
   {
     "title": "Node.js",
