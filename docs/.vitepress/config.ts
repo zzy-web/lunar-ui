@@ -10,6 +10,7 @@ function theme(en: boolean) {
       { text: en ? 'Guide' : '指南', link: `${prefix}/guide/quick-start` },
       { text: en ? 'Components' : '组件', link: `${prefix}/components/` },
       { text: en ? 'Interview (中文)' : '面试题', link: '/interview/' },
+      { text: en ? 'Python / JS / TS (中文)' : '语法对照', link: '/syntax/python-js-ts' },
       { text: '0.1.0', link: 'https://github.com/zzy-web/lunar-ui' }
     ],
     sidebar: {
