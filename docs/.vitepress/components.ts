@@ -10,6 +10,8 @@ export const componentGroups = [
     { slug: 'tag', name: 'Tag', zh: '标签', description: ['状态与分类标记', 'Status and categories'] }
   ] },
   { zh: '表单组件', en: 'Form', items: [
+    { slug: 'date-picker', name: 'DatePicker', zh: '日期选择器', fresh: true, description: ['单日期和日期范围', 'Single date and date ranges'] },
+    { slug: 'cascader', name: 'Cascader', zh: '级联选择器', fresh: true, description: ['多级选项与路径回显', 'Hierarchical options and path selection'] },
     { slug: 'input-number', name: 'InputNumber', zh: '计数器', fresh: true, description: ['精度、步长、范围与格式化数值输入', 'Precision, steps, limits and formatted numeric input'] },
     { slug: 'slider', name: 'Slider', zh: '滑块', fresh: true, description: ['区间拖动、刻度、标记与键盘操作', 'Range dragging, stops, marks and keyboard controls'] },
     { slug: 'segmented', name: 'Segmented', zh: '分段控制器', fresh: true, description: ['分段选择、自定义内容与键盘导航', 'Segmented selection, custom content and keyboard navigation'] },
@@ -37,6 +39,8 @@ export const componentGroups = [
     { slug: 'empty', name: 'Empty', zh: '空状态', fresh: true, description: ['无数据说明与后续操作', 'Empty states and next actions'] }
   ] },
   { zh: '反馈组件', en: 'Feedback', items: [
+    { slug: 'drawer', name: 'Drawer', zh: '抽屉', fresh: true, description: ['四向抽屉与焦点管理', 'Four directions and focus management'] },
+    { slug: 'message', name: 'Message', zh: '消息提示', fresh: true, description: ['全局操作反馈与自动关闭', 'Global feedback and automatic dismissal'] },
     { slug: 'spin', name: 'Spin', zh: '加载中', fresh: true, description: ['独立加载指示器与内容遮罩', 'Standalone spinner and content overlay'] },
     { slug: 'result', name: 'Result', zh: '结果', fresh: true, description: ['操作结果与后续操作', 'Operation outcomes and next actions'] },
     { slug: 'skeleton', name: 'Skeleton', zh: '骨架屏', fresh: true, description: ['加载占位、动画与自定义布局', 'Loading placeholders, animation and custom layouts'] },

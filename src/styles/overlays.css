@@ -1,0 +1,38 @@
+.epx-drawer-overlay { position: fixed; inset: 0; z-index: 2000; display: flex; background: var(--epx-mask-color); }
+.epx-drawer-overlay.is-right { justify-content: flex-end; }
+.epx-drawer-overlay.is-bottom { align-items: flex-end; }
+.epx-drawer-panel { display: flex; flex-direction: column; min-width: 0; max-width: 100%; max-height: 100%; background: var(--epx-bg-color-overlay); color: var(--epx-text-color-primary); box-shadow: var(--epx-box-shadow-overlay); }
+.epx-drawer-panel:focus { outline: none; }
+.epx-drawer-overlay:is(.is-left, .is-right) .epx-drawer-panel { width: var(--epx-drawer-size); }
+.epx-drawer-overlay:is(.is-top, .is-bottom) .epx-drawer-panel { width: 100%; height: var(--epx-drawer-size); }
+.epx-drawer-overlay.is-top { align-items: flex-start; }
+.epx-drawer-body { flex: 1; overflow: auto; overscroll-behavior: contain; }
+.epx-drawer-enter-active, .epx-drawer-leave-active { transition: opacity var(--epx-transition-duration); }
+.epx-drawer-enter-active .epx-drawer-panel, .epx-drawer-leave-active .epx-drawer-panel { transition: transform var(--epx-transition-duration); }
+.epx-drawer-enter-from, .epx-drawer-leave-to { opacity: 0; }
+.epx-drawer-overlay.is-right { --epx-drawer-transform: translateX(100%); }
+.epx-drawer-overlay.is-left { --epx-drawer-transform: translateX(-100%); }
+.epx-drawer-overlay.is-top { --epx-drawer-transform: translateY(-100%); }
+.epx-drawer-overlay.is-bottom { --epx-drawer-transform: translateY(100%); }
+:is(.epx-drawer-enter-from, .epx-drawer-leave-to) .epx-drawer-panel { transform: var(--epx-drawer-transform); }
+
+.epx-date-picker, .epx-cascader { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; max-width: 100%; }
+.epx-date-picker { position: relative; }
+.epx-field-button { min-height: var(--epx-control-height); max-width: 100%; padding: 4px 10px; border: 1px solid var(--epx-border-color); border-radius: var(--epx-border-radius-base); background: var(--epx-bg-color); color: var(--epx-text-color-primary); font: inherit; cursor: pointer; }
+.epx-field-button:focus-visible { outline: 2px solid var(--epx-color-primary); outline-offset: 2px; }
+.epx-field-button:disabled { cursor: not-allowed; color: var(--epx-text-color-disabled); background: var(--epx-fill-color-light); }
+.epx-date-picker__panel { position: absolute; z-index: 20; inset-block-start: calc(100% + 6px); inset-inline-start: 0; width: min(350px, calc(100vw - 32px)); max-height: min(440px, 70vh); overflow: auto; background: var(--epx-bg-color-overlay); border: 1px solid var(--epx-border-color); border-radius: var(--epx-border-radius-base); box-shadow: var(--epx-box-shadow-overlay); }
+.epx-date-picker__hint { padding: 0 12px; color: var(--epx-text-color-regular); }
+.epx-date-picker__shortcuts { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 12px 0; }
+.epx-date-picker__panel .is-in-range { background: var(--epx-color-primary-light-9); color: var(--epx-color-primary); border-radius: 4px; padding: 2px 4px; }
+
+.epx-message-stack { position: fixed; z-index: 3000; inset: 16px 12px auto; display: grid; justify-items: center; gap: 8px; pointer-events: none; }
+.epx-message { --epx-message-accent: var(--epx-color-info); display: flex; align-items: center; gap: 12px; box-sizing: border-box; max-width: min(100%, 36rem); padding: 10px 14px; border: 1px solid var(--epx-border-color-light); border-inline-start: 4px solid var(--epx-message-accent); border-radius: var(--epx-border-radius-base); background: var(--epx-bg-color-overlay); color: var(--epx-text-color-primary); box-shadow: var(--epx-box-shadow-overlay); overflow-wrap: anywhere; pointer-events: auto; }
+.epx-message--success { --epx-message-accent: var(--epx-color-success); }
+.epx-message--warning { --epx-message-accent: var(--epx-color-warning); }
+.epx-message--error { --epx-message-accent: var(--epx-color-danger); }
+.epx-message button { border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+@media (prefers-reduced-motion: reduce) {
+  .epx-drawer-enter-active, .epx-drawer-leave-active,
+  .epx-drawer-enter-active .epx-drawer-panel, .epx-drawer-leave-active .epx-drawer-panel { transition: none; }
+}

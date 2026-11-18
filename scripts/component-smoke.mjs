@@ -5,6 +5,7 @@ import LunarUI, { LuCheckbox, LuSwitch, LuTag, LuCalendar, LuInput, LuButton, Lu
 import { LuPagination, EpxPagination, LuProgress, EpxProgress, LuDivider, EpxDivider } from '../dist/index.js'
 import { LuStatistic, EpxStatistic, LuDialog } from '../dist/index.js'
 import { LuCheckboxGroup, EpxCheckboxGroup, LuForm, LuFormItem } from '../dist/index.js'
+import { LuDrawer, EpxDrawer, LuDatePicker, EpxDatePicker, LuCascader, EpxCascader, LuMessage, EpxMessage } from '../dist/index.js'
 
 const teleportHost = { children: [] }
 const renderer = createRenderer({
@@ -2026,3 +2027,91 @@ assert.equal(spin.children.some(node => node.props?.role === 'status'), false)
 assert.ok(spin.children.some(node => node.props?.class === 'epx-spin__content'))
 spinApp.unmount()
 console.log('Passed: spin registration, accessible status and loading transition.')
+
+for (const [component, alias] of [[LuDrawer, EpxDrawer], [LuDatePicker, EpxDatePicker], [LuCascader, EpxCascader]]) {
+  assert.equal(component, alias)
+  assert.ok(registered.includes(component.name))
+}
+assert.equal(LuMessage, EpxMessage)
+LuMessage('Server-side call').close()
+const messageBody = makeMessageElement('body')
+function makeMessageElement(tag) {
+  return {
+    tag, children: [], attributes: {},
+    setAttribute(name, value) { this.attributes[name] = value },
+    append(child) { this.children.push(child); child.parent = this },
+    remove() { this.parent.children.splice(this.parent.children.indexOf(this), 1) },
+    addEventListener(name, listener) { this[name] = listener }
+  }
+}
+globalThis.document = { body: messageBody, createElement: makeMessageElement }
+try {
+  const message = LuMessage({ message: '<b>Plain text</b>', type: 'error', duration: 0 })
+  LuMessage.success('Saved')
+  const stack = messageBody.children[0]
+  assert.equal(stack.children.length, 2)
+  assert.equal(stack.children[0].children[0].textContent, '<b>Plain text</b>')
+  assert.equal(stack.children[0].children[0].attributes.role, 'alert')
+  stack.children[0].children[1].click()
+  message.close()
+  assert.equal(stack.children.length, 1)
+  LuMessage.closeAll()
+  assert.equal(messageBody.children.length, 0)
+  LuMessage({ message: 'Expires', duration: 1 })
+  await new Promise(resolve => setTimeout(resolve, 10))
+  assert.equal(messageBody.children.length, 0)
+} finally {
+  LuMessage.closeAll()
+  delete globalThis.document
+}
+
+const drawerUpdates = []
+const drawer = mount(LuDrawer, { modelValue: true, title: 'Edit details', direction: 'left', 'onUpdate:modelValue': value => drawerUpdates.push(value) })
+await nextTick()
+const drawerPanel = findAll(teleportHost, n => n.props?.role === 'dialog')[0]
+assert.ok(drawerPanel.props['aria-labelledby'])
+const drawerClose = findAll(drawerPanel, n => n.type === 'button')[0]
+assert.equal(drawerClose.focused, true)
+drawerPanel.props.onKeydown({ key: 'Escape', preventDefault() {}, stopPropagation() {} })
+assert.deepEqual(drawerUpdates, [false])
+drawer.app.unmount()
+
+const dates = []
+const picker = mount(LuDatePicker, {
+  modelValue: [new Date(2024, 1, 1), new Date(2024, 1, 2)], range: true,
+  disabledDate: date => date.getDate() === 3,
+  shortcuts: [{ label: 'February', value: () => [new Date(2024, 1, 29, 12), new Date(2024, 1, 1)] }],
+  'onUpdate:modelValue': value => dates.push(value)
+})
+const dateTrigger = findAll(picker.root, n => n.props?.['aria-haspopup'] === 'dialog')[0]
+const pickerDay = day => findAll(picker.root, n => n.props?.['aria-label'] === day)[0]
+await dateTrigger.props.onClick()
+assert.equal(pickerDay('2024-02-03').props.disabled, true)
+pickerDay('2024-02-29').props.onClick(); await nextTick()
+assert.equal(dates.length, 0)
+pickerDay('2024-02-01').props.onClick(); await nextTick()
+assert.deepEqual(dates[0], [new Date(2024, 1, 1), new Date(2024, 1, 29)])
+assert.equal(dateTrigger.props['aria-expanded'], false)
+await dateTrigger.props.onClick()
+findAll(picker.root, n => n.type === 'button' && textOf(n) === 'February')[0].props.onClick()
+assert.deepEqual(dates[1], dates[0])
+picker.app.unmount()
+
+const paths = []
+const cascade = mount(LuCascader, {
+  options: [{ value: 0, label: 'Region', children: [{ value: '0', label: 'City' }, { value: 1, label: 'Disabled', disabled: true }] }],
+  clearable: true, 'onUpdate:modelValue': value => paths.push(value)
+})
+const levels = () => findAll(cascade.root, n => n.type === 'select')
+levels()[0].props.onChange({ target: { selectedIndex: 1 } }); await nextTick()
+assert.equal(levels().length, 2)
+assert.equal(paths.length, 0)
+levels()[1].props.onChange({ target: { selectedIndex: 2 } })
+assert.equal(paths.length, 0)
+levels()[1].props.onChange({ target: { selectedIndex: 1 } }); await nextTick()
+assert.deepEqual(paths[0], [0, '0'])
+findAll(cascade.root, n => n.type === 'button')[0].props.onClick(); await nextTick()
+assert.deepEqual(paths[1], [])
+assert.equal(levels().length, 1)
+cascade.app.unmount()
+console.log('Passed: Drawer focus and Escape, DatePicker ranges and shortcuts, Cascader paths and Message dismissal.')
