@@ -64,6 +64,11 @@ const display = computed(() => value.value === null ? '' : props.formatter
   ? props.formatter(value.value) : digits.value === undefined ? String(value.value) : value.value.toFixed(digits.value))
 watch(value, () => { editing.value = false })
 const blocked = computed(() => formDisabled.value || props.readonly)
+watch(blocked, (isBlocked) => {
+  if (!isBlocked) return
+  composing.value = false
+  void resetDraft()
+})
 function publish(next: number | null) {
   if (blocked.value) return
   const normalized = next === null || !Number.isFinite(next) ? null : normalize(next)
@@ -79,7 +84,9 @@ function parse(text: string): number | null | undefined {
     return clear === 'min' ? minimum.value : clear === 'max' ? maximum.value : clear
   }
   try {
-    const parsed = Number(props.parser ? props.parser(text) : text)
+    const result = props.parser ? props.parser(text) : text
+    if (typeof result === 'string' && !result.trim()) return undefined
+    const parsed = Number(result)
     return Number.isFinite(parsed) ? parsed : undefined
   } catch { return undefined }
 }
@@ -95,16 +102,19 @@ async function commit() {
     const parsed = parse(draft.value)
     if (parsed !== undefined) publish(parsed)
   }
+  await resetDraft()
+}
+async function resetDraft() {
   editing.value = false
   await nextTick()
-  if (control.value) control.value.value = display.value
+  if (!editing.value && control.value) control.value.value = display.value
 }
 function adjust(direction: number) {
   if (blocked.value || composing.value) return
   const parsed = editing.value ? parse(draft.value) : value.value
   const base = parsed ?? value.value ?? clamp(0, minimum.value, maximum.value)
   publish(round(base + direction * increment.value, Math.max(decimalPlaces(base), decimalPlaces(increment.value))))
-  editing.value = false
+  void resetDraft()
   control.value?.focus()
 }
 function keydown(event: KeyboardEvent) {
@@ -113,7 +123,7 @@ function keydown(event: KeyboardEvent) {
     event.preventDefault()
     adjust(event.key === 'ArrowUp' ? 1 : -1)
   } else if (event.key === 'Enter') { event.preventDefault(); void commit() }
-  else if (event.key === 'Escape') { editing.value = false; if (control.value) control.value.value = display.value }
+  else if (event.key === 'Escape') { void resetDraft() }
 }
 function blur(event: FocusEvent) { void commit(); emit('blur', event) }
 defineExpose({ focus: () => control.value?.focus(), blur: () => control.value?.blur(), select: () => control.value?.select() })

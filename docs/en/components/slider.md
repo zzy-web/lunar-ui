@@ -117,7 +117,22 @@ const format = value => `${value}%`
 
 ## Behavior
 
-Arrows move one step; PageUp / PageDown move ten; Home / End move to bounds. Range handles cannot cross. Dragging emits input and model updates, then one change on release. Pointer cancellation restores the starting value. Steps are based on min; max remains reachable. Invalid bounds are normalized; more than 1,000 stops are hidden to avoid excessive DOM.
+Clicking the track moves the nearest handle to the corresponding step. When you drag from the edge of a handle, it stays in place until you move the pointer. Dragging emits `input` and model updates. Releasing the handle emits one `change` if its value changed. Pointer cancellation restores the starting value.
+
+Steps start at `min`. The slider normalizes invalid bounds and hides stop markers when there are more than 1,000.
+
+### Keyboard controls
+
+Focus a slider handle to change its value with the keyboard. In range mode, each handle is bounded by the other handle's value.
+
+| Key | Action |
+| --- | --- |
+| Left / Down | Move to the previous step |
+| Right / Up | Move to the next step |
+| Page Down / Page Up | Move ten steps down or up, stopping at the handle's limit |
+| Home / End | Jump to the handle's minimum or maximum |
+
+The maximum remains reachable when it falls between steps. For example, with `min=0`, `max=10`, and `step=3`, the Right arrow advances through 0, 3, 6, 9, and 10.
 
 ## Slider Props
 

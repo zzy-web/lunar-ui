@@ -81,6 +81,8 @@ const confirmToggle = () => new Promise(resolve => setTimeout(() => resolve(true
 
 置于 `LuForm` 内时，此组件继承表单禁用状态和默认尺寸，组件/分组显式尺寸优先。详见 [Form 表单](./form)。
 
+等待 `beforeChange` 时，开关保留键盘焦点，并通过 `aria-busy` 和 `aria-disabled` 表示暂时无法切换。
+
 ## 使用建议
 
 - 用于立即生效的二元设置；需要提交确认的选择更适合复选框。

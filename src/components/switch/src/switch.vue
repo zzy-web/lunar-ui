@@ -1,5 +1,5 @@
 <template>
-  <button v-bind="$attrs" ref="control" class="epx-switch" :class="[`epx-switch--${formSize}`, { 'is-checked': checked, 'is-disabled': formDisabled || busy }]" type="button" role="switch" :aria-checked="checked" :aria-busy="busy || undefined" :disabled="formDisabled || busy" @click="toggle">
+  <button v-bind="pending ? { ...$attrs, 'aria-disabled': true } : $attrs" ref="control" class="epx-switch" :class="[`epx-switch--${formSize}`, { 'is-checked': checked, 'is-disabled': formDisabled || busy }]" type="button" role="switch" :aria-checked="checked" :aria-busy="busy || undefined" :disabled="formDisabled || loading" @click="toggle">
     <span v-if="inactiveText" class="epx-switch__label">{{ inactiveText }}</span>
     <span class="epx-switch__track" aria-hidden="true"><span class="epx-switch__thumb"><span v-if="busy" class="epx-switch__loading" /></span></span>
     <span v-if="activeText" class="epx-switch__label">{{ activeText }}</span>

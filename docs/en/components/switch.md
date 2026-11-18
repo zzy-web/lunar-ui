@@ -81,6 +81,8 @@ const confirmToggle = () => new Promise(resolve => setTimeout(() => resolve(true
 
 Inside `LuForm`, this component inherits its disabled state and default size; an explicit component/group size takes precedence. See [Form](./form).
 
+While `beforeChange` is pending, the switch retains keyboard focus and exposes `aria-busy` and `aria-disabled`.
+
 ## Usage tips
 
 - Use a switch for an immediately applied binary setting.

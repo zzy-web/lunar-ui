@@ -134,6 +134,8 @@ const parseMoney = value => value.replace(/[$,\s]/g, '')
 
 Typing preserves a draft; blur, Enter or native change commits it. Arrow Up/Down and buttons commit immediately. Escape discards the draft. Composition does not commit. Invalid text restores the previous value; empty input defaults to null. Strict steps are multiples of zero, followed by bounds clamping. Precision is at least the step's decimal places, capped at 15. Omit v-model for internal state.
 
+Clearing the field applies `valueOnClear`. If the field still contains text but `parser` returns an empty or whitespace-only string, the field restores the last committed value. For example, a currency symbol on its own leaves the amount unchanged. Disabling the field or making it read-only during editing also restores the last committed value.
+
 ## InputNumber Props
 
 | Property | Type | Default | Description |

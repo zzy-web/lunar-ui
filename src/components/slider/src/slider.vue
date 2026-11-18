@@ -95,41 +95,55 @@ function update(index: number, raw: number, commit: boolean) {
 function keyboard(event: KeyboardEvent, index: number) {
   if (disabled.value) return
   const value = values.value[index]
+  const min = minimum.value
+  const max = maximum.value
+  const step = increment.value
+  const precision = Math.max(decimalPlaces(min), decimalPlaces(step))
+  const lastStep = Math.floor((max - min) / step)
+  const lastStop = round(min + lastStep * step, precision)
+  // The maximum is a keyboard stop even when it falls between two steps.
+  const stepIndex = value === max && lastStop < max ? lastStep + 1 : Math.round((value - min) / step)
+  const offset = (steps: number) => round(min + (stepIndex + steps) * step, precision)
   const next: Record<string, number> = {
-    ArrowLeft: value - increment.value, ArrowDown: value - increment.value,
-    ArrowRight: value + increment.value, ArrowUp: value + increment.value,
-    PageDown: value - increment.value * 10, PageUp: value + increment.value * 10,
-    Home: minimum.value, End: maximum.value
+    ArrowLeft: offset(-1), ArrowDown: offset(-1),
+    ArrowRight: offset(1), ArrowUp: offset(1),
+    PageDown: offset(-10), PageUp: offset(10),
+    Home: min, End: max
   }
-  if (!(event.key in next)) return
+  if (!Object.prototype.hasOwnProperty.call(next, event.key)) return
   event.preventDefault()
   update(index, next[event.key], true)
 }
 let pointerId: number | undefined
+let pointerOffset = 0
 let initial: number[] = []
 function pointerValue(event: PointerEvent) {
   const rect = track.value?.getBoundingClientRect()
-  if (!rect || !(props.vertical ? rect.height : rect.width)) return values.value[0]
+  if (!rect || !(props.vertical ? rect.height : rect.width)) return
   const ratio = props.vertical ? (rect.bottom - event.clientY) / rect.height : (event.clientX - rect.left) / rect.width
-  return minimum.value + clamp(ratio, 0, 1) * (maximum.value - minimum.value)
+  return minimum.value + ratio * (maximum.value - minimum.value)
 }
 function start(event: PointerEvent) {
   if (disabled.value || event.button !== 0 || dragging.value !== null) return
   const target = event.target as HTMLElement
   const explicit = target.closest<HTMLElement>('[data-slider-handle]')?.dataset.sliderHandle
   const raw = pointerValue(event)
+  if (raw === undefined) return
   const index = explicit !== undefined ? Number(explicit) : props.range && (Math.abs(raw - values.value[1]) < Math.abs(raw - values.value[0]) || (values.value[0] === values.value[1] && raw > values.value[1])) ? 1 : 0
   event.preventDefault()
   initial = [...values.value]
   draft.value = [...values.value]
   dragging.value = index
   pointerId = event.pointerId
+  pointerOffset = explicit === undefined ? 0 : values.value[index] - raw
   track.value?.setPointerCapture(event.pointerId)
   handles.value[index]?.focus()
-  update(index, raw, false)
+  if (explicit === undefined) update(index, raw, false)
 }
 function move(event: PointerEvent) {
-  if (dragging.value !== null && event.pointerId === pointerId) update(dragging.value, pointerValue(event), false)
+  if (dragging.value === null || event.pointerId !== pointerId) return
+  const raw = pointerValue(event)
+  if (raw !== undefined) update(dragging.value, raw + pointerOffset, false)
 }
 function release() {
   const captured = pointerId
