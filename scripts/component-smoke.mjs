@@ -2114,4 +2114,30 @@ findAll(cascade.root, n => n.type === 'button')[0].props.onClick(); await nextTi
 assert.deepEqual(paths[1], [])
 assert.equal(levels().length, 1)
 cascade.app.unmount()
+const searchPaths = []
+globalThis.Document = class MockDocument {}
+globalThis.ShadowRoot = class MockShadowRoot {}
+const searchable = mount(LuCascader, {
+  filterable: true,
+  options: [
+    { value: 1, label: 'Frontend', children: [{ value: 'vue', label: 'Vue' }] },
+    { value: 2, label: 'Archived', disabled: true, children: [{ value: 'vue', label: 'Vue' }] }
+  ],
+  'onUpdate:modelValue': value => searchPaths.push(value)
+})
+const searchField = findAll(searchable.root, n => n.type === 'input')[0]
+searchField.getRootNode = () => ({ activeElement: searchField })
+searchField.value = ' VUE '
+searchField.listeners.input({ target: searchField })
+await nextTick()
+const searchResults = findAll(searchable.root, n => n.type === 'button')
+assert.deepEqual(searchResults.map(textOf), ['Frontend / Vue'])
+searchResults[0].props.onClick()
+await nextTick()
+assert.deepEqual(searchPaths, [[1, 'vue']])
+assert.equal(searchField.focused, true)
+assert.equal(findAll(searchable.root, n => n.type === 'select').length, 2)
+searchable.app.unmount()
+delete globalThis.Document
+delete globalThis.ShadowRoot
 console.log('Passed: Drawer focus and Escape, DatePicker ranges and shortcuts, Cascader paths and Message dismissal.')

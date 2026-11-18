@@ -16,11 +16,11 @@ const options = [
 ]
 </script>
 
-<lu-cascader v-model="path" :options="options" clearable label="技术分类" placeholder="请选择" />
+<lu-cascader v-model="path" :options="options" clearable filterable label="技术分类" placeholder="请选择" search-label="搜索分类" no-match-text="没有匹配项" />
 <p>{{ path.join(' / ') }}</p>
 
 ```vue
-<lu-cascader v-model="path" :options="options" clearable />
+<lu-cascader v-model="path" :options="options" clearable filterable />
 ```
 
 ## API
@@ -29,7 +29,10 @@ const options = [
 | --- | --- | --- |
 | `options` | `CascaderOption[]` | — |
 | `v-model` | `(string \| number)[]` | `[]` |
-| `disabled` / `clearable` / `check-strictly` | `boolean` | `false` |
+| `disabled` / `clearable` / `check-strictly` / `filterable` | `boolean` | `false` |
+| `search-label` / `no-match-text` | `string` | `Search options` / `No matching options` |
 | `label` / `placeholder` / `clear-label` | `string` | `Category` / `Select` / `Clear selection` |
 
 选项包含 `label`、`value`，可选 `disabled` 和 `children`。同一层的兄弟选项值应唯一。选中叶子时通过 `change` 返回完整路径。设置 `check-strictly` 后也可提交父级路径，清空时返回空数组。
+
+启用 `filterable` 后，可以按任意一级的标签搜索完整路径。搜索忽略大小写和首尾空格，跳过禁用选项及其子树。选中结果后恢复逐级回显，按 Escape 可清除搜索。

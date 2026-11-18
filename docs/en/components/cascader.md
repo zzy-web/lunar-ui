@@ -16,11 +16,11 @@ const options = [
 ]
 </script>
 
-<lu-cascader v-model="path" :options="options" clearable label="Technology" placeholder="Select" />
+<lu-cascader v-model="path" :options="options" clearable filterable label="Technology" placeholder="Select" />
 <p>{{ path.join(' / ') }}</p>
 
 ```vue
-<lu-cascader v-model="path" :options="options" clearable />
+<lu-cascader v-model="path" :options="options" clearable filterable />
 ```
 
 ## API
@@ -29,7 +29,10 @@ const options = [
 | --- | --- | --- |
 | `options` | `CascaderOption[]` | — |
 | `v-model` | `(string \| number)[]` | `[]` |
-| `disabled` / `clearable` / `check-strictly` | `boolean` | `false` |
+| `disabled` / `clearable` / `check-strictly` / `filterable` | `boolean` | `false` |
+| `search-label` / `no-match-text` | `string` | `Search options` / `No matching options` |
 | `label` / `placeholder` / `clear-label` | `string` | `Category` / `Select` / `Clear selection` |
 
 Options contain `label`, `value`, optional `disabled`, and optional `children`. Values must be unique among siblings. Selecting a leaf emits the complete path in `change`. Enable `check-strictly` to commit parent paths too. Clearing emits an empty array.
+
+Enable `filterable` to match complete paths by any level's label. The search ignores case and surrounding whitespace, and skips disabled branches. Selecting a result restores the level selectors with the chosen path. Escape clears the search.

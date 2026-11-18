@@ -18,6 +18,8 @@
 
 .epx-date-picker, .epx-cascader { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; max-width: 100%; }
 .epx-date-picker { position: relative; }
+.epx-cascader__results { flex-basis: 100%; max-height: 14rem; overflow: auto; margin: 0; padding: 4px; list-style: none; }
+.epx-cascader__results li + li { margin-top: 4px; }
 .epx-field-button { min-height: var(--epx-control-height); max-width: 100%; padding: 4px 10px; border: 1px solid var(--epx-border-color); border-radius: var(--epx-border-radius-base); background: var(--epx-bg-color); color: var(--epx-text-color-primary); font: inherit; cursor: pointer; }
 .epx-field-button:focus-visible { outline: 2px solid var(--epx-color-primary); outline-offset: 2px; }
 .epx-field-button:disabled { cursor: not-allowed; color: var(--epx-text-color-disabled); background: var(--epx-fill-color-light); }
